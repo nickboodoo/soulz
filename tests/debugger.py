@@ -1,3 +1,3 @@
-class TestCode:
+class Debugger:
     def __init__(self):
-        print("The debugger currently is working from the tests folder")
+        print("The Debugger currently is working from the tests folder")

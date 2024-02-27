@@ -1,10 +1,10 @@
-from tests import TestCode
+from tests import Debugger
 from setup import GeneratingMap
 
 def main():
 
     # call functions or classes from other modules
-    TestCode()
+    Debugger()
     GeneratingMap()
 
 

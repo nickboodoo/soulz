@@ -1,4 +1,4 @@
-from .debugger import TestCode
+from .debugger import Debugger
 
-print("Successfully imported the TestCode class from the tests package")
+print("Successfully imported the Debugger from the tests package")
 
