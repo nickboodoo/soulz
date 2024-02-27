@@ -1,4 +1,5 @@
 from .first_test import TestCode
+from .maze_game import GamePlayLoop
 
-print("the __init__.py module is working correctly")
+print("Successfully imported TestCode class, GamePlayLoop class.")
 
