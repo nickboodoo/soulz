@@ -1,5 +1,4 @@
-from .first_test import TestCode
-from .maze_game import GamePlayLoop
+from .debugger import TestCode
 
-print("Successfully imported TestCode class, GamePlayLoop class.")
+print("Successfully imported the TestCode class from the tests package")
 
