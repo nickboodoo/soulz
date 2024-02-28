@@ -5,6 +5,7 @@ from .enemy import Enemy  # Importing the Enemy class from the enemy module
 def print_status(player, enemy=None):
     print(f"{player.name} - HP: {'█' * int(player.stats['health'] / 5)} ({player.stats['health']}/{player.MAX_HEALTH})\n")
 
+    # Shows enemy health bar ONLY if enemy is present since enemy=None
     if enemy:
         print(f"{enemy.name} - HP: {'█' * int(enemy.health / 5)} ({enemy.health}/100)\n")
 
@@ -16,13 +17,15 @@ def encounter_enemy(player):
         Enemy("Skeleton", 40, 15),
         Enemy("Orc", 60, 12)
     ]
+
     # Select random enemy
     enemy = random.choice(enemies)
 
     # Display encounter message to player
     print(f"You've encountered a {enemy.name}!")
 
-    # Store all of player's encounters
+    # Store all of player's enemy encounter
+    # Data structure does not exist, game will break if player access this variable
     player.encounters.append(enemy.name)
 
     # Combat loop
@@ -30,7 +33,7 @@ def encounter_enemy(player):
         print_status(player, enemy)
         choice = input("Choose your action: [a]ttack, [u]se item, [f]lee: ").lower()
 
-        # Attack Logic
+        # Attack logic
         if choice == "a":
             player_damage = player.attack()
             enemy.defend(player_damage)
@@ -41,7 +44,7 @@ def encounter_enemy(player):
                 player.defend(enemy_damage)
                 print(f"The {enemy.name} attacks back for {enemy_damage} damage.")
         
-        # Use Item Logic
+        # Use Item logic
         elif choice == "u":
             player.check_inventory()
             item_to_use = input("Enter the item you want to use (or [cancel] to go back): ").lower()
@@ -51,12 +54,12 @@ def encounter_enemy(player):
 
             player.use_item(item_to_use)
 
-        # Flee Logic
+        # Flee logic
         elif choice == "f":
             print("You fled from the battle!")
             return
         
-        # Input Error Catching
+        # Input error handling
         else:
             print("Invalid choice. Please try again.")
 
@@ -117,6 +120,8 @@ def travel_to_city(player):
         choice = input("Enter your choice: ").lower()
 
         if choice == "b":
+
+            # Call Helper-helper function
             buy_items(player)
 
         elif choice == "c":
@@ -130,42 +135,56 @@ def travel_to_city(player):
             player.view_character_stats()
 
         elif choice == "t":
+
+            # Call Helper-helper function
             stay_at_tavern(player)
 
         elif choice == "l":
             print("You leave the city.")
             break
 
+        # Error handling
         else:
             print("Invalid choice. Please try again.")
 
+# Helper-helper function for enabling the player to full heal at a tavern
 def stay_at_tavern(player):
     print("You decide to stay at the tavern for a rest.")
     player.stats["health"] = player.MAX_HEALTH  # Fully replenish player's health
     print("Your health has been fully restored.")
 
-
+# Helper-helper function for enabling the player to buy items from the store
 def buy_items(player):
     store_items = {
         "health potion": 20,
     }
+
+    # Start of store menu
     print("\nWelcome to the store!")
     print("Here are the items available for purchase:")
+
     for item, price in store_items.items():
         print(f"{item.capitalize()} - {price} gold")
 
     while True:
         print("Your Gold:", player.stats["gold"])
         choice = input("Enter the item you want to buy (or [done] to exit): ").lower()
+
+        # Go back to previous menu (Store menu)
         if choice == "done":
             break
+
+        # Check if player can buy item
         elif choice in store_items:
             if player.stats["gold"] >= store_items[choice]:
                 player.add_to_inventory(choice)
                 player.stats["gold"] -= store_items[choice]
                 print(f"You bought {choice}!")
+
             else:
                 print("You don't have enough gold to buy that.")
+
+        # Input error handling
         else:
             print("That item is not available in the store.")
 
