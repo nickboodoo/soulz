@@ -1,10 +1,13 @@
 import random
 
+# Define the Player class
 class Player:
     MAX_HEALTH = 100
     MIN_HEALTH = 0
 
+    # Initialize the Player object
     def __init__(self, name):
+        # Player attributes
         self.name = name
         self.stats = {"health": self.MAX_HEALTH, "mana": 50, "gold": 100}
         self.equipped_items = {"weapon": None, "armor": None}
@@ -14,23 +17,28 @@ class Player:
         self.encounters = []
         self.quest_items_collected = set()  # Initialize quest items collected as an empty set
 
+    # Method to calculate player's attack power
     def attack(self):
         attack_bonus = self.equipped_items["weapon"].get("attack_bonus", 0) if self.equipped_items["weapon"] else 0
         return random.randint(10, 20) + attack_bonus
 
+    # Method to reduce player's health based on incoming damage
     def defend(self, damage):
         self.stats["health"] -= damage
         self.stats["health"] = max(self.MIN_HEALTH, self.stats["health"])
 
+    # Method to check if player is alive
     def is_alive(self):
         return self.stats["health"] > self.MIN_HEALTH
 
+    # Method to add items to player's inventory
     def add_to_inventory(self, item, quantity=1):
         if item in self.inventory:
             self.inventory[item] += quantity
         else:
             self.inventory[item] = quantity
 
+    # Method to remove items from player's inventory
     def remove_from_inventory(self, item, quantity=1):
         if item in self.inventory:
             if self.inventory[item] >= quantity:
@@ -38,11 +46,13 @@ class Player:
                 return True
         return False
 
+    # Method to display player's inventory
     def check_inventory(self):
         print("\nInventory:")
         for item, quantity in self.inventory.items():
             print(f"{item.capitalize()}: {quantity}")
 
+    # Method to use items from player's inventory
     def use_item(self, item):
         if item in self.inventory:
             if item == "health potion":
@@ -57,6 +67,7 @@ class Player:
         else:
             print("You don't have that item.")
 
+    # Method to view player's stats
     def view_character_stats(self):
         print("\nCharacter Stats:")
         print(f"Health: {self.stats['health']}/{self.MAX_HEALTH}")
@@ -68,12 +79,15 @@ class Player:
             else:
                 print(f"{slot.capitalize()}: None")
 
+# Define the Item class
 class Item:
+    # Initialize the Item object
     def __init__(self, name, attack_bonus=0, defense_bonus=0):
         self.name = name
         self.attack_bonus = attack_bonus
         self.defense_bonus = defense_bonus
 
+# Function to generate a random weapon
 def generate_random_weapon():
     weapons = [
         Item("Sword", attack_bonus=5),
@@ -83,26 +97,33 @@ def generate_random_weapon():
     ]
     return random.choice(weapons)
 
+# Define the Enemy class
 class Enemy:
+    # Initialize the Enemy object
     def __init__(self, name, health, attack_power):
         self.name = name
         self.health = health
         self.attack_power = attack_power
 
+    # Method for enemy to attack
     def attack(self):
         return random.randint(5, self.attack_power)
 
+    # Method for enemy to defend against incoming damage
     def defend(self, damage):
         self.health -= damage
 
+    # Method to check if enemy is alive
     def is_alive(self):
         return self.health > 0
 
+# Function to print player and enemy status
 def print_status(player, enemy=None):
     print(f"{player.name} - HP: {'█' * int(player.stats['health'] / 5)} ({player.stats['health']}/{player.MAX_HEALTH})\n")
     if enemy:
         print(f"{enemy.name} - HP: {'█' * int(enemy.health / 5)} ({enemy.health}/100)\n")
 
+# Function to simulate encountering an enemy
 def encounter_enemy(player):
     enemies = [
         Enemy("Goblin", 50, 10),
@@ -158,7 +179,7 @@ def encounter_enemy(player):
         print(f"You've killed {player.enemies_killed} enemies and travelled {player.distance_travelled} miles.")
         exit()
 
-
+# Function to simulate traveling to a city
 def travel_to_city(player):
     print("You have arrived at the city.")
     while True:
@@ -185,6 +206,7 @@ def travel_to_city(player):
         else:
             print("Invalid choice. Please try again.")
 
+# Function to simulate buying items from a store
 def buy_items(player):
     store_items = {
         "health potion": 20,
@@ -212,26 +234,38 @@ def buy_items(player):
         else:
             print("That item is not available in the store.")
 
-def main():
-    player_name = input("Enter your name: ")
-    print(f"Welcome, {player_name}!")
-    player = Player(player_name)
+# Main Game Loop
+class Game:
+    def __init__(self):
+        pass
 
-    while player.is_alive():
-        choice = input("\nWhat would you like to do? [explore] or [travel to city] or [quit]? ").lower()
-        if choice == "explore":
-            encounter_chance = random.randint(1, 10)
-            if encounter_chance <= 7:
-                encounter_enemy(player)
+    def start(self):
+        player_name = input("Enter your name: ")
+        print(f"Welcome, {player_name}!")
+        input()
+        print("In this world of Lordran_Z, you must slay the four Soulz of Sinders.")
+        input()
+        print("Once you do, you will be summoned to fight the Dark Soulz Himself! haHA!")
+        input()
+        player = Player(player_name)
+
+        while player.is_alive():
+            choice = input("\nWhat would you like to do? [explore] or [travel to city] or [quit]? ").lower()
+            if choice == "explore":
+                encounter_chance = random.randint(1, 10)
+                if encounter_chance <= 7:
+                    encounter_enemy(player)
+                else:
+                    print("You didn't encounter any enemies while exploring.")
+            elif choice == "travel to city":
+                travel_to_city(player)
+            elif choice == "quit":
+                print("Thanks for playing!")
+                break
             else:
-                print("You didn't encounter any enemies while exploring.")
-        elif choice == "travel to city":
-            travel_to_city(player)
-        elif choice == "quit":
-            print("Thanks for playing!")
-            break
-        else:
-            print("Invalid choice. Please try again.")
+                print("Invalid choice. Please try again.")
 
+# Create a Game instance and start the game
 if __name__ == "__main__":
-    main()
+    game = Game()
+    game.start()
