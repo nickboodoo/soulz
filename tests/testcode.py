@@ -6,26 +6,24 @@ class Player:
 
     def __init__(self, name):
         self.name = name
-        self.health = self.MAX_HEALTH
-        self.mana = 50
-        self.equipped_items = {"weapon": None, "armor": None}  # Equipped items
-        self.inventory = {"gold": 100, "health potion": 2, "mana potion": 1}
+        self.stats = {"health": self.MAX_HEALTH, "mana": 50, "gold": 100}
+        self.equipped_items = {"weapon": None, "armor": None}
+        self.inventory = {"health potion": 2, "mana potion": 1}
         self.enemies_killed = 0
         self.distance_travelled = 0
+        self.encounters = []
+        self.quest_items_collected = set()  # Initialize quest items collected as an empty set
 
     def attack(self):
-        if self.equipped_items["weapon"]:
-            return random.randint(10, 20) + self.equipped_items["weapon"].attack_bonus
-        else:
-            return random.randint(10, 20)
+        attack_bonus = self.equipped_items["weapon"].get("attack_bonus", 0) if self.equipped_items["weapon"] else 0
+        return random.randint(10, 20) + attack_bonus
 
     def defend(self, damage):
-        self.health -= damage
-        if self.health < self.MIN_HEALTH:
-            self.health = self.MIN_HEALTH
+        self.stats["health"] -= damage
+        self.stats["health"] = max(self.MIN_HEALTH, self.stats["health"])
 
     def is_alive(self):
-        return self.health > self.MIN_HEALTH
+        return self.stats["health"] > self.MIN_HEALTH
 
     def add_to_inventory(self, item, quantity=1):
         if item in self.inventory:
@@ -48,13 +46,12 @@ class Player:
     def use_item(self, item):
         if item in self.inventory:
             if item == "health potion":
-                if self.health == self.MAX_HEALTH:
+                if self.stats["health"] == self.MAX_HEALTH:
                     print("Your health is already full.")
                 else:
-                    self.health = min(self.MAX_HEALTH, self.health + 20)  # Ensure health doesn't exceed max health
+                    self.stats["health"] = min(self.MAX_HEALTH, self.stats["health"] + 20)
                     self.remove_from_inventory(item)
                     print(f"You used a health potion and gained 20 health.")
-            # Add more items and their effects here if needed
             else:
                 print("You cannot use that item.")
         else:
@@ -62,12 +59,12 @@ class Player:
 
     def view_character_stats(self):
         print("\nCharacter Stats:")
-        print(f"Health: {self.health}/{self.MAX_HEALTH}")
-        print(f"Mana: {self.mana}/100")
+        print(f"Health: {self.stats['health']}/{self.MAX_HEALTH}")
+        print(f"Mana: {self.stats['mana']}/100")
         print("Equipped Items:")
         for slot, item in self.equipped_items.items():
             if item:
-                print(f"{slot.capitalize()}: {item.name}")
+                print(f"{slot.capitalize()}: {item['name']} (Attack Bonus: {item.get('attack_bonus', 0)})")
             else:
                 print(f"{slot.capitalize()}: None")
 
@@ -102,7 +99,7 @@ class Enemy:
         return self.health > 0
 
 def print_status(player, enemy=None):
-    print(f"{player.name} - HP: {'█' * int(player.health / 5)} ({player.health}/{player.MAX_HEALTH})\n")
+    print(f"{player.name} - HP: {'█' * int(player.stats['health'] / 5)} ({player.stats['health']}/{player.MAX_HEALTH})\n")
     if enemy:
         print(f"{enemy.name} - HP: {'█' * int(enemy.health / 5)} ({enemy.health}/100)\n")
 
@@ -114,6 +111,7 @@ def encounter_enemy(player):
     ]
     enemy = random.choice(enemies)
     print(f"You've encountered a {enemy.name}!")
+    player.encounters.append(enemy.name)
 
     while player.is_alive() and enemy.is_alive():
         print_status(player, enemy)
@@ -142,10 +140,24 @@ def encounter_enemy(player):
     if player.is_alive():
         print(f"You defeated the {enemy.name}!")
         player.enemies_killed += 1
+        # Chance to drop a quest item
+        if len(player.quest_items_collected) < 4:  # Check if all quest items are not collected
+            drop_rate = 0.2 / (4 - len(player.quest_items_collected))  # Adjust drop rate based on remaining quest items
+            if random.random() < drop_rate:
+                available_items = list(set(["Quest Item 1", "Quest Item 2", "Quest Item 3", "Quest Item 4"]) - player.quest_items_collected)
+                quest_item = random.choice(available_items)
+                print(f"The {enemy.name} dropped {quest_item}!")
+                player.quest_items_collected.add(quest_item)
+                print(f"You've collected {len(player.quest_items_collected)} out of 4 quest items.")
+            else:
+                print("No quest item dropped this time.")
+        else:
+            print("All quest items collected!")
     else:
         print("You lost the battle!")
         print(f"You've killed {player.enemies_killed} enemies and travelled {player.distance_travelled} miles.")
         exit()
+
 
 def travel_to_city(player):
     print("You have arrived at the city.")
@@ -179,7 +191,6 @@ def buy_items(player):
         "mana potion": 30,
         "weapon": 50,
         "armor": 70,
-        # Add more items and their prices here
     }
     print("\nWelcome to the store!")
     print("Here are the items available for purchase:")
@@ -187,14 +198,14 @@ def buy_items(player):
         print(f"{item.capitalize()} - {price} gold")
 
     while True:
-        print("Your Gold:", player.inventory["gold"])
+        print("Your Gold:", player.stats["gold"])
         choice = input("Enter the item you want to buy (or [done] to exit): ").lower()
         if choice == "done":
             break
         elif choice in store_items:
-            if player.inventory["gold"] >= store_items[choice]:
+            if player.stats["gold"] >= store_items[choice]:
                 player.add_to_inventory(choice)
-                player.inventory["gold"] -= store_items[choice]
+                player.stats["gold"] -= store_items[choice]
                 print(f"You bought {choice}!")
             else:
                 print("You don't have enough gold to buy that.")
@@ -212,10 +223,8 @@ def main():
             encounter_chance = random.randint(1, 10)
             if encounter_chance <= 7:
                 encounter_enemy(player)
-                player.distance_travelled += 1
             else:
                 print("You didn't encounter any enemies while exploring.")
-                player.distance_travelled += 1
         elif choice == "travel to city":
             travel_to_city(player)
         elif choice == "quit":
