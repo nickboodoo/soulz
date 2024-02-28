@@ -1,0 +1,3 @@
+fix the drop rates of items
+fix the gold drop rates
+weapons increase stats so lets name it something else

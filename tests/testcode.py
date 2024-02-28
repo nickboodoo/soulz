@@ -1,44 +1,36 @@
 import random
 
-# Define the Player class
 class Player:
     MAX_HEALTH = 100
     MIN_HEALTH = 0
 
-    # Initialize the Player object
     def __init__(self, name):
-        # Player attributes
         self.name = name
-        self.stats = {"health": self.MAX_HEALTH, "mana": 50, "gold": 100}
-        self.equipped_items = {"weapon": None, "armor": None}
-        self.inventory = {"health potion": 2, "mana potion": 1}
+        self.stats = {"health": self.MAX_HEALTH, "gold": 100}
+        self.level = 1
+        self.base_damage = 10  # Base damage
+        self.inventory = {"health potion": 2}
         self.enemies_killed = 0
         self.distance_travelled = 0
         self.encounters = []
-        self.quest_items_collected = set()  # Initialize quest items collected as an empty set
+        self.quest_items_collected = set()
 
-    # Method to calculate player's attack power
     def attack(self):
-        attack_bonus = self.equipped_items["weapon"].get("attack_bonus", 0) if self.equipped_items["weapon"] else 0
-        return random.randint(10, 20) + attack_bonus
+        return random.randint(self.base_damage, self.base_damage + 10)  # Increase damage range
 
-    # Method to reduce player's health based on incoming damage
     def defend(self, damage):
         self.stats["health"] -= damage
         self.stats["health"] = max(self.MIN_HEALTH, self.stats["health"])
 
-    # Method to check if player is alive
     def is_alive(self):
         return self.stats["health"] > self.MIN_HEALTH
 
-    # Method to add items to player's inventory
     def add_to_inventory(self, item, quantity=1):
         if item in self.inventory:
             self.inventory[item] += quantity
         else:
             self.inventory[item] = quantity
 
-    # Method to remove items from player's inventory
     def remove_from_inventory(self, item, quantity=1):
         if item in self.inventory:
             if self.inventory[item] >= quantity:
@@ -46,13 +38,11 @@ class Player:
                 return True
         return False
 
-    # Method to display player's inventory
     def check_inventory(self):
         print("\nInventory:")
         for item, quantity in self.inventory.items():
             print(f"{item.capitalize()}: {quantity}")
 
-    # Method to use items from player's inventory
     def use_item(self, item):
         if item in self.inventory:
             if item == "health potion":
@@ -67,63 +57,36 @@ class Player:
         else:
             print("You don't have that item.")
 
-    # Method to view player's stats
     def view_character_stats(self):
         print("\nCharacter Stats:")
         print(f"Health: {self.stats['health']}/{self.MAX_HEALTH}")
-        print(f"Mana: {self.stats['mana']}/100")
-        print("Equipped Items:")
-        for slot, item in self.equipped_items.items():
-            if item:
-                print(f"{slot.capitalize()}: {item['name']} (Attack Bonus: {item.get('attack_bonus', 0)})")
-            else:
-                print(f"{slot.capitalize()}: None")
+        print(f"Level: {self.level}")
 
-# Define the Item class
-class Item:
-    # Initialize the Item object
-    def __init__(self, name, attack_bonus=0, defense_bonus=0):
-        self.name = name
-        self.attack_bonus = attack_bonus
-        self.defense_bonus = defense_bonus
+    def level_up(self):
+        self.level += 1
+        self.base_damage += 5  # Increase base damage on leveling up
+        print(f"Congratulations! You've reached level {self.level}. Your base damage has increased.")
 
-# Function to generate a random weapon
-def generate_random_weapon():
-    weapons = [
-        Item("Sword", attack_bonus=5),
-        Item("Axe", attack_bonus=8),
-        Item("Bow", attack_bonus=6),
-        Item("Staff", attack_bonus=7)
-    ]
-    return random.choice(weapons)
-
-# Define the Enemy class
 class Enemy:
-    # Initialize the Enemy object
     def __init__(self, name, health, attack_power):
         self.name = name
         self.health = health
         self.attack_power = attack_power
 
-    # Method for enemy to attack
     def attack(self):
         return random.randint(5, self.attack_power)
 
-    # Method for enemy to defend against incoming damage
     def defend(self, damage):
         self.health -= damage
 
-    # Method to check if enemy is alive
     def is_alive(self):
         return self.health > 0
 
-# Function to print player and enemy status
 def print_status(player, enemy=None):
     print(f"{player.name} - HP: {'█' * int(player.stats['health'] / 5)} ({player.stats['health']}/{player.MAX_HEALTH})\n")
     if enemy:
         print(f"{enemy.name} - HP: {'█' * int(enemy.health / 5)} ({enemy.health}/100)\n")
 
-# Function to simulate encountering an enemy
 def encounter_enemy(player):
     enemies = [
         Enemy("Goblin", 50, 10),
@@ -161,25 +124,20 @@ def encounter_enemy(player):
     if player.is_alive():
         print(f"You defeated the {enemy.name}!")
         player.enemies_killed += 1
-        # Chance to drop a quest item
-        if len(player.quest_items_collected) < 4:  # Check if all quest items are not collected
-            drop_rate = 0.2 / (4 - len(player.quest_items_collected))  # Adjust drop rate based on remaining quest items
-            if random.random() < drop_rate:
-                available_items = list(set(["Quest Item 1", "Quest Item 2", "Quest Item 3", "Quest Item 4"]) - player.quest_items_collected)
-                quest_item = random.choice(available_items)
-                print(f"The {enemy.name} dropped {quest_item}!")
-                player.quest_items_collected.add(quest_item)
-                print(f"You've collected {len(player.quest_items_collected)} out of 4 quest items.")
-            else:
-                print("No quest item dropped this time.")
+        loot_pool = ["Quest Item", "Health Potion", "Gold"]
+        loot = random.choice(loot_pool)
+        if loot == "Gold":
+            gold_amount = random.randint(1, 100)
+            player.stats["gold"] += gold_amount
+            print(f"You found {gold_amount} gold!")
         else:
-            print("All quest items collected!")
+            player.add_to_inventory(loot)
+            print(f"You found {loot}!")
     else:
         print("You lost the battle!")
         print(f"You've killed {player.enemies_killed} enemies and travelled {player.distance_travelled} miles.")
         exit()
 
-# Function to simulate traveling to a city
 def travel_to_city(player):
     print("You have arrived at the city.")
     while True:
@@ -206,13 +164,9 @@ def travel_to_city(player):
         else:
             print("Invalid choice. Please try again.")
 
-# Function to simulate buying items from a store
 def buy_items(player):
     store_items = {
         "health potion": 20,
-        "mana potion": 30,
-        "weapon": 50,
-        "armor": 70,
     }
     print("\nWelcome to the store!")
     print("Here are the items available for purchase:")
@@ -234,7 +188,6 @@ def buy_items(player):
         else:
             print("That item is not available in the store.")
 
-# Main Game Loop
 class Game:
     def __init__(self):
         pass
@@ -256,7 +209,17 @@ class Game:
                 if encounter_chance <= 7:
                     encounter_enemy(player)
                 else:
-                    print("You didn't encounter any enemies while exploring.")
+                    found_items = random.randint(1, 3)
+                    for _ in range(found_items):
+                        loot_pool = ["Quest Item", "Health Potion", "Gold"]
+                        loot = random.choice(loot_pool)
+                        if loot == "Gold":
+                            gold_amount = random.randint(1, 100)
+                            player.stats["gold"] += gold_amount
+                            print(f"You found {gold_amount} gold!")
+                        else:
+                            player.add_to_inventory(loot)
+                            print(f"You found {loot}!")
             elif choice == "travel to city":
                 travel_to_city(player)
             elif choice == "quit":
@@ -265,7 +228,9 @@ class Game:
             else:
                 print("Invalid choice. Please try again.")
 
-# Create a Game instance and start the game
+        if not player.is_alive():
+            print("Game over.")
+
 if __name__ == "__main__":
     game = Game()
     game.start()

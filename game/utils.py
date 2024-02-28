@@ -6,6 +6,36 @@ def print_status(player, enemy=None):
     if enemy:
         print(f"{enemy.name} - HP: {'█' * int(enemy.health / 5)} ({enemy.health}/100)\n")
 
+
+# Function to simulate buying items from a store
+def buy_items(player):
+    store_items = {
+        "health potion": 20,
+        "mana potion": 30,
+        "weapon": 50,
+        "armor": 70,
+    }
+    print("\nWelcome to the store!")
+    print("Here are the items available for purchase:")
+    for item, price in store_items.items():
+        print(f"{item.capitalize()} - {price} gold")
+
+    while True:
+        print("Your Gold:", player.stats["gold"])
+        choice = input("Enter the item you want to buy (or [done] to exit): ").lower()
+        if choice == "done":
+            break
+        elif choice in store_items:
+            if player.stats["gold"] >= store_items[choice]:
+                player.add_to_inventory(choice)
+                player.stats["gold"] -= store_items[choice]
+                print(f"You bought {choice}!")
+            else:
+                print("You don't have enough gold to buy that.")
+        else:
+            print("That item is not available in the store.")
+
+
 def encounter_enemy(player):
     enemies = [
         Enemy("Goblin", 50, 10),
