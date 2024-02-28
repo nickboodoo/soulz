@@ -24,7 +24,20 @@ class Game:
                 if encounter_chance <= 7:
                     encounter_enemy(player)
                 else:
-                    print("You didn't encounter any enemies while exploring.")
+                    found_items = random.randint(1, 3)
+                    for _ in range(found_items):
+                        loot_pool = ["Quest Item", "Health Potion", "Gold", "Zinder"]  # Include Zinder in loot pool
+                        loot = random.choice(loot_pool)
+                        if loot == "Gold":
+                            gold_amount = random.randint(1, 100)
+                            player.stats["gold"] += gold_amount
+                            print(f"You found {gold_amount} gold!")
+                        elif loot == "Zinder":  # If Zinder is found, increase the Zinders collected
+                            player.zinders_collected += 1
+                            print(f"You found {loot}! You now have {player.zinders_collected} Zinders.")
+                        else:
+                            player.add_to_inventory(loot)
+                            print(f"You found {loot}!")
             elif choice == "travel to city":
                 travel_to_city(player)
             elif choice == "quit":
@@ -32,3 +45,6 @@ class Game:
                 break
             else:
                 print("Invalid choice. Please try again.")
+
+        if not player.is_alive():
+            print("Game over.")

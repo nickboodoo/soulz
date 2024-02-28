@@ -6,17 +6,22 @@ class Player:
 
     def __init__(self, name):
         self.name = name
-        self.stats = {"health": self.MAX_HEALTH, "mana": 50, "gold": 100}
-        self.equipped_items = {"weapon": None, "armor": None}
-        self.inventory = {"health potion": 2, "mana potion": 1}
+        self.stats = {"health": self.MAX_HEALTH, "gold": 100}
+        self.level = 1
+        self.base_damage = 10  # Base damage
+        self.inventory = {"health potion": 2}
         self.enemies_killed = 0
         self.distance_travelled = 0
         self.encounters = []
-        self.quest_items_collected = set()  # Initialize quest items collected as an empty set
+        self.quest_items_collected = set()
+        self.zinders_collected = 0  # Track the number of Zinders collected
 
     def attack(self):
-        attack_bonus = self.equipped_items["weapon"].get("attack_bonus", 0) if self.equipped_items["weapon"] else 0
-        return random.randint(10, 20) + attack_bonus
+        # Apply lifesteal based on the number of Zinders collected
+        lifesteal_percentage = self.zinders_collected * 0.01
+        lifesteal_amount = int(self.base_damage * lifesteal_percentage)
+        self.stats["health"] = min(self.MAX_HEALTH, self.stats["health"] + lifesteal_amount)
+        return random.randint(self.base_damage, self.base_damage + 10)  # Increase damage range
 
     def defend(self, damage):
         self.stats["health"] -= damage
@@ -60,10 +65,9 @@ class Player:
     def view_character_stats(self):
         print("\nCharacter Stats:")
         print(f"Health: {self.stats['health']}/{self.MAX_HEALTH}")
-        print(f"Mana: {self.stats['mana']}/100")
-        print("Equipped Items:")
-        for slot, item in self.equipped_items.items():
-            if item:
-                print(f"{slot.capitalize()}: {item['name']} (Attack Bonus: {item.get('attack_bonus', 0)})")
-            else:
-                print(f"{slot.capitalize()}: None")
+        print(f"Level: {self.level}")
+
+    def level_up(self):
+        self.level += 1
+        self.base_damage += 5  # Increase base damage on leveling up
+        print(f"Congratulations! You've reached level {self.level}. Your base damage has increased.")

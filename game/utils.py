@@ -6,36 +6,6 @@ def print_status(player, enemy=None):
     if enemy:
         print(f"{enemy.name} - HP: {'█' * int(enemy.health / 5)} ({enemy.health}/100)\n")
 
-
-# Function to simulate buying items from a store
-def buy_items(player):
-    store_items = {
-        "health potion": 20,
-        "mana potion": 30,
-        "weapon": 50,
-        "armor": 70,
-    }
-    print("\nWelcome to the store!")
-    print("Here are the items available for purchase:")
-    for item, price in store_items.items():
-        print(f"{item.capitalize()} - {price} gold")
-
-    while True:
-        print("Your Gold:", player.stats["gold"])
-        choice = input("Enter the item you want to buy (or [done] to exit): ").lower()
-        if choice == "done":
-            break
-        elif choice in store_items:
-            if player.stats["gold"] >= store_items[choice]:
-                player.add_to_inventory(choice)
-                player.stats["gold"] -= store_items[choice]
-                print(f"You bought {choice}!")
-            else:
-                print("You don't have enough gold to buy that.")
-        else:
-            print("That item is not available in the store.")
-
-
 def encounter_enemy(player):
     enemies = [
         Enemy("Goblin", 50, 10),
@@ -73,23 +43,31 @@ def encounter_enemy(player):
     if player.is_alive():
         print(f"You defeated the {enemy.name}!")
         player.enemies_killed += 1
-        # Chance to drop a quest item
-        if len(player.quest_items_collected) < 4:  # Check if all quest items are not collected
-            drop_rate = 0.2 / (4 - len(player.quest_items_collected))  # Adjust drop rate based on remaining quest items
-            if random.random() < drop_rate:
-                available_items = list(set(["Quest Item 1", "Quest Item 2", "Quest Item 3", "Quest Item 4"]) - player.quest_items_collected)
-                quest_item = random.choice(available_items)
-                print(f"The {enemy.name} dropped {quest_item}!")
-                player.quest_items_collected.add(quest_item)
-                print(f"You've collected {len(player.quest_items_collected)} out of 4 quest items.")
-            else:
-                print("No quest item dropped this time.")
+        if player.enemies_killed % 3 == 0:  # Check if the player has defeated a multiple of 3 enemies
+            player.level_up()  # Level up the player every 3rd enemy defeated
+        loot_pool = ["Quest Item", "Health Potion", "Gold", "Zinder"]  # Include Zinder in the loot pool
+        loot = random.choice(loot_pool)
+        if loot == "Gold":
+            gold_amount = random.randint(1, 100)
+            player.stats["gold"] += gold_amount
+            print(f"You found {gold_amount} gold!")
+        elif loot == "Quest Item":
+            player.quest_items_collected.add(loot)  # Add the quest item to the collected set
+            print(f"You found {loot}!")
+            if len(player.quest_items_collected) == 4:  # Check if all four quest items are collected
+                print("You've collected all the necessary quest items!")
+                battle_soul_of_zinder(player)  # Trigger boss fight with Soul of Zinder
+        elif loot == "Zinder":  # If Zinder is found, increase the Zinders collected
+            player.zinders_collected += 1
+            print(f"You found {loot}! You now have {player.zinders_collected} Zinders.")
         else:
-            print("All quest items collected!")
+            player.add_to_inventory(loot)
+            print(f"You found {loot}!")
     else:
         print("You lost the battle!")
         print(f"You've killed {player.enemies_killed} enemies and travelled {player.distance_travelled} miles.")
         exit()
+
 
 def travel_to_city(player):
     print("You have arrived at the city.")
@@ -100,6 +78,7 @@ def travel_to_city(player):
         print("[c]heck inventory")
         print("[u]se item from inventory")
         print("[s]how character stats")
+        print("[t]ravel to tavern")
         print("[l]eave city")
         choice = input("Enter your choice: ").lower()
         if choice == "b":
@@ -111,8 +90,76 @@ def travel_to_city(player):
             player.use_item(item_to_use)
         elif choice == "s":
             player.view_character_stats()
+        elif choice == "t":
+            stay_at_tavern(player)
         elif choice == "l":
             print("You leave the city.")
             break
         else:
             print("Invalid choice. Please try again.")
+
+def stay_at_tavern(player):
+    print("You decide to stay at the tavern for a rest.")
+    player.stats["health"] = player.MAX_HEALTH  # Fully replenish player's health
+    print("Your health has been fully restored.")
+
+
+def buy_items(player):
+    store_items = {
+        "health potion": 20,
+    }
+    print("\nWelcome to the store!")
+    print("Here are the items available for purchase:")
+    for item, price in store_items.items():
+        print(f"{item.capitalize()} - {price} gold")
+
+    while True:
+        print("Your Gold:", player.stats["gold"])
+        choice = input("Enter the item you want to buy (or [done] to exit): ").lower()
+        if choice == "done":
+            break
+        elif choice in store_items:
+            if player.stats["gold"] >= store_items[choice]:
+                player.add_to_inventory(choice)
+                player.stats["gold"] -= store_items[choice]
+                print(f"You bought {choice}!")
+            else:
+                print("You don't have enough gold to buy that.")
+        else:
+            print("That item is not available in the store.")
+
+def battle_soul_of_zinder(player):
+    soul_of_zinder = Enemy("Soul of Zinder", 200, 20)
+    print(f"A fearsome enemy, the {soul_of_zinder.name}, blocks your path!")
+    print("Prepare yourself for a challenging battle!")
+
+    while player.is_alive() and soul_of_zinder.is_alive():
+        print_status(player, soul_of_zinder)
+        choice = input("Choose your action: [a]ttack, [u]se item, [f]lee: ").lower()
+
+        if choice == "a":
+            player_damage = player.attack()
+            soul_of_zinder.defend(player_damage)
+            print(f"{player.name} attacks the {soul_of_zinder.name} for {player_damage} damage.")
+            if soul_of_zinder.is_alive():
+                enemy_damage = soul_of_zinder.attack()
+                player.defend(enemy_damage)
+                print(f"The {soul_of_zinder.name} attacks back for {enemy_damage} damage.")
+        elif choice == "u":
+            player.check_inventory()
+            item_to_use = input("Enter the item you want to use (or [cancel] to go back): ").lower()
+            if item_to_use == "cancel":
+                continue
+            player.use_item(item_to_use)
+        elif choice == "f":
+            print("You fled from the battle!")
+            return
+        else:
+            print("Invalid choice. Please try again.")
+
+    if player.is_alive():
+        print(f"Congratulations! You defeated the {soul_of_zinder.name}!")
+        # Rewards for defeating the final boss can be added here
+    else:
+        print("You lost the battle against the Soul of Zinder!")
+        print("Game over.")
