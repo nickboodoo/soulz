@@ -13,7 +13,6 @@ class Player:
         self.enemies_killed = 0
         self.distance_travelled = 0
         self.encounters = []
-        self.quest_items_collected = set()
         self.zinders_collected = 0  # Track the number of Zinders collected
 
     def attack(self):

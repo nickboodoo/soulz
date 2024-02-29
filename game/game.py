@@ -1,7 +1,6 @@
 import random
 from .player import Player
-from .enemy import Enemy
-from .utils import encounter_enemy, travel_to_city
+from .utils import encounter_enemy, travel_to_city, battle_soul_of_zinder
 
 class Game:
     def __init__(self):
@@ -15,6 +14,7 @@ class Game:
         input()
         print("Once you do, you will be summoned to fight the Dark Soulz Himself! haHA!")
         input()
+
         player = Player(player_name)
 
         while player.is_alive():
@@ -37,12 +37,15 @@ class Game:
                             print(f"You found {loot}! You now have {player.zinders_collected} Zinders.")
                         else:
                             player.add_to_inventory(loot)
-                            print(f"You found {loot}!")
+                            print(f"You found {loot}!")                                
+
             elif choice == "travel to city":
                 travel_to_city(player)
+
             elif choice == "quit":
                 print("Thanks for playing!")
                 break
+
             else:
                 print("Invalid choice. Please try again.")
 

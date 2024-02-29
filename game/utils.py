@@ -1,5 +1,6 @@
 import random
 from .enemy import Enemy  # Importing the Enemy class from the enemy module
+from .player import Player
 
 # Helper function to show HP bars
 def print_status(player, enemy=None):
@@ -68,7 +69,7 @@ def encounter_enemy(player):
         print(f"You defeated the {enemy.name}!")
         player.enemies_killed += 1
 
-        # Player Level-up Logic
+        # Player level-up logic
         if player.enemies_killed % 3 == 0:  # Check if the player has defeated a multiple of 3 enemies
             player.level_up()  # Level up the player every 3rd enemy defeated
 
@@ -82,12 +83,14 @@ def encounter_enemy(player):
             print(f"You found {gold_amount} gold!")
 
         elif loot == "Quest Item":
-            player.quest_items_collected.add(loot)  # Add the quest item to the collected set
+            player.add_to_inventory("Quest Item") 
             print(f"You found {loot}!")
 
-            if len(player.quest_items_collected) == 4:  # Check if all four quest items are collected
-                print("You've collected all the necessary quest items!")
-                battle_soul_of_zinder(player)  # Trigger boss fight with Soul of Zinder
+            for item, quantity in player.inventory.items():
+                if item == "Quest Item":
+                    if quantity >= 4:
+                        print("You've collected all the necessary quest items!")
+                        battle_soul_of_zinder(player)  # Trigger boss fight with Soul of Zinder
 
         elif loot == "Zinder":  
             player.zinders_collected += 1 # If Zinder is found, increase the Zinders collected
@@ -201,25 +204,31 @@ def battle_soul_of_zinder(player):
             player_damage = player.attack()
             soul_of_zinder.defend(player_damage)
             print(f"{player.name} attacks the {soul_of_zinder.name} for {player_damage} damage.")
+
             if soul_of_zinder.is_alive():
                 enemy_damage = soul_of_zinder.attack()
                 player.defend(enemy_damage)
                 print(f"The {soul_of_zinder.name} attacks back for {enemy_damage} damage.")
+
         elif choice == "u":
             player.check_inventory()
             item_to_use = input("Enter the item you want to use (or [cancel] to go back): ").lower()
+
             if item_to_use == "cancel":
                 continue
             player.use_item(item_to_use)
+
         elif choice == "f":
             print("You fled from the battle!")
             return
+        
         else:
             print("Invalid choice. Please try again.")
 
     if player.is_alive():
         print(f"Congratulations! You defeated the {soul_of_zinder.name}!")
         # Rewards for defeating the final boss can be added here
+        quit()
+
     else:
         print("You lost the battle against the Soul of Zinder!")
-        print("Game over.")
