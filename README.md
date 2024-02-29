@@ -10,6 +10,12 @@ See if you can beat the game on your first try!
 3. Navigate to the Soulz folder
 4. Run Soulz.exe
 
+## KNOWN BUGS
+1. Health potions are double counted in inventory
+2. Healing does not take an action during combat
+3. Tavern does not cost money
+4. put an input() before the end of the game because .exe will end immediately
+
 ## PLANNED FEATURES
 1. Improve menus and UI
 2. Alter gameplay loop to add longevitiy to each run
