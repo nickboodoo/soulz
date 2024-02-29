@@ -19,5 +19,4 @@ See if you can beat the game on your first try!
 ## PLANNED FEATURES
 1. Improve menus and UI
 2. Alter gameplay loop to add longevitiy to each run
-3. Fix bugs with healing during combat
-4. Incorporate a learning model for the final boss
+3. Incorporate a learning model for the final boss
