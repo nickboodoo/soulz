@@ -12,9 +12,10 @@ See if you can beat the game on your first try!
 
 ## KNOWN BUGS
 1. Health potions are double counted in inventory
-2. Healing does not take an action during combat
-3. Tavern does not cost money
-4. put an input() before the end of the game because .exe will end immediately
+2. Boss hp bar is 200/100
+3. Healing does not take an action during combat
+4. Tavern does not cost money
+5. put an input() before the end of the game because .exe will end immediately
 
 ## PLANNED FEATURES
 1. Improve menus and UI
