@@ -1,7 +1,3 @@
-import random
-from core.enemy import Enemy  # Importing the Enemy class from the enemy module
-from core.player import Player
-
 # Helper function to show HP bars
 def print_status(player, enemy=None):
     print(f"{player.name} - HP: {'█' * int(player.stats['health'] / 5)} ({player.stats['health']}/{player.MAX_HEALTH})\n")
@@ -28,7 +24,6 @@ def fast_travel(player):
 
         if choice == "b":
 
-            # Call Helper-helper function
             buy_items(player)
 
         elif choice == "c":
@@ -43,30 +38,25 @@ def fast_travel(player):
 
         elif choice == "t":
 
-            # Call Helper-helper function
             stay_at_tavern(player)
 
         elif choice == "l":
             print("You leave the city.")
             break
 
-        # Error handling
         else:
             print("Invalid choice. Please try again.")
 
-# Helper-helper function for enabling the player to full heal at a tavern
 def stay_at_tavern(player):
     print("You decide to stay at the tavern for a rest.")
     player.stats["health"] = player.MAX_HEALTH  # Fully replenish player's health
     print("Your health has been fully restored.")
 
-# Helper-helper function for enabling the player to buy items from the store
 def buy_items(player):
     store_items = {
         "health potion": 20,
     }
 
-    # Start of store menu
     print("\nWelcome to the store!")
     print("Here are the items available for purchase:")
 
@@ -77,11 +67,9 @@ def buy_items(player):
         print("Your Gold:", player.stats["gold"])
         choice = input("Enter the item you want to buy (or [done] to exit): ").lower()
 
-        # Go back to previous menu (Store menu)
         if choice == "done":
             break
 
-        # Check if player can buy item
         elif choice in store_items:
             if player.stats["gold"] >= store_items[choice]:
                 player.add_to_inventory(choice)
@@ -91,48 +79,5 @@ def buy_items(player):
             else:
                 print("You don't have enough gold to buy that.")
 
-        # Input error handling
         else:
             print("That item is not available in the store.")
-
-def battle_soul_of_zinder(player):
-    soul_of_zinder = Enemy("Soul of Zinder", 200, 20)
-    print(f"A fearsome enemy, the {soul_of_zinder.name}, blocks your path!")
-    print("Prepare yourself for a challenging battle!")
-
-    while player.is_alive() and soul_of_zinder.is_alive():
-        print_status(player, soul_of_zinder)
-        choice = input("Choose your action: [a]ttack, [u]se item, [f]lee: ").lower()
-
-        if choice == "a":
-            player_damage = player.attack()
-            soul_of_zinder.defend(player_damage)
-            print(f"{player.name} attacks the {soul_of_zinder.name} for {player_damage} damage.")
-
-            if soul_of_zinder.is_alive():
-                enemy_damage = soul_of_zinder.attack()
-                player.defend(enemy_damage)
-                print(f"The {soul_of_zinder.name} attacks back for {enemy_damage} damage.")
-
-        elif choice == "u":
-            player.check_inventory()
-            item_to_use = input("Enter the item you want to use (or [cancel] to go back): ").lower()
-
-            if item_to_use == "cancel":
-                continue
-            player.use_item(item_to_use)
-
-        elif choice == "f":
-            print("You fled from the battle!")
-            return
-        
-        else:
-            print("Invalid choice. Please try again.")
-
-    if player.is_alive():
-        print(f"Congratulations! You defeated the {soul_of_zinder.name}!")
-        # Rewards for defeating the final boss can be added here
-        quit()
-
-    else:
-        print("You lost the battle against the Soul of Zinder!")

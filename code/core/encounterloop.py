@@ -1,5 +1,6 @@
 import random
-from utility.utils import battle_soul_of_zinder, print_status
+from utility.utils import print_status
+from core.enemy import battle_soul_of_zinder
 
 
 class Encounter:
