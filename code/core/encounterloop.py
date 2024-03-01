@@ -1,28 +1,18 @@
 import random
-from utility.utils import battle_soul_of_zinder
-from core.enemy import Enemy
+from utility.utils import battle_soul_of_zinder, print_status
+
 
 class Encounter:
     def __init__(self, player):
         self.player = player
 
-    def encounter_enemy(self):
-        # Create enemies
-        enemies = [
-            Enemy("Goblin", 50, 10),
-            Enemy("Skeleton", 40, 15),
-            Enemy("Orc", 60, 12)
-        ]
-
-        # Select random enemy
-        enemy = Enemy.create_random_enemy()
-
+    def encounter_enemy(self, enemy):
         # Display encounter message to player
         print(f"You've encountered a {enemy.name}!")
 
         # Combat loop
         while self.player.is_alive() and enemy.is_alive():
-            self.print_status(enemy)
+            print_status(self.player, enemy)
             choice = input("Choose your action: [a]ttack, [u]se item, [f]lee: ").lower()
 
             # Attack logic

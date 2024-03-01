@@ -1,4 +1,5 @@
 import random
+from core.enemy import Enemy
 from core.encounterloop import Encounter
 from utility.utils import fast_travel
 
@@ -25,8 +26,9 @@ class GameLoop:
     def explore(self):
         encounter_chance = random.randint(1, 10)
         if encounter_chance <= 7:
-            enemy_battle = Encounter()
-            enemy_battle.encounter_enemy()
+            enemy_battle = Encounter(self.player)
+            enemy = Enemy.create_random_enemy()  # Create a random enemy
+            enemy_battle.encounter_enemy(enemy)  # Pass the enemy object to encounter_enemy method
         else:
             found_items = random.randint(1, 3)
             for _ in range(found_items):
