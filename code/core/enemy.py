@@ -31,6 +31,7 @@ class Enemy:
 def battle_soul_of_zinder(player):
     soul_of_zinder = Enemy("Soul of Zinder", 200, 20)
     print(f"A fearsome enemy, the {soul_of_zinder.name}, blocks your path!")
+    print("His health bar is SOO big, it looks like he has overshielding or something...")
     print("Prepare yourself for a challenging battle!")
 
     while player.is_alive() and soul_of_zinder.is_alive():
@@ -64,7 +65,9 @@ def battle_soul_of_zinder(player):
 
     if player.is_alive():
         print(f"Congratulations! You defeated the {soul_of_zinder.name}!")
-        # Rewards for defeating the final boss can be added here
+        input(print("You really are the Dark Soul_Z"))
+        input(print("Thank for playing. Click ENTER to exit."))
+        input()
         quit()
 
     else:
