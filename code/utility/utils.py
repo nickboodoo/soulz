@@ -10,101 +10,101 @@ def print_status(player, enemy=None):
     if enemy:
         print(f"{enemy.name} - HP: {'█' * int(enemy.health / 5)} ({enemy.health}/100)\n")
 
-# Helper funtion to simulate an encounter between the player and a randomly chosen enemy
-def encounter_enemy(player):
-    # Create enemies
-    enemies = [
-        Enemy("Goblin", 50, 10),
-        Enemy("Skeleton", 40, 15),
-        Enemy("Orc", 60, 12)
-    ]
+# # Helper funtion to simulate an encounter between the player and a randomly chosen enemy
+# def encounter_enemy(player):
+#     # Create enemies
+#     enemies = [
+#         Enemy("Goblin", 50, 10),
+#         Enemy("Skeleton", 40, 15),
+#         Enemy("Orc", 60, 12)
+#     ]
 
-    # Select random enemy
-    enemy = random.choice(enemies)
+#     # Select random enemy
+#     enemy = random.choice(enemies)
 
-    # Display encounter message to player
-    print(f"You've encountered a {enemy.name}!")
+#     # Display encounter message to player
+#     print(f"You've encountered a {enemy.name}!")
 
-    # Store all of player's enemy encounter
-    # Data structure does not exist, game will break if player access this variable
-    player.encounters.append(enemy.name)
+#     # Store all of player's enemy encounter
+#     # Data structure does not exist, game will break if player access this variable
+#     player.encounters.append(enemy.name)
 
-    # Combat loop
-    while player.is_alive() and enemy.is_alive():
-        print_status(player, enemy)
-        choice = input("Choose your action: [a]ttack, [u]se item, [f]lee: ").lower()
+#     # Combat loop
+#     while player.is_alive() and enemy.is_alive():
+#         print_status(player, enemy)
+#         choice = input("Choose your action: [a]ttack, [u]se item, [f]lee: ").lower()
 
-        # Attack logic
-        if choice == "a":
-            player_damage = player.attack()
-            enemy.defend(player_damage)
-            print(f"{player.name} attacks the {enemy.name} for {player_damage} damage.")
+#         # Attack logic
+#         if choice == "a":
+#             player_damage = player.attack()
+#             enemy.defend(player_damage)
+#             print(f"{player.name} attacks the {enemy.name} for {player_damage} damage.")
 
-            if enemy.is_alive():
-                enemy_damage = enemy.attack()
-                player.defend(enemy_damage)
-                print(f"The {enemy.name} attacks back for {enemy_damage} damage.")
+#             if enemy.is_alive():
+#                 enemy_damage = enemy.attack()
+#                 player.defend(enemy_damage)
+#                 print(f"The {enemy.name} attacks back for {enemy_damage} damage.")
         
-        # Use Item logic
-        elif choice == "u":
-            player.check_inventory()
-            item_to_use = input("Enter the item you want to use (or [cancel] to go back): ").lower()
+#         # Use Item logic
+#         elif choice == "u":
+#             player.check_inventory()
+#             item_to_use = input("Enter the item you want to use (or [cancel] to go back): ").lower()
 
-            if item_to_use == "cancel":
-                continue
+#             if item_to_use == "cancel":
+#                 continue
 
-            player.use_item(item_to_use)
+#             player.use_item(item_to_use)
 
-        # Flee logic
-        elif choice == "f":
-            print("You fled from the battle!")
-            return
+#         # Flee logic
+#         elif choice == "f":
+#             print("You fled from the battle!")
+#             return
         
-        # Input error handling
-        else:
-            print("Invalid choice. Please try again.")
+#         # Input error handling
+#         else:
+#             print("Invalid choice. Please try again.")
 
-    # Battle outcome
-    if player.is_alive():
-        print(f"You defeated the {enemy.name}!")
-        player.enemies_killed += 1
+#     # Battle outcome
+#     if player.is_alive():
+#         print(f"You defeated the {enemy.name}!")
+#         player.enemies_killed += 1
 
-        # Player level-up logic
-        if player.enemies_killed % 3 == 0:  # Check if the player has defeated a multiple of 3 enemies
-            player.level_up()  # Level up the player every 3rd enemy defeated
+#         # Player level-up logic
+#         if player.enemies_killed % 3 == 0:  # Check if the player has defeated a multiple of 3 enemies
+#             player.level_up()  # Level up the player every 3rd enemy defeated
 
-        # Available loot for rewards
-        loot_pool = ["Quest Item", "Health Potion", "Gold", "Zinder"]
-        loot = random.choice(loot_pool)
+#         # Available loot for rewards
+#         loot_pool = ["Quest Item", "Health Potion", "Gold", "Zinder"]
+#         loot = random.choice(loot_pool)
 
-        if loot == "Gold":
-            gold_amount = random.randint(1, 100)
-            player.stats["gold"] += gold_amount
-            print(f"You found {gold_amount} gold!")
+#         if loot == "Gold":
+#             gold_amount = random.randint(1, 100)
+#             player.stats["gold"] += gold_amount
+#             print(f"You found {gold_amount} gold!")
 
-        elif loot == "Quest Item":
-            player.add_to_inventory("Quest Item") 
-            print(f"You found {loot}!")
+#         elif loot == "Quest Item":
+#             player.add_to_inventory("Quest Item") 
+#             print(f"You found {loot}!")
 
-            for item, quantity in player.inventory.items():
-                if item == "Quest Item":
-                    if quantity >= 4:
-                        print("You've collected all the necessary quest items!")
-                        battle_soul_of_zinder(player)  # Trigger boss fight with Soul of Zinder
+#             for item, quantity in player.inventory.items():
+#                 if item == "Quest Item":
+#                     if quantity >= 4:
+#                         print("You've collected all the necessary quest items!")
+#                         battle_soul_of_zinder(player)  # Trigger boss fight with Soul of Zinder
 
-        elif loot == "Zinder":  
-            player.zinders_collected += 1 # If Zinder is found, increase the Zinders collected
-            print(f"You found {loot}! You now have {player.zinders_collected} Zinders.")
+#         elif loot == "Zinder":  
+#             player.zinders_collected += 1 # If Zinder is found, increase the Zinders collected
+#             print(f"You found {loot}! You now have {player.zinders_collected} Zinders.")
 
-        else:
-            player.add_to_inventory(loot)
-            print(f"You found {loot}!")
+#         else:
+#             player.add_to_inventory(loot)
+#             print(f"You found {loot}!")
 
-    # Player loses the game
-    else:
-        print("You lost the battle!")
-        print(f"You've killed {player.enemies_killed} enemies and travelled {player.distance_travelled} mile(s).")
-        exit()
+#     # Player loses the game
+#     else:
+#         print("You lost the battle!")
+#         print(f"You've killed {player.enemies_killed} enemies and travelled {player.distance_travelled} mile(s).")
+#         exit()
 
 # Helper function for one of the player's main menus
 def fast_travel(player):
