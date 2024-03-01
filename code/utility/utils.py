@@ -1,6 +1,6 @@
 import random
-from .enemy import Enemy  # Importing the Enemy class from the enemy module
-from .player import Player
+from core.enemy import Enemy  # Importing the Enemy class from the enemy module
+from core.player import Player
 
 # Helper function to show HP bars
 def print_status(player, enemy=None):

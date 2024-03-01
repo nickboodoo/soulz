@@ -1,8 +1,4 @@
-prompt user to click enter in intro and change four solz of sinders to quest items
-
-change travel_to_city to fast_travel
-
-health potions are duplicating
+can use items even if you run out of inventory
 
 purchased health potions seem to be infinite
 

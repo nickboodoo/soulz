@@ -1,5 +1,5 @@
 import random
-from game.utils import encounter_enemy, fast_travel
+from utility.utils import encounter_enemy, fast_travel
 
 
 class GameLoop:
