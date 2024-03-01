@@ -52,7 +52,7 @@ class Encounter:
                 self.player.level_up()
 
             # Available loot for rewards
-            loot_pool = ["Quest Item", "Health Potion", "Gold", "Zinder"]
+            loot_pool = ["Quest Item", "Gold", "Zinder"]
             loot = random.choice(loot_pool)
 
             if loot == "Gold":

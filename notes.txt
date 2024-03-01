@@ -1,9 +1,5 @@
-can use items even if you run out of inventory
+health pots that you find are unusable
+health potions that you buy are another entry
+health potions that you buy decrement properly
 
-purchased health potions seem to be infinite
-
-tavern is free
-
-can heal for free during bossfights
-
-require user to press enter before quitting game
+boss didnt show up exactly on 4th item. more like 7-8th item. 

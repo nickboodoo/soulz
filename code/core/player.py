@@ -9,10 +9,8 @@ class Player:
         self.stats = {"health": self.MAX_HEALTH, "gold": 100}
         self.level = 1
         self.base_damage = 10
-        self.inventory = {"health potion": 2}
+        self.inventory = {}
         self.enemies_killed = 0
-        self.distance_travelled = 0
-        self.encounters = []
         self.zinders_collected = 0 
 
     def attack(self):
@@ -32,32 +30,44 @@ class Player:
     def add_to_inventory(self, item, quantity=1):
         if item in self.inventory:
             self.inventory[item] += quantity
+
         else:
             self.inventory[item] = quantity
 
     def remove_from_inventory(self, item, quantity=1):
         if item in self.inventory:
+
             if self.inventory[item] >= quantity:
+
                 self.inventory[item] -= quantity
+
                 return True
+
         return False
 
     def check_inventory(self):
         print("\nInventory:")
+
         for item, quantity in self.inventory.items():
             print(f"{item.capitalize()}: {quantity}")
 
     def use_item(self, item):
         if item in self.inventory:
+
             if item == "health potion":
+
                 if self.stats["health"] == self.MAX_HEALTH:
+
                     print("Your health is already full.")
+
                 else:
                     self.stats["health"] = min(self.MAX_HEALTH, self.stats["health"] + 20)
                     self.remove_from_inventory(item)
                     print(f"You used a health potion and gained 20 health.")
+
             else:
                 print("You cannot use that item.")
+
         else:
             print("You don't have that item.")
 

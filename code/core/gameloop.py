@@ -32,7 +32,7 @@ class GameLoop:
         else:
             found_items = random.randint(1, 3)
             for _ in range(found_items):
-                loot_pool = ["Quest Item", "Health Potion", "Gold", "Zinder"]
+                loot_pool = ["Quest Item", "Gold", "Zinder"]
                 loot = random.choice(loot_pool)
                 if loot == "Gold":
                     gold_amount = random.randint(1, 100)
