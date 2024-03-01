@@ -1,0 +1,13 @@
+prompt user to click enter in intro and change four solz of sinders to quest items
+
+change travel_to_city to fast_travel
+
+health potions are duplicating
+
+purchased health potions seem to be infinite
+
+tavern is free
+
+can heal for free during bossfights
+
+require user to press enter before quitting game
