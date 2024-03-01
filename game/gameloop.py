@@ -1,5 +1,5 @@
 import random
-from game.utils import encounter_enemy, travel_to_city
+from game.utils import encounter_enemy, fast_travel
 
 
 class GameLoop:
@@ -8,11 +8,11 @@ class GameLoop:
 
     def start_loop(self):
         while self.player.is_alive():
-            choice = input("\nWhat would you like to do? [explore] or [travel to city] or [quit]? ").lower()
+            choice = input("\nWhat would you like to do? [explore] or [fast travel] or [quit]? ").lower()
             if choice == "explore":
                 self.explore()
-            elif choice == "travel to city":
-                travel_to_city(self.player)
+            elif choice == "fast travel":
+                fast_travel(self.player)
             elif choice == "quit":
                 print("Thanks for playing!")
                 break

@@ -107,7 +107,7 @@ def encounter_enemy(player):
         exit()
 
 # Helper function for one of the player's main menus
-def travel_to_city(player):
+def fast_travel(player):
     print("You have arrived at the city.")
 
     # Display the City Activities menu to the player
