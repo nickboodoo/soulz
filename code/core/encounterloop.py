@@ -7,7 +7,6 @@ class Encounter:
         self.player = player
 
     def encounter_enemy(self, enemy):
-        # Display encounter message to player
         print(f"You've encountered a {enemy.name}!")
 
         # Combat loop
@@ -26,7 +25,7 @@ class Encounter:
                     self.player.defend(enemy_damage)
                     print(f"The {enemy.name} attacks back for {enemy_damage} damage.")
             
-            # Use Item logic
+            # Use item logic
             elif choice == "u":
                 self.player.check_inventory()
                 item_to_use = input("Enter the item you want to use (or [cancel] to go back): ").lower()
@@ -41,18 +40,16 @@ class Encounter:
                 print("You fled from the battle!")
                 return
             
-            # Input error handling
             else:
                 print("Invalid choice. Please try again.")
 
-        # Battle outcome
         if self.player.is_alive():
             print(f"You defeated the {enemy.name}!")
             self.player.enemies_killed += 1
 
             # Player level-up logic
-            if self.player.enemies_killed % 3 == 0:  # Check if the player has defeated a multiple of 3 enemies
-                self.player.level_up()  # Level up the player every 3rd enemy defeated
+            if self.player.enemies_killed % 3 == 0:
+                self.player.level_up()
 
             # Available loot for rewards
             loot_pool = ["Quest Item", "Health Potion", "Gold", "Zinder"]

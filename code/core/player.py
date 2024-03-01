@@ -8,12 +8,12 @@ class Player:
         self.name = name
         self.stats = {"health": self.MAX_HEALTH, "gold": 100}
         self.level = 1
-        self.base_damage = 10  # Base damage
+        self.base_damage = 10
         self.inventory = {"health potion": 2}
         self.enemies_killed = 0
         self.distance_travelled = 0
         self.encounters = []
-        self.zinders_collected = 0  # Track the number of Zinders collected
+        self.zinders_collected = 0 
 
     def attack(self):
         # Apply lifesteal based on the number of Zinders collected

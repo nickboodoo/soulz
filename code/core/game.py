@@ -7,7 +7,9 @@ class Game:
         pass
 
     def start(self):
+
         player_name = input("Enter your name: ")
+
         welcome_messages(player_name)
 
         player = Player(player_name)
