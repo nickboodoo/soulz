@@ -16,6 +16,7 @@ See if you can beat the game on your first try!
 3. Healing does not take an action during combat
 4. Tavern does not cost money
 5. put an input() before the end of the game because .exe will end immediately
+6. the second health potions appear to be infinite.
 
 ## PLANNED FEATURES
 1. Improve menus and UI
