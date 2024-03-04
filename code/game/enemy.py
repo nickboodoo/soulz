@@ -1,5 +1,5 @@
 import random
-from utility.utils import print_status
+from game.utility.utils import print_status
 
 class Enemy:
     ENEMY_TYPES = [

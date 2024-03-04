@@ -1,7 +1,7 @@
 import random
-from core.enemy import Enemy
-from core.encounterloop import Encounter
-from utility.utils import fast_travel
+from game.enemy import Enemy
+from game.encounterloop import Encounter
+from game.utility.utils import fast_travel
 
 
 class GameLoop:

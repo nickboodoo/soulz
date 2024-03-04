@@ -1,6 +1,6 @@
 from .gameloop import GameLoop
 from .player import Player
-from utility.messages import welcome_messages
+from game.utility.messages import welcome_messages
 
 class Game:
     def __init__(self):
