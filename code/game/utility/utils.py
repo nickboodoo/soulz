@@ -1,16 +1,15 @@
-# Helper function to show HP bars
+
 def print_status(player, enemy=None):
     print(f"{player.name} - HP: {'█' * int(player.stats['health'] / 5)} ({player.stats['health']}/{player.MAX_HEALTH})\n")
 
-    # Shows enemy health bar ONLY if enemy is present since enemy=None
     if enemy:
         print(f"{enemy.name} - HP: {'█' * int(enemy.health / 5)} ({enemy.health}/100)\n")
 
-# Helper function for one of the player's main menus
+
 def fast_travel(player):
     print("You have arrived at the city.")
 
-    # Display the City Activities menu to the player
+
     while True:
         print("\nWelcome to the city!")
         print("What would you like to do?")
@@ -49,7 +48,7 @@ def fast_travel(player):
 
 def stay_at_tavern(player):
     print("You decide to stay at the tavern for a rest.")
-    player.stats["health"] = player.MAX_HEALTH  # Fully replenish player's health
+    player.stats["health"] = player.MAX_HEALTH
     print("Your health has been fully restored.")
 
 def buy_items(player):
