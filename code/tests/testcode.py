@@ -1,131 +1,37 @@
 import random
 
-def print_status(player, enemy=None):
-    print(f"{player.name} - HP: {'█' * int(player.stats['health'] / 5)} ({player.stats['health']}/{player.MAX_HEALTH})\n")
-
-    if enemy:
-        print(f"{enemy.name} - HP: {'█' * int(enemy.health / 5)} ({enemy.health}/100)\n")
-
-
-def fast_travel(player):
-    print("You have arrived at the city.")
-
-
-    while True:
-        print("\nWelcome to the city!")
-        print("What would you like to do?")
-        print("[b]uy items")
-        print("[c]heck inventory")
-        print("[u]se item from inventory")
-        print("[s]how character stats")
-        print("[t]ravel to tavern")
-        print("[l]eave city")
-        choice = input("Enter your choice: ").lower()
-
-        if choice == "b":
-
-            buy_items(player)
-
-        elif choice == "c":
-            player.check_inventory()
-            
-        elif choice == "u":
-            item_to_use = input("Enter the item you want to use from your inventory: ").lower()
-            player.use_item(item_to_use)
-
-        elif choice == "s":
-            player.view_character_stats()
-
-        elif choice == "t":
-
-            stay_at_tavern(player)
-
-        elif choice == "l":
-            print("You leave the city.")
-            break
-
-        else:
-            print("Invalid choice. Please try again.")
-
-def stay_at_tavern(player):
-    print("You decide to stay at the tavern for a rest.")
-    player.stats["health"] = player.MAX_HEALTH
-    print("Your health has been fully restored.")
-
-def buy_items(player):
-    store_items = {
-        "health potion": 20,
-    }
-
-    print("\nWelcome to the store!")
-    print("Here are the items available for purchase:")
-
-    for item, price in store_items.items():
-        print(f"{item.capitalize()} - {price} gold")
-
-    while True:
-        print("Your Gold:", player.stats["gold"])
-        choice = input("Enter the item you want to buy (or [done] to exit): ").lower()
-
-        if choice == "done":
-            break
-
-        elif choice in store_items:
-            if player.stats["gold"] >= store_items[choice]:
-                player.add_to_inventory(choice)
-                player.stats["gold"] -= store_items[choice]
-                print(f"You bought {choice}!")
-
-            else:
-                print("You don't have enough gold to buy that.")
-
-        else:
-            print("That item is not available in the store.")
-            
-
-
-def welcome_messages(player_name):
-    print(f"Welcome, {player_name}!")
-    input("Press Enter to continue...")
-
-    print("In this world of Lordran_Z, you must collect the four Quest Items.")
-    input("Press Enter to continue...")
-
-    print("Once you do, you will be summoned to fight the Dark Soulz Himself! haHA!")
-    input("Press Enter to continue...")
-
 class BossBattle:
     def __init__(self, player):
         self.player = player
         self.soul_of_zinder = Enemy("Soul of Zinder", 200, 20)
 
-    def battle_soul_of_zinder(player):
+    def battle_soul_of_zinder(self):
         soul_of_zinder = Enemy("Soul of Zinder", 200, 20)
         print(f"A fearsome enemy, the {soul_of_zinder.name}, blocks your path!")
         print("His health bar is SOO big, it looks like he has overshielding or something...")
         print("Prepare yourself for a challenging battle!")
 
-        while player.is_alive() and soul_of_zinder.is_alive():
-            print_status(player, soul_of_zinder)
+        while self.player.is_alive() and soul_of_zinder.is_alive():
+            print_status(self.player, soul_of_zinder)
             choice = input("Choose your action: [a]ttack, [u]se item, [f]lee: ").lower()
 
             if choice == "a":
-                player_damage = player.attack()
+                player_damage = self.player.attack()
                 soul_of_zinder.defend(player_damage)
-                print(f"{player.name} attacks the {soul_of_zinder.name} for {player_damage} damage.")
+                print(f"{self.player.name} attacks the {soul_of_zinder.name} for {player_damage} damage.")
 
                 if soul_of_zinder.is_alive():
                     enemy_damage = soul_of_zinder.attack()
-                    player.defend(enemy_damage)
+                    self.player.defend(enemy_damage)
                     print(f"The {soul_of_zinder.name} attacks back for {enemy_damage} damage.")
 
             elif choice == "u":
-                player.check_inventory()
+                self.player.check_inventory()
                 item_to_use = input("Enter the item you want to use (or [cancel] to go back): ").lower()
 
                 if item_to_use == "cancel":
                     continue
-                player.use_item(item_to_use)
+                self.player.use_item(item_to_use)
 
             elif choice == "f":
                 print("You fled from the battle!")
@@ -134,7 +40,7 @@ class BossBattle:
             else:
                 print("Invalid choice. Please try again.")
 
-        if player.is_alive():
+        if self.player.is_alive():
             print(f"Congratulations! You defeated the {soul_of_zinder.name}!")
             print("You really are the Dark Soul_Z")
             print("Thank for playing. Click ENTER to exit.")
@@ -226,9 +132,9 @@ class BattleManager:
 
             for item, quantity in self.player.inventory.items():
                 if item == "Quest Item" and quantity >= 4:
+                    world_state.notify_boss_fight_requirement()
                     print("You've collected all the necessary quest items!")
-                    final_boss_battle = BossBattle()
-                    final_boss_battle.battle_soul_of_zinder(self.player)
+                    
 
         elif loot == "Zinder":  
             self.player.zinders_collected += 1
@@ -301,9 +207,9 @@ class GameLoop:
     def explore(self):
         encounter_chance = random.randint(1, 10)
         if encounter_chance <= 7:
-            enemy_battle = Encounter(self.player)
+            enemy_battle = BattleManager(self.player)
             enemy = Enemy.create_random_enemy()
-            enemy_battle.encounter_enemy(enemy)
+            enemy_battle.start_battle(enemy)
         else:
             found_items = random.randint(1, 3)
             for _ in range(found_items):
@@ -319,6 +225,11 @@ class GameLoop:
                 else:
                     self.player.add_to_inventory(loot)
                     print(f"You found {loot}!")
+
+            if "Quest Item" in self.player.inventory and self.player.inventory["Quest Item"] >= 4:
+                # Trigger final boss battle when player has collected all quest items
+                final_boss_battle = BossBattle(self.player)
+                final_boss_battle.battle_soul_of_zinder()
 
 class Player:
     MAX_HEALTH = 100
@@ -349,44 +260,32 @@ class Player:
     def add_to_inventory(self, item, quantity=1):
         if item in self.inventory:
             self.inventory[item] += quantity
-
         else:
             self.inventory[item] = quantity
 
     def remove_from_inventory(self, item, quantity=1):
         if item in self.inventory:
-
             if self.inventory[item] >= quantity:
-
                 self.inventory[item] -= quantity
-
                 return True
-
         return False
 
     def check_inventory(self):
         print("\nInventory:")
-
         for item, quantity in self.inventory.items():
             print(f"{item.capitalize()}: {quantity}")
 
     def use_item(self, item):
         if item in self.inventory:
-
             if item == "health potion":
-
                 if self.stats["health"] == self.MAX_HEALTH:
-
                     print("Your health is already full.")
-
                 else:
                     self.stats["health"] = min(self.MAX_HEALTH, self.stats["health"] + 20)
                     self.remove_from_inventory(item)
                     print(f"You used a health potion and gained 20 health.")
-
             else:
                 print("You cannot use that item.")
-
         else:
             print("You don't have that item.")
 
@@ -400,8 +299,88 @@ class Player:
         self.base_damage += 5
         print(f"Congratulations! You've reached level {self.level}. Your base damage has increased.")
 
-        
+def print_status(player, enemy=None):
+    print(f"{player.name} - HP: {'█' * int(player.stats['health'] / 5)} ({player.stats['health']}/{player.MAX_HEALTH})\n")
+    if enemy:
+        print(f"{enemy.name} - HP: {'█' * int(enemy.health / 5)} ({enemy.health}/100)\n")
+
+def fast_travel(player):
+    print("You have arrived at the city.")
+    while True:
+        print_city_menu()
+        choice = input("Enter your choice: ").lower()
+        if choice == "b":
+            buy_items(player)
+        elif choice == "c":
+            player.check_inventory()
+        elif choice == "u":
+            item_to_use = input("Enter the item you want to use from your inventory: ").lower()
+            player.use_item(item_to_use)
+        elif choice == "s":
+            player.view_character_stats()
+        elif choice == "t":
+            stay_at_tavern(player)
+        elif choice == "l":
+            print("You leave the city.")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+def stay_at_tavern(player):
+    print("You decide to stay at the tavern for a rest.")
+    player.stats["health"] = player.MAX_HEALTH
+    print("Your health has been fully restored.")
+
+def buy_items(player):
+    store_items = {
+        "health potion": 20,
+    }
+    print("\nWelcome to the store!")
+    print("Here are the items available for purchase:")
+    for item, price in store_items.items():
+        print(f"{item.capitalize()} - {price} gold")
+    while True:
+        print("Your Gold:", player.stats["gold"])
+        choice = input("Enter the item you want to buy (or [done] to exit): ").lower()
+        if choice == "done":
+            break
+        elif choice in store_items:
+            if player.stats["gold"] >= store_items[choice]:
+                player.add_to_inventory(choice)
+                player.stats["gold"] -= store_items[choice]
+                print(f"You bought {choice}!")
+            else:
+                print("You don't have enough gold to buy that.")
+        else:
+            print("That item is not available in the store.")
+
+def print_city_menu():
+        print("\nWelcome to the city!")
+        print("What would you like to do?")
+        print("[b]uy items")
+        print("[c]heck inventory")
+        print("[u]se item from inventory")
+        print("[s]how character stats")
+        print("[t]ravel to tavern")
+        print("[l]eave city")
+
+def welcome_messages(player_name):
+    print(f"Welcome, {player_name}!")
+    input("Press Enter to continue...")
+    print("In this world of Lordran_Z, you must collect the four Quest Items.")
+    input("Press Enter to continue...")
+    print("Once you do, you will be summoned to fight the Dark Soulz Himself! haHA!")
+    input("Press Enter to continue...")
+
+class WorldStates:
+    def __init__(self):
+        pass
+
+    def notify_boss_fight_requirement(self):
+        print("You have fulfilled the requirements to challenge the Boss!")
+        print("Prepare yourself for the ultimate battle!")
 
 if __name__ == "__main__":
+    world_state = WorldStates()
     game = Game()
     game.start()
