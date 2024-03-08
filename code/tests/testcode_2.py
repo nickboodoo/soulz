@@ -7,12 +7,10 @@ class Encounter:
     def encounter_enemy(self, enemy):
         print(f"You've encountered a {enemy.name}!")
 
-        # Combat loop
         while self.player.is_alive() and enemy.is_alive():
             print_status(self.player, enemy)
             choice = input("Choose your action: [a]ttack, [u]se item, [f]lee: ").lower()
 
-            # Attack logic
             if choice == "a":
                 player_damage = self.player.attack()
                 enemy.defend(player_damage)
@@ -23,7 +21,6 @@ class Encounter:
                     self.player.defend(enemy_damage)
                     print(f"The {enemy.name} attacks back for {enemy_damage} damage.")
             
-            # Use item logic
             elif choice == "u":
                 self.player.check_inventory()
                 item_to_use = input("Enter the item you want to use (or [cancel] to go back): ").lower()
@@ -33,7 +30,6 @@ class Encounter:
 
                 self.player.use_item(item_to_use)
 
-            # Flee logic
             elif choice == "f":
                 print("You fled from the battle!")
                 return
@@ -45,11 +41,9 @@ class Encounter:
             print(f"You defeated the {enemy.name}!")
             self.player.enemies_killed += 1
 
-            # Player level-up logic
             if self.player.enemies_killed % 3 == 0:
                 self.player.level_up()
 
-            # Available loot for rewards
             loot_pool = ["Quest Item", "Gold", "Zinder"]
             loot = random.choice(loot_pool)
 
@@ -66,17 +60,16 @@ class Encounter:
                     if item == "Quest Item":
                         if quantity >= 4:
                             print("You've collected all the necessary quest items!")
-                            battle_soul_of_zinder(self.player)  # Trigger boss fight with Soul of Zinder
+                            battle_soul_of_zinder(self.player)
 
             elif loot == "Zinder":  
-                self.player.zinders_collected += 1 # If Zinder is found, increase the Zinders collected
+                self.player.zinders_collected += 1
                 print(f"You found {loot}! You now have {self.player.zinders_collected} Zinders.")
 
             else:
                 self.player.add_to_inventory(loot)
                 print(f"You found {loot}!")
 
-        # Player loses the game
         else:
             print("You lost the battle!")
             print(f"You've killed {self.player.enemies_killed} enemies and travelled {self.player.distance_travelled} mile(s).")
@@ -191,8 +184,8 @@ class GameLoop:
         encounter_chance = random.randint(1, 10)
         if encounter_chance <= 7:
             enemy_battle = Encounter(self.player)
-            enemy = Enemy.create_random_enemy()  # Create a random enemy
-            enemy_battle.encounter_enemy(enemy)  # Pass the enemy object to encounter_enemy method
+            enemy = Enemy.create_random_enemy()
+            enemy_battle.encounter_enemy(enemy)
         else:
             found_items = random.randint(1, 3)
             for _ in range(found_items):

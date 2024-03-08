@@ -14,7 +14,6 @@ class Player:
         self.zinders_collected = 0 
 
     def attack(self):
-        # Apply lifesteal based on the number of Zinders collected
         lifesteal_percentage = self.zinders_collected * 0.01
         lifesteal_amount = int(self.base_damage * lifesteal_percentage)
         self.stats["health"] = min(self.MAX_HEALTH, self.stats["health"] + lifesteal_amount)
@@ -78,5 +77,7 @@ class Player:
 
     def level_up(self):
         self.level += 1
-        self.base_damage += 5  # Increase base damage on leveling up
+        self.base_damage += 5
         print(f"Congratulations! You've reached level {self.level}. Your base damage has increased.")
+
+        
