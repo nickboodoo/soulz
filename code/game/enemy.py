@@ -1,30 +1,18 @@
 import random
-from game.utility.utils import print_status
 
-class Enemy:
-    ENEMY_TYPES = [
-        ("Goblin", 50, 10),
-        ("Skeleton", 40, 15),
-        ("Orc", 60, 12)
-    ]
+from game.character import Character
 
+
+class Enemy(Character):
     def __init__(self, name, health, attack_power):
-        self.name = name
-        self.health = health
-        self.attack_power = attack_power
+        super().__init__(name, health, attack_power)
 
-    @classmethod
+    @classmethod  # This decorator was missing
     def create_random_enemy(cls):
-        enemy_data = random.choice(cls.ENEMY_TYPES)
-        name, health, attack_power = enemy_data
+        enemy_types = [
+            ("Random Enemy 1", 50, 15),
+            ("Random Enemy 2", 60, 12),
+            ("Random Enemy 3", 40, 20),
+        ]
+        name, health, attack_power = random.choice(enemy_types)
         return cls(name, health, attack_power)
-
-    def attack(self):
-        return random.randint(5, self.attack_power)
-
-    def defend(self, damage):
-        self.health -= damage
-
-    def is_alive(self):
-        return self.health > 0
-

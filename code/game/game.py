@@ -1,6 +1,9 @@
-from .gameloop import GameLoop
-from .player import Player
-from game.utility.messages import welcome_messages
+from game.utils import welcome_messages
+
+from game.player import Player
+
+from game.game_loop import GameLoop
+
 
 class Game:
     def __init__(self):

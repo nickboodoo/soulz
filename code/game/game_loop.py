@@ -1,12 +1,21 @@
 import random
+from game.utils import fast_travel
+
+from game.battle_manager import BattleManager
+
 from game.enemy import Enemy
-from game.encounterloop import Encounter
-from game.utility.utils import fast_travel
+
+from game.boss_battle import BossBattle
 
 
 class GameLoop:
-    def __init__(self, player):
+    def __init__(self, player, world_state):
         self.player = player
+        self.world_state = world_state  # Now correctly storing the passed world_state
+
+
+
+    # Adjustments in the explore method and others as necessary to use world_state
 
     def start_loop(self):
         while self.player.is_alive():
@@ -26,9 +35,9 @@ class GameLoop:
     def explore(self):
         encounter_chance = random.randint(1, 10)
         if encounter_chance <= 7:
-            enemy_battle = Encounter(self.player)
+            enemy_battle = BattleManager(self.player)
             enemy = Enemy.create_random_enemy()
-            enemy_battle.encounter_enemy(enemy)
+            enemy_battle.start_battle(enemy)
         else:
             found_items = random.randint(1, 3)
             for _ in range(found_items):
@@ -44,3 +53,8 @@ class GameLoop:
                 else:
                     self.player.add_to_inventory(loot)
                     print(f"You found {loot}!")
+
+            if "Quest Item" in self.player.inventory and self.player.inventory["Quest Item"] >= 4:
+                # Trigger final boss battle when player has collected all quest items
+                final_boss_battle = BossBattle(self.player)
+                final_boss_battle.battle_soul_of_zinder()
