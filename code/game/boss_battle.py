@@ -1,5 +1,4 @@
 from game.enemy import Enemy
-
 from game.utils import print_status
 
 
@@ -24,7 +23,7 @@ class BossBattle:
                 print(f"{self.player.name} attacks the {soul_of_zinder.name} for {player_damage} damage.")
 
                 if soul_of_zinder.is_alive():
-                    enemy_damage = soul_of_zinder.attack()
+                    enemy_damage = soul_of_zinder.lifesteal_attack()
                     self.player.defend(enemy_damage)
                     print(f"The {soul_of_zinder.name} attacks back for {enemy_damage} damage.")
 

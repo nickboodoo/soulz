@@ -1,9 +1,9 @@
+
+
 def print_status(player, enemy=None):
-    # Updated to use player.health directly instead of player.stats['health']
     print(f"{player.name} - HP: {'█' * int(player.health / 5)} ({player.health}/{player.MAX_HEALTH})\n")
     if enemy:
         print(f"{enemy.name} - HP: {'█' * int(enemy.health / 5)} ({enemy.health}/100)\n")
-
 
 def fast_travel(player):
     print("You have arrived at the city.")
@@ -29,7 +29,7 @@ def fast_travel(player):
 
 def stay_at_tavern(player):
     print("You decide to stay at the tavern for a rest.")
-    player.health = player.MAX_HEALTH  # Directly set player's health to MAX_HEALTH
+    player.health = player.MAX_HEALTH
     print("Your health has been fully restored.")
 
 def buy_items(player):
@@ -65,7 +65,7 @@ def print_city_menu():
         print("[t]ravel to tavern")
         print("[l]eave city")
 
-def welcome_messages(player_name):
+def print_welcome_messages(player_name):
     print(f"Welcome, {player_name}!")
     input("Press Enter to continue...")
     print("In this world of Lordran_Z, you must collect the four Quest Items.")

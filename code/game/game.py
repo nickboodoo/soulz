@@ -1,7 +1,5 @@
-from game.utils import welcome_messages
-
+from game.utils import print_welcome_messages
 from game.player import Player
-
 from game.game_loop import GameLoop
 
 
@@ -13,7 +11,7 @@ class Game:
 
         player_name = input("Enter your name: ")
 
-        welcome_messages(player_name)
+        print_welcome_messages(player_name)
 
         player = Player(player_name)
         game_loop = GameLoop(player)

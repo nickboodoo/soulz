@@ -1,21 +1,15 @@
 import random
+
 from game.utils import fast_travel
-
 from game.battle_manager import BattleManager
-
 from game.enemy import Enemy
-
 from game.boss_battle import BossBattle
 
 
 class GameLoop:
     def __init__(self, player, world_state):
         self.player = player
-        self.world_state = world_state  # Now correctly storing the passed world_state
-
-
-
-    # Adjustments in the explore method and others as necessary to use world_state
+        self.world_state = world_state
 
     def start_loop(self):
         while self.player.is_alive():

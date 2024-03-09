@@ -7,7 +7,7 @@ class Character:
         self.health = health
         self.attack_power = attack_power
 
-    def attack(self):
+    def lifesteal_attack(self):
         return random.randint(5, self.attack_power)
 
     def defend(self, damage):

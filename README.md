@@ -11,10 +11,8 @@ See if you can beat the game on your first try!
 4. Run Soulz.exe
 
 ## KNOWN BUGS
-1. Boss hp bar is 200/100
-2. Healing does not take an action during combat
-3. Tavern does not cost money
-4. put an input() before the end of the game because .exe will end immediately
+1. Healing does not take an action during combat
+2. Tavern does not cost money
 
 ## PLANNED FEATURES
 1. Improve menus and UI
