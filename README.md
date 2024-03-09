@@ -7,8 +7,9 @@ See if you can beat the game on your first try!
 ## HOW TO RUN THE GAME
 1. Download the latest release
 2. Unzip release folder
-3. Navigate to the Soulz folder
-4. Run Soulz.exe
+3. Navigate to the exe folder
+4. Navigate to the Soulz folder
+5. Run Soulz.exe
 
 ## KNOWN BUGS
 1. Healing does not take an action during combat
@@ -22,14 +23,8 @@ Version 1.5 Release Notes:
     The main goal of breaking them down into their own classes were so that I can build on them in the future. 
 2. Created new test directories where I unit test my code. 
 
-3. Created a new UML Class diagram - which I will need to update again...
 
 
-
-
-TODO:
-
-1. update UML class diagram
 
 
 
