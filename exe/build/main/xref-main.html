@@ -15,7 +15,7 @@
 
 <div class="node">
   <a name="main.py"></a>
-  <a target="code" href="///C:/Users/nicho/Documents/soulz/main.py" type="text/plain"><tt>main.py</tt></a>
+  <a target="code" href="///C:/Users/nicho/Documents/soulz/code/main.py" type="text/plain"><tt>main.py</tt></a>
 <span class="moduletype">Script</span>  <div class="import">
 imports:
     <a href="#_collections_abc">_collections_abc</a>
@@ -149,7 +149,9 @@ imports:
  &#8226;   <a href="#encodings.zlib_codec">encodings.zlib_codec</a>
  &#8226;   <a href="#enum">enum</a>
  &#8226;   <a href="#functools">functools</a>
- &#8226;   <a href="#game.game">game.game</a>
+ &#8226;   <a href="#game.game_loop">game.game_loop</a>
+ &#8226;   <a href="#game.player">game.player</a>
+ &#8226;   <a href="#game.world_states">game.world_states</a>
  &#8226;   <a href="#genericpath">genericpath</a>
  &#8226;   <a href="#heapq">heapq</a>
  &#8226;   <a href="#io">io</a>
@@ -4727,21 +4729,62 @@ imported by:
 
 <div class="node">
   <a name="game"></a>
-  <a target="code" href="///C:/Users/nicho/Documents/soulz/game/__init__.py" type="text/plain"><tt>game</tt></a>
-<span class="moduletype">Package</span>  <div class="import">
+  <a target="code" href="-" type="text/plain"><tt>game</tt></a>
+<span class="moduletype">NamespacePackage</span>  <div class="import">
 imported by:
-    <a href="#game.enemy">game.enemy</a>
- &#8226;   <a href="#game.game">game.game</a>
+    <a href="#game.battle_manager">game.battle_manager</a>
+ &#8226;   <a href="#game.boss_battle">game.boss_battle</a>
+ &#8226;   <a href="#game.character">game.character</a>
+ &#8226;   <a href="#game.enemy">game.enemy</a>
+ &#8226;   <a href="#game.game_loop">game.game_loop</a>
  &#8226;   <a href="#game.player">game.player</a>
  &#8226;   <a href="#game.utils">game.utils</a>
+ &#8226;   <a href="#game.world_states">game.world_states</a>
 
   </div>
 
 </div>
 
 <div class="node">
-  <a name="game.enemy"></a>
-  <a target="code" href="///C:/Users/nicho/Documents/soulz/game/enemy.py" type="text/plain"><tt>game.enemy</tt></a>
+  <a name="game.battle_manager"></a>
+  <a target="code" href="///C:/Users/nicho/Documents/soulz/code/game/battle_manager.py" type="text/plain"><tt>game.battle_manager</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#game">game</a>
+ &#8226;   <a href="#game.utils">game.utils</a>
+ &#8226;   <a href="#game.world_states">game.world_states</a>
+ &#8226;   <a href="#random">random</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#game.game_loop">game.game_loop</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="game.boss_battle"></a>
+  <a target="code" href="///C:/Users/nicho/Documents/soulz/code/game/boss_battle.py" type="text/plain"><tt>game.boss_battle</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#game">game</a>
+ &#8226;   <a href="#game.enemy">game.enemy</a>
+ &#8226;   <a href="#game.utils">game.utils</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#game.game_loop">game.game_loop</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="game.character"></a>
+  <a target="code" href="///C:/Users/nicho/Documents/soulz/code/game/character.py" type="text/plain"><tt>game.character</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#game">game</a>
@@ -4750,19 +4793,41 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#game.utils">game.utils</a>
+    <a href="#game.enemy">game.enemy</a>
+ &#8226;   <a href="#game.player">game.player</a>
 
   </div>
 
 </div>
 
 <div class="node">
-  <a name="game.game"></a>
-  <a target="code" href="///C:/Users/nicho/Documents/soulz/game/game.py" type="text/plain"><tt>game.game</tt></a>
+  <a name="game.enemy"></a>
+  <a target="code" href="///C:/Users/nicho/Documents/soulz/code/game/enemy.py" type="text/plain"><tt>game.enemy</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#game">game</a>
- &#8226;   <a href="#game.player">game.player</a>
+ &#8226;   <a href="#game.character">game.character</a>
+ &#8226;   <a href="#random">random</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#game.boss_battle">game.boss_battle</a>
+ &#8226;   <a href="#game.game_loop">game.game_loop</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="game.game_loop"></a>
+  <a target="code" href="///C:/Users/nicho/Documents/soulz/code/game/game_loop.py" type="text/plain"><tt>game.game_loop</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#game">game</a>
+ &#8226;   <a href="#game.battle_manager">game.battle_manager</a>
+ &#8226;   <a href="#game.boss_battle">game.boss_battle</a>
+ &#8226;   <a href="#game.enemy">game.enemy</a>
  &#8226;   <a href="#game.utils">game.utils</a>
  &#8226;   <a href="#random">random</a>
 
@@ -4777,17 +4842,17 @@ imported by:
 
 <div class="node">
   <a name="game.player"></a>
-  <a target="code" href="///C:/Users/nicho/Documents/soulz/game/player.py" type="text/plain"><tt>game.player</tt></a>
+  <a target="code" href="///C:/Users/nicho/Documents/soulz/code/game/player.py" type="text/plain"><tt>game.player</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#game">game</a>
+ &#8226;   <a href="#game.character">game.character</a>
  &#8226;   <a href="#random">random</a>
 
   </div>
   <div class="import">
 imported by:
-    <a href="#game.game">game.game</a>
- &#8226;   <a href="#game.utils">game.utils</a>
+    <a href="#main.py">main.py</a>
 
   </div>
 
@@ -4795,18 +4860,34 @@ imported by:
 
 <div class="node">
   <a name="game.utils"></a>
-  <a target="code" href="///C:/Users/nicho/Documents/soulz/game/utils.py" type="text/plain"><tt>game.utils</tt></a>
+  <a target="code" href="///C:/Users/nicho/Documents/soulz/code/game/utils.py" type="text/plain"><tt>game.utils</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#game">game</a>
- &#8226;   <a href="#game.enemy">game.enemy</a>
- &#8226;   <a href="#game.player">game.player</a>
- &#8226;   <a href="#random">random</a>
 
   </div>
   <div class="import">
 imported by:
-    <a href="#game.game">game.game</a>
+    <a href="#game.battle_manager">game.battle_manager</a>
+ &#8226;   <a href="#game.boss_battle">game.boss_battle</a>
+ &#8226;   <a href="#game.game_loop">game.game_loop</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="game.world_states"></a>
+  <a target="code" href="///C:/Users/nicho/Documents/soulz/code/game/world_states.py" type="text/plain"><tt>game.world_states</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#game">game</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#game.battle_manager">game.battle_manager</a>
+ &#8226;   <a href="#main.py">main.py</a>
 
   </div>
 
@@ -6166,10 +6247,11 @@ imports:
 imported by:
     <a href="#email.generator">email.generator</a>
  &#8226;   <a href="#email.utils">email.utils</a>
+ &#8226;   <a href="#game.battle_manager">game.battle_manager</a>
+ &#8226;   <a href="#game.character">game.character</a>
  &#8226;   <a href="#game.enemy">game.enemy</a>
- &#8226;   <a href="#game.game">game.game</a>
+ &#8226;   <a href="#game.game_loop">game.game_loop</a>
  &#8226;   <a href="#game.player">game.player</a>
- &#8226;   <a href="#game.utils">game.utils</a>
  &#8226;   <a href="#statistics">statistics</a>
  &#8226;   <a href="#tempfile">tempfile</a>
 

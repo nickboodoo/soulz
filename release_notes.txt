@@ -1,0 +1,11 @@
+Version 1.5 Release Notes:
+
+1. Completely reorganized the source code. New classes created: Character, Player, Enemy, BossBattle, BattleManager, WorldStates. 
+    The main goal of breaking them down into their own classes were so that I can build on them in the future. 
+
+2. Created new test directories where I unit test my code. 
+
+
+TODO:
+
+1. up-to-date :3

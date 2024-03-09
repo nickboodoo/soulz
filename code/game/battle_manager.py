@@ -85,7 +85,7 @@ class BattleManager:
 
             for item, quantity in self.player.inventory.items():
                 if item == "Quest Item" and quantity >= 4:
-                    WorldStates.notify_boss_fight_requirement()
+                    WorldStates.notify_boss_fight_requirement(self.player)
                     print("You've collected all the necessary quest items!")
                     
 

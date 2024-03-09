@@ -1,5 +1,4 @@
 import random
-
 from game.character import Character
 
 

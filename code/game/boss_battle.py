@@ -1,5 +1,4 @@
 from game.enemy import Enemy
-
 from game.utils import print_status
 
 

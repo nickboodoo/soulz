@@ -60,4 +60,3 @@ import random
 
 
 
-# Remove quit() and exit(), and replace with a control flow that checks game state.
