@@ -14,6 +14,25 @@ See if you can beat the game on your first try!
 1. Healing does not take an action during combat
 2. Tavern does not cost money
 
+## RECENT PATCH NOTES
+
+Version 1.5 Release Notes:
+
+1. Completely reorganized the source code. New classes created: Character, Player, Enemy, BossBattle, BattleManager, WorldStates. 
+    The main goal of breaking them down into their own classes were so that I can build on them in the future. 
+2. Created new test directories where I unit test my code. 
+
+3. Created a new UML Class diagram - which I will need to update again...
+
+
+
+
+TODO:
+
+1. update UML class diagram
+
+
+
 ## PLANNED FEATURES
 1. Improve menus and UI
 2. Alter gameplay loop to add longevitiy to each run
