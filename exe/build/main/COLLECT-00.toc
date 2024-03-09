@@ -1,5 +1,5 @@
 ([('main.exe',
-   'C:\\Users\\nicho\\Documents\\soulz\\build\\main\\main.exe',
+   'C:\\Users\\nicho\\Documents\\soulz\\code\\build\\main\\main.exe',
    'EXECUTABLE'),
   ('python311.dll',
    'C:\\Users\\nicho\\AppData\\Local\\Programs\\Python\\Python311\\python311.dll',
@@ -32,5 +32,5 @@
    'C:\\Users\\nicho\\AppData\\Local\\Programs\\Python\\Python311\\DLLs\\libcrypto-3.dll',
    'BINARY'),
   ('base_library.zip',
-   'C:\\Users\\nicho\\Documents\\soulz\\build\\main\\base_library.zip',
+   'C:\\Users\\nicho\\Documents\\soulz\\code\\build\\main\\base_library.zip',
    'DATA')],)

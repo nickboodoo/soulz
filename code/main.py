@@ -1,7 +1,5 @@
 from game.game_loop import GameLoop
-
 from game.player import Player
-
 from game.world_states import WorldStates
 
 
