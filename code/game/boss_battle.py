@@ -23,7 +23,7 @@ class BossBattle:
                 print(f"{self.player.name} attacks the {soul_of_zinder.name} for {player_damage} damage.")
 
                 if soul_of_zinder.is_alive():
-                    enemy_damage = soul_of_zinder.lifesteal_attack()
+                    enemy_damage = soul_of_zinder.attack()
                     self.player.defend(enemy_damage)
                     print(f"The {soul_of_zinder.name} attacks back for {enemy_damage} damage.")
 

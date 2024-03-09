@@ -24,7 +24,7 @@ class Player(Character):
         # Additional level up logic can go here (e.g., increasing max health, restoring health, etc.)
 
 
-    def lifesteal_attack(self):
+    def attack(self):
         lifesteal_percentage = self.zinders_collected * 0.01
         # Now base_damage is properly defined, this should work:
         lifesteal_amount = int(self.base_damage * lifesteal_percentage)
