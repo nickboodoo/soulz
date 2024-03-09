@@ -1,4 +1,5 @@
 import random
+import os
 
 from game.utils import fast_travel
 from game.battle_manager import BattleManager
@@ -14,6 +15,7 @@ class GameLoop:
     def start_loop(self):
         while self.player.is_alive():
             choice = input("\nWhat would you like to do? [explore] or [fast travel] or [quit]? ").lower()
+            os.system('cls')
             if choice == "explore":
                 self.explore()
             elif choice == "fast travel":

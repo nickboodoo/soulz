@@ -1,9 +1,12 @@
-
+def print_dashes(x):
+    dash = '-'
+    border = dash * x
+    print(border)
 
 def print_status(player, enemy=None):
-    print(f"{player.name} - HP: {'█' * int(player.health / 5)} ({player.health}/{player.MAX_HEALTH})\n")
+    print(f"{player.name} - HP: {'█' * int(player.health / 5)} ({player.health}/{player.MAX_HEALTH})\n".rjust(72))
     if enemy:
-        print(f"{enemy.name} - HP: {'█' * int(enemy.health / 5)} ({enemy.health}/100)\n")
+        print(f"{enemy.name} - HP: {'█' * int(enemy.health / 5)} ({enemy.health}/100)\n".rjust(72))
 
 def fast_travel(player):
     print("You have arrived at the city.")

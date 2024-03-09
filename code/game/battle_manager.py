@@ -1,6 +1,8 @@
 import random
+import os
+
 from game.world_states import WorldStates
-from game.utils import print_status
+from game.utils import print_dashes, print_status
 
 
 class BattleManager:
@@ -8,11 +10,15 @@ class BattleManager:
         self.player = player
 
     def start_battle(self, enemy):
-        print(f"You've encountered a {enemy.name}!")
+        print_dashes(72)
+        print(f"You've encountered a {enemy.name}!".center(72))
 
         while self.player.is_alive() and enemy.is_alive():
+            print_dashes(72)
             print_status(self.player, enemy)
+            print_dashes(72)
             choice = input("Choose your action: [a]ttack, [u]se item, [f]lee: ").lower()
+            os.system('cls')
 
             if choice == "a":
                 self.player_attack(enemy)
@@ -23,6 +29,7 @@ class BattleManager:
                 self.player_use_item()
 
             elif choice == "f":
+                os.system('cls')
                 print("You fled from the battle!")
                 return
             
@@ -32,14 +39,15 @@ class BattleManager:
         self.handle_battle_outcome(enemy)
 
     def player_attack(self, enemy):
+        print_dashes(72)
         player_damage = self.player.attack()
         enemy.defend(player_damage)
-        print(f"{self.player.name} attacks the {enemy.name} for {player_damage} damage.")
+        print(f"{self.player.name} attacks the {enemy.name} for {player_damage} damage.".center(72))
 
     def enemy_attack(self, enemy):
         enemy_damage = enemy.attack()
         self.player.defend(enemy_damage)
-        print(f"The {enemy.name} attacks back for {enemy_damage} damage.")
+        print(f"The {enemy.name} attacks back for {enemy_damage} damage.".center(72))
 
     def player_use_item(self):
         self.player.check_inventory()
