@@ -10,4 +10,8 @@ TODO:
 
 - user enters name for no reason
 - add dashes for better visibility
-- 
+- show how many zinders the player has
+    - show how much lifesteal
+
+- show level and character stats
+- when player tries to use quest items 
