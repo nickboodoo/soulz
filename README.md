@@ -30,7 +30,13 @@ Version 1.5 Release Notes:
 TODO:
 
 1. update UML class diagram
+2. user enters name for no reason
+3. add dashes for better visibility
+4. show how many zinders the player has
+    4a. show how much lifesteal
 
+5. show level and character stats
+6. when player tries to use quest items 
 
 
 ## PLANNED FEATURES
