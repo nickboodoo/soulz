@@ -1,3 +1,5 @@
+# Organize helper functions a little better
+
 def print_dashes(x):
     dash = '-'
     border = dash * x

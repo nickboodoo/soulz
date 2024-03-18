@@ -1,3 +1,5 @@
+# MAYBE add a new game plus feature
+# as the player collects more zinders, make the game harder?
 
 
 class WorldStates:

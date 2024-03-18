@@ -1,3 +1,5 @@
+# Clean up comments
+
 import random
 from game.character import Character
 
