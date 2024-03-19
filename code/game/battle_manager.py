@@ -24,6 +24,10 @@ class BattleManager:
                 self.player_attack(enemy)
                 if enemy.is_alive():
                     self.enemy_attack(enemy)
+                else:
+                    print_dashes(72)
+                    print_status(self.player, enemy)  # Print status even if enemy HP reaches 0
+                    print_dashes(72)
             
             elif choice == "u":
                 self.player_use_item()
