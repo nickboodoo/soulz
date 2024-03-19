@@ -37,9 +37,8 @@ TODO:
     4a. show how much lifesteal
 
 5. show level and character stats
-6. when player tries to use quest items 
-7. make damage weighted
-8. also side note: zinders scaling is sort of op
+6. make damage weighted
+7. also side note: zinders scaling is sort of op
 
 =======
 >>>>>>> 78fa25e2d9cdbd62c1db48df5cb735911a52dad2

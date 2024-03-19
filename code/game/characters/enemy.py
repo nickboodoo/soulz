@@ -20,7 +20,7 @@ class Enemy(Character):
             ("Infernal Chimera", 90, 22),
             ("Searing Phoenix", 70, 22),
             ("Eldritch Gorgon", 85, 35),
-            
         ]
+        
         name, health, attack_power = random.choice(enemy_types)
         return cls(name, health, attack_power)

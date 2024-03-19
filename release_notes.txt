@@ -15,4 +15,3 @@ TODO:
 - also side note: zinders scaling is sort of op
 
 - show level and character stats
-- quest items show up in player inventory as a usable item but they cannot use it

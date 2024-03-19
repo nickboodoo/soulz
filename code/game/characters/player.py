@@ -18,7 +18,7 @@ class Player(Character):
     def level_up(self):
         self.level += 1
         self.base_damage += 5
-        print(f"Congratulations! You've reached level {self.level}. Your base damage has increased.")
+        input(f"Congratulations! You've reached level {self.level}. Your base damage has increased.")
 
     def attack(self):
         lifesteal_percentage = self.zinders_collected * 0.01
@@ -55,16 +55,19 @@ class Player(Character):
         if item in self.inventory and self.inventory[item] > 0:
             if item == "health potion":
                 if self.health == self.MAX_HEALTH:
-                    print("Your health is already full.")
+                    input("Your health is already full.")
                 else:
                     heal_amount = 20
                     self.health = min(self.MAX_HEALTH, self.health + heal_amount)
                     self.inventory[item] -= 1
-                    print(f"You used a health potion and gained {heal_amount} health.")
+                    input(f"You used a health potion and gained {heal_amount} health.")
             else:
-                print("You cannot use that item.")
+                input("You cannot use that item.")
         else:
-            print("You don't have that item or you've run out.")
+            input("You don't have that item or you've run out.")
+
+    def print_attack_info(lifesteal_percentage, base_damage):
+        print(f"Current lifesteal: {lifesteal_percentage*100:.0f}% \nBase damage range: {base_damage} - {base_damage + 10}.")
 
     def view_character_stats(self):
         print("\nCharacter Stats:")
@@ -73,4 +76,4 @@ class Player(Character):
     def level_up(self):
         self.level += 1
         self.base_damage += 5
-        print(f"Congratulations! You've reached level {self.level}. Your base damage has increased.")
+        input(f"Congratulations! You've reached level {self.level}. Your base damage has increased.")

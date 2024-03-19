@@ -75,35 +75,33 @@ class BattleManager:
         loot = self.generate_loot()
         self.handle_loot(loot)
 
-    def player_defeat(self, enemy):
-        print("You lost the battle!")
-        print(f"You've killed {self.player.enemies_killed} enemies and travelled {self.player.distance_travelled} mile(s).")
+    def player_defeat(self):
+        print("You lose!")
         exit()
 
     def generate_loot(self):
-        loot_pool = ["Quest Item", "Gold", "Zinder"]
+        loot_pool = ["Ancient Runestone", "Gold", "Zinder"]
         return random.choice(loot_pool)
 
     def handle_loot(self, loot):
         if loot == "Gold":
             gold_amount = random.randint(1, 100)
             self.player.stats["gold"] += gold_amount
-            print(f"You found {gold_amount} gold!")
+            input(f"You found {gold_amount} gold!")
 
-        elif loot == "Quest Item":
-            self.player.add_to_inventory("Quest Item") 
-            print(f"You found {loot}!")
+        elif loot == "Ancient Runestone":
+            self.player.add_to_inventory("Ancient Runestone") 
+            input(f"You found an {loot}!")
 
             for item, quantity in self.player.inventory.items():
-                if item == "Quest Item" and quantity >= 4:
+                if item == "Ancient Runestone" and quantity >= 4:
                     WorldStates.notify_boss_fight_requirement(self.player)
-                    print("You've collected all the necessary quest items!")
+                    print("You've collected enough runestones to draw the attention of something terrifying!")
                     
-
         elif loot == "Zinder":  
             self.player.zinders_collected += 1
-            print(f"You found {loot}! You now have {self.player.zinders_collected} Zinders.")
+            input(f"You found {loot}! You now have {self.player.zinders_collected} Zinders.")
 
         else:
             self.player.add_to_inventory(loot)
-            print(f"You found {loot}!")
+            input(f"You found {loot}!")

@@ -72,11 +72,3 @@ def print_city_menu():
         print("[s]how character stats")
         print("[t]ravel to tavern")
         print("[l]eave city")
-
-def print_welcome_messages(player_name):
-    print(f"Welcome, {player_name}!")
-    input("Press Enter to continue...")
-    print("In this world of Lordran_Z, you must collect the four Quest Items.")
-    input("Press Enter to continue...")
-    print("Once you do, you will be summoned to fight the Dark Soulz Himself! haHA!")
-    input("Press Enter to continue...")
