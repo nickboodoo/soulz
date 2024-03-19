@@ -1,4 +1,5 @@
 import random
+import math
 from game.sequence_loops.world_states import WorldStates
 from game.utilities.utils import clear_screen, print_dashes, print_status
 
@@ -69,8 +70,10 @@ class BattleManager:
         print(f"You defeated the {enemy.name}!")
         self.player.enemies_killed += 1
 
-        if self.player.enemies_killed % 3 == 0:
+        required_kills = math.ceil(math.log(self.player.level + 1, 2) * 3)
+        if self.player.enemies_killed >= required_kills:
             self.player.level_up()
+            self.player.enemies_killed = 0
 
         loot = self.generate_loot()
         self.handle_loot(loot)
@@ -94,6 +97,7 @@ class BattleManager:
             input(f"You found an {loot}!")
 
             for item, quantity in self.player.inventory.items():
+
                 if item == "Ancient Runestone" and quantity >= 4:
                     WorldStates.notify_boss_fight_requirement(self.player)
                     print("You've collected enough runestones to draw the attention of something terrifying!")

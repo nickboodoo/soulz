@@ -36,26 +36,34 @@ class Player(Character):
     def add_to_inventory(self, item, quantity=1):
         if item in self.inventory:
             self.inventory[item] += quantity
+            
         else:
             self.inventory[item] = quantity
 
     def remove_from_inventory(self, item, quantity=1):
         if item in self.inventory:
+
             if self.inventory[item] >= quantity:
+
                 self.inventory[item] -= quantity
                 return True
+            
         return False
 
     def check_inventory(self):
         print("\nInventory:")
+
         for item, quantity in self.inventory.items():
             print(f"{item.capitalize()}: {quantity}")
 
     def use_item(self, item):
         if item in self.inventory and self.inventory[item] > 0:
+
             if item == "health potion":
+
                 if self.health == self.MAX_HEALTH:
                     input("Your health is already full.")
+
                 else:
                     heal_amount = 20
                     self.health = min(self.MAX_HEALTH, self.health + heal_amount)
@@ -63,6 +71,7 @@ class Player(Character):
                     input(f"You used a health potion and gained {heal_amount} health.")
             else:
                 input("You cannot use that item.")
+
         else:
             input("You don't have that item or you've run out.")
 

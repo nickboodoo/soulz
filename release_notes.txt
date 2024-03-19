@@ -8,10 +8,8 @@ Version 1.5 Release Notes:
 
 TODO:
 
-- add dashes for better visibility
-- show how many zinders the player has
-    - show how much lifesteal
-- make damage weighted
-- also side note: zinders scaling is sort of op
-
-- show level and character stats
+-work on character stats
+    -show the following:
+        -attack damage range
+        -lifesteal %
+        -current level

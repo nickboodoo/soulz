@@ -25,24 +25,6 @@ Version 1.5 Release Notes:
 
 
 
-
-
-<<<<<<< HEAD
-TODO:
-
-1. update UML class diagram
-2. user enters name for no reason
-3. add dashes for better visibility
-4. show how many zinders the player has
-    4a. show how much lifesteal
-
-5. show level and character stats
-6. make damage weighted
-7. also side note: zinders scaling is sort of op
-
-=======
->>>>>>> 78fa25e2d9cdbd62c1db48df5cb735911a52dad2
-
 ## PLANNED FEATURES
 1. Improve menus and UI
 2. Alter gameplay loop to add longevitiy to each run
