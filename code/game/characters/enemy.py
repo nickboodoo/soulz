@@ -1,12 +1,12 @@
 import random
-from game.character import Character
+from game.characters.character import Character
 
 
 class Enemy(Character):
     def __init__(self, name, health, attack_power):
         super().__init__(name, health, attack_power)
 
-    @classmethod  # This decorator was missing
+    @classmethod
     def create_random_enemy(cls):
         enemy_types = [
             ("Random Enemy 1", 50, 15),

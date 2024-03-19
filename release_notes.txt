@@ -8,10 +8,11 @@ Version 1.5 Release Notes:
 
 TODO:
 
-- user enters name for no reason
 - add dashes for better visibility
 - show how many zinders the player has
     - show how much lifesteal
+- make damage weighted
+- also side note: zinders scaling is sort of op
 
 - show level and character stats
-- when player tries to use quest items 
+- quest items show up in player inventory as a usable item but they cannot use it

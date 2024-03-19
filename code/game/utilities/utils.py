@@ -1,4 +1,7 @@
-# Organize helper functions a little better
+import os
+
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 def print_dashes(x):
     dash = '-'

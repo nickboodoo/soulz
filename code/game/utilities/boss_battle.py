@@ -1,5 +1,5 @@
-from game.enemy import Enemy
-from game.utils import print_status
+from game.characters.enemy import Enemy
+from game.utilities.utils import print_status
 
 
 class BossBattle:
