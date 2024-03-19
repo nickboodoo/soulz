@@ -9,9 +9,18 @@ class Enemy(Character):
     @classmethod
     def create_random_enemy(cls):
         enemy_types = [
-            ("Random Enemy 1", 50, 15),
-            ("Random Enemy 2", 60, 12),
-            ("Random Enemy 3", 40, 20),
+            ("Abyssal Revenant", 50, 25),
+            ("Crimson Shade", 60, 22),
+            ("Dreadbone Wraith", 35, 30),
+            ("Spectral Sentinel", 80, 15),
+            ("Netherghast Fiend", 40, 20),
+            ("Voidborne Behemoth", 100, 17),
+            ("Rimefrost Phantom", 65, 18),
+            ("Shadowveil Assassin", 45, 25),
+            ("Infernal Chimera", 90, 22),
+            ("Searing Phoenix", 70, 22),
+            ("Eldritch Gorgon", 85, 35),
+            
         ]
         name, health, attack_power = random.choice(enemy_types)
         return cls(name, health, attack_power)

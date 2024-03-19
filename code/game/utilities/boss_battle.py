@@ -5,27 +5,25 @@ from game.utilities.utils import print_status
 class BossBattle:
     def __init__(self, player):
         self.player = player
-        self.soul_of_zinder = Enemy("Soul of Zinder", 200, 20)
+        self.soul_of_zinder = Enemy("Soul of Zinder", 100, 55)
 
     def battle_soul_of_zinder(self):
-        soul_of_zinder = Enemy("Soul of Zinder", 200, 20)
-        print(f"A fearsome enemy, the {soul_of_zinder.name}, blocks your path!")
-        print("His health bar is SOO big, it looks like he has overshielding or something...")
-        print("Prepare yourself for a challenging battle!")
+        print(f"The {self.soul_of_zinder.name} appears!")
+        input("Prepare yourself for a challenging battle!")
 
-        while self.player.is_alive() and soul_of_zinder.is_alive():
-            print_status(self.player, soul_of_zinder)
+        while self.player.is_alive() and self.soul_of_zinder.is_alive():
+            print_status(self.player, self.soul_of_zinder)
             choice = input("Choose your action: [a]ttack, [u]se item, [f]lee: ").lower()
 
             if choice == "a":
                 player_damage = self.player.attack()
-                soul_of_zinder.defend(player_damage)
-                print(f"{self.player.name} attacks the {soul_of_zinder.name} for {player_damage} damage.")
+                self.soul_of_zinder.defend(player_damage)
+                print(f"{self.player.name} attacks the {self.soul_of_zinder.name} for {player_damage} damage.")
 
-                if soul_of_zinder.is_alive():
-                    enemy_damage = soul_of_zinder.attack()
+                if self.soul_of_zinder.is_alive():
+                    enemy_damage = self.soul_of_zinder.attack()
                     self.player.defend(enemy_damage)
-                    print(f"The {soul_of_zinder.name} attacks back for {enemy_damage} damage.")
+                    print(f"The {self.soul_of_zinder.name} attacks back for {enemy_damage} damage.")
 
             elif choice == "u":
                 self.player.check_inventory()
@@ -43,10 +41,8 @@ class BossBattle:
                 print("Invalid choice. Please try again.")
 
         if self.player.is_alive():
-            print(f"Congratulations! You defeated the {soul_of_zinder.name}!")
-            print("You really are the Dark Soul_Z")
-            print("Thank for playing. Click ENTER to exit.")
-            input()
+            print(f"Congratulations! You defeated the {self.soul_of_zinder.name}!")
+            input("Thank for playing. Click ENTER to exit.")
             quit()
 
         else:
