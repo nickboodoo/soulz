@@ -1,10 +1,9 @@
 import random
 import os
-
-from game.utils import fast_travel
-from game.battle_manager import BattleManager
-from game.enemy import Enemy
-from game.boss_battle import BossBattle
+from game.utilities.utils import fast_travel
+from game.sequence_loops.battle_manager import BattleManager
+from game.characters.enemy import Enemy
+from game.utilities.boss_battle import BossBattle
 
 
 class GameLoop:
@@ -16,6 +15,7 @@ class GameLoop:
         while self.player.is_alive():
             choice = input("\nWhat would you like to do? [explore] or [fast travel] or [quit]? ").lower()
             os.system('cls')
+
             if choice == "explore":
                 self.explore()
             elif choice == "fast travel":
@@ -51,6 +51,5 @@ class GameLoop:
                     print(f"You found {loot}!")
 
             if "Quest Item" in self.player.inventory and self.player.inventory["Quest Item"] >= 4:
-                # Trigger final boss battle when player has collected all quest items
                 final_boss_battle = BossBattle(self.player)
                 final_boss_battle.battle_soul_of_zinder()

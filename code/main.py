@@ -1,7 +1,6 @@
-from game.world_states import WorldStates
-from game.game_loop import GameLoop
-from game.player import Player
-
+from game.sequence_loops.world_states import WorldStates
+from game.sequence_loops.game_loop import GameLoop
+from game.characters.player import Player
 
 
 if __name__ == "__main__":

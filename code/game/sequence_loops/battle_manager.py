@@ -1,8 +1,6 @@
 import random
-import os
-
-from game.world_states import WorldStates
-from game.utils import print_dashes, print_status
+from game.sequence_loops.world_states import WorldStates
+from game.utilities.utils import clear_screen, print_dashes, print_status
 
 
 class BattleManager:
@@ -18,7 +16,7 @@ class BattleManager:
             print_status(self.player, enemy)
             print_dashes(72)
             choice = input("Choose your action: [a]ttack, [u]se item, [f]lee: ").lower()
-            os.system('cls')
+            clear_screen()
 
             if choice == "a":
                 self.player_attack(enemy)
@@ -26,14 +24,15 @@ class BattleManager:
                     self.enemy_attack(enemy)
                 else:
                     print_dashes(72)
-                    print_status(self.player, enemy)  # Print status even if enemy HP reaches 0
+                    print_status(self.player, enemy)
                     print_dashes(72)
             
             elif choice == "u":
                 self.player_use_item()
 
             elif choice == "f":
-                os.system('cls')
+                clear_screen()
+
                 print("You fled from the battle!")
                 return
             

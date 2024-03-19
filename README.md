@@ -37,6 +37,8 @@ TODO:
 
 5. show level and character stats
 6. when player tries to use quest items 
+7. make damage weighted
+8. also side note: zinders scaling is sort of op
 
 
 ## PLANNED FEATURES
