@@ -36,7 +36,7 @@ class Player(Character):
     def add_to_inventory(self, item, quantity=1):
         if item in self.inventory:
             self.inventory[item] += quantity
-            
+
         else:
             self.inventory[item] = quantity
 
@@ -79,8 +79,12 @@ class Player(Character):
         print(f"Current lifesteal: {lifesteal_percentage*100:.0f}% \nBase damage range: {base_damage} - {base_damage + 10}.")
 
     def view_character_stats(self):
+        lifesteal_percentage = self.zinders_collected * 0.01
         print("\nCharacter Stats:")
         print(f"Health: {self.health}/{self.MAX_HEALTH}")
+        print(f"Level: {self.level}")
+        print(f"Current lifesteal: {lifesteal_percentage*100:.0f}%")
+        print(f"Attack damage range: {self.base_damage} - {self.base_damage + 10}")
 
     def level_up(self):
         self.level += 1

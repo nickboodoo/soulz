@@ -18,19 +18,23 @@ def fast_travel(player):
     while True:
         print_city_menu()
         choice = input("Enter your choice: ").lower()
+        clear_screen()
         if choice == "b":
             buy_items(player)
         elif choice == "c":
             player.check_inventory()
         elif choice == "u":
+            player.check_inventory()
             item_to_use = input("Enter the item you want to use from your inventory: ").lower()
+            clear_screen()
             player.use_item(item_to_use)
         elif choice == "s":
             player.view_character_stats()
         elif choice == "t":
             stay_at_tavern(player)
         elif choice == "l":
-            print("You leave the city.")
+            input("You leave the city.")
+            clear_screen()
             break
         else:
             print("Invalid choice. Please try again.")
@@ -38,7 +42,8 @@ def fast_travel(player):
 def stay_at_tavern(player):
     print("You decide to stay at the tavern for a rest.")
     player.health = player.MAX_HEALTH
-    print("Your health has been fully restored.")
+    input("Your health has been fully restored.")
+    clear_screen()
 
 def buy_items(player):
     store_items = {
@@ -46,22 +51,34 @@ def buy_items(player):
     }
     print("\nWelcome to the store!")
     print("Here are the items available for purchase:")
-    for item, price in store_items.items():
-        print(f"{item.capitalize()} - {price} gold")
+    
     while True:
         print("Your Gold:", player.stats["gold"])
+
+        for item, price in store_items.items():
+            print(f"{item.capitalize()} - {price} gold")
+
         choice = input("Enter the item you want to buy (or [done] to exit): ").lower()
+        clear_screen()
+
         if choice == "done":
             break
+
         elif choice in store_items:
+
             if player.stats["gold"] >= store_items[choice]:
                 player.add_to_inventory(choice)
                 player.stats["gold"] -= store_items[choice]
-                print(f"You bought {choice}!")
+                input(f"You bought {choice}!")
+                clear_screen()
+
             else:
-                print("You don't have enough gold to buy that.")
+                input("You don't have enough gold to buy that.")
+                clear_screen()
+
         else:
-            print("That item is not available in the store.")
+            input("That item is not available in the store.")
+            clear_screen()
 
 def print_city_menu():
         print("\nWelcome to the city!")
