@@ -31,6 +31,7 @@ class GameLoop:
         if not self.player.is_alive():
             print("Game over.")
 
+    # OVERHAUL THIS CONCEPT
     def explore(self):
         encounter_chance = random.randint(1, 10)
 
