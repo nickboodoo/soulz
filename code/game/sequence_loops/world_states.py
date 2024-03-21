@@ -1,3 +1,9 @@
+# MAYBE REMOVE THIS CONCEPT
+
+# NO REAL PLANS TO DO ANYTHING WITH THIS YET
+
+# HAS NO IMPLEMENTATION YET SO MIGHT AS WELL REMOVE IT
+
 class WorldStates:
     def __init__(self):
         pass
