@@ -1,3 +1,5 @@
+# SOME OF THESE SHOULD BE @STATICMETHODS IN PLAYER CLASS
+
 import os
 
 def clear_screen():
