@@ -1,5 +1,6 @@
 # WELCOME TO SOULZ
 
+<<<<<<< HEAD
 ## Soulz is a text-based rougue-lite game. I am happy to announced that I just released version 1.8 of Soulz.
 In this game, you will embark on a journey through a mythical city where you will be able to kill enemies, collect a variety of loot and level up your character.\
 See if you can beat the game on your first try by encountering the final boss and killing him!
@@ -30,3 +31,5 @@ Version 1.8 Release Notes:
 ### KNOWN BUGS
 1. Healing does not take an action during combat
 2. Tavern does not cost money
+=======
+>>>>>>> soulz-v2.0
