@@ -39,7 +39,6 @@ class DynamicWorldMap:
             if not self.direct_path_exists(parent_node, child_node):
                 self.add_edge(parent_node, child_node, "normal", "normal")
 
-        # TREE -> GRAPH
         extra_edges = len(node_difficulties) // 2
         while extra_edges > 0:
             node_a, node_b = random.sample(list(self.nodes), 2)

@@ -1,8 +1,4 @@
-import random
 import math
-from game.sequence_loops.world_states import WorldStates
-from game.utilities.utils import clear_screen, print_dashes, print_status
-
 
 class BattleManager:
     def __init__(self, player):
@@ -99,7 +95,6 @@ class BattleManager:
             for item, quantity in self.player.inventory.items():
 
                 if item == "Ancient Runestone" and quantity >= 10:
-                    WorldStates.notify_boss_fight_requirement(self.player)
                     input("You've collected enough runestones to draw the attention of something terrifying!")
                     
         elif loot == "Zinder":  
