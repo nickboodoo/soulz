@@ -1,11 +1,13 @@
-from code.utils import dijkstra
+from code.initializers.utils import dijkstra
 
+# THIS IS WHERE I NEED TO ADD OLD GAME DATA
 
 class GameplayManager:
-    def __init__(self, graph, start, goal):
+    def __init__(self, graph, start, goal, player):
         self.graph = graph
         self.current_location = start
         self.goal = goal
+        self.player = player
         self.game_over = False
         self.breadcrumbs = [start]
 

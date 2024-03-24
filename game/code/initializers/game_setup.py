@@ -1,6 +1,7 @@
-from code.dynamic_world_map import DynamicWorldMap
+from code.initializers.dynamic_world_map import DynamicWorldMap
 from code.gameplay_manager import GameplayManager
 
+# INITIALIZES GAME SETUP BY GENERATING MAP AND CREATING GAME OBJECT FROM GAMEPLAYMANAGER
 
 class GameSetup:
     def __init__(self, node_difficulties, start_node, end_node):

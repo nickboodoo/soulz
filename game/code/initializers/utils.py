@@ -1,7 +1,11 @@
 import os
 
+# CLEARS SCREEN WHEN CALLED
+
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
+
+# CALCULATES SHORTEST PATH (GOAL)
 
 def dijkstra(graph, initial):
     visited = {initial: 0}

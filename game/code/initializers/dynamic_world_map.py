@@ -1,5 +1,7 @@
 import random
 
+# CREATES A WORLD MAP
+
 class DynamicWorldMap:
     def __init__(self):
         self.nodes = set()
