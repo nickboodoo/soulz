@@ -1,0 +1,24 @@
+WHAT AM I DOING?
+
+I am dynamically creating a world map from nodes and edges.
+
+The edges are being used to assess difficulty.
+
+Now I can assess the difficulty vs the dijkstra score  SO THAT I can make the shortest path more challenging for the player. 
+
+I want this map to remain a tree THEREFORE it will not loop. In order to have gameplay longevity,
+    I will allow backtracking through previously explored nodes. When the player chooses to backtrack, I will 
+    make sure that the new battles they encounter will be way harder than the previous version of the same node. 
+        
+
+HOW DOES THIS AFFECT MAIN PROGRAM??
+    I am not sure if a final boss is relevant anymore since, this will be more about the player making it to the end.
+    Maybe I can have the final node be a boss fight. 
+        Will need to see if this will be too challenging or not. 
+
+    I will also need to figure out how to keep my "fast travel" functionality.
+        Maybe I can work that fast travel feature into a menu or something. (?)
+
+TODO:
+
+make this shit not look like a linked list 

@@ -1,35 +1,45 @@
+import random
+
 class Graph:
     def __init__(self):
         self.nodes = set()
         self.edges = {}
-        self.distances = {}
-        self.node_probabilities = {}
+        self.difficulties = {}
+        self.node_difficulties = {}
 
-    def add_node(self, value, probability=None):
+    def add_node(self, value, difficulty=None):
         self.nodes.add(value)
-        if probability is not None:
-            # Assign a probability score to each node
-            self.node_probabilities[value] = probability
+        if difficulty is not None:
+            self.node_difficulties[value] = difficulty
 
-    def add_edge(self, from_node, to_node):
-        if from_node in self.node_probabilities and to_node in self.node_probabilities:
-            # Calculate edge weight as the average of the nodes' probabilities
-            distance = (self.node_probabilities[from_node] + self.node_probabilities[to_node]) / 2
-        else:
-            # Default distance if probabilities are not defined
-            distance = 1
+        self.edges[value] = []
+
+
+    def add_edge(self, from_node, to_node, interaction_forward="normal", interaction_backward="normal"):
+        if from_node in self.nodes and to_node in self.nodes:
+            self.edges.setdefault(from_node, []).append((to_node, interaction_forward))
+            difficulty = (self.node_difficulties.get(from_node, 1) + self.node_difficulties.get(to_node, 1)) / 2
+            self.difficulties[(from_node, to_node)] = difficulty
+
+
+    def generate_tree(self, node_difficulties):
+        if not node_difficulties:
+            return
         
-        self.edges.setdefault(from_node, []).append(to_node)
-        self.edges.setdefault(to_node, []).append(from_node)  # Assuming undirected graph
-        self.distances[(from_node, to_node)] = distance
-        self.distances[(to_node, from_node)] = distance
+        self.add_node(node_difficulties[0][0], node_difficulties[0][1])
+        parents = [node_difficulties[0][0]]
 
-    def generate_graph(self, node_list, edge_list):
-        # Nodes are now passed with their probability scores
-        for node, probability in node_list:
-            self.add_node(node, probability)
-        for from_node, to_node in edge_list:
-            self.add_edge(from_node, to_node)
+        for node, difficulty in node_difficulties[1:]:
+            self.add_node(node, difficulty)
+            parent_node = random.choice(parents)
+
+            self.add_edge(parent_node, node, "normal", "normal")
+            
+            if len(self.edges[parent_node]) >= 2:
+                parents.remove(parent_node)
+                
+
+            parents.append(node)
 
 def dijkstra(graph, initial):
     visited = {initial: 0}
@@ -52,13 +62,16 @@ def dijkstra(graph, initial):
         nodes.remove(min_node)
         current_weight = visited[min_node]
 
-        for edge in graph.edges[min_node]:
-            weight = current_weight + graph.distances[(min_node, edge)]
+        for edge_info in graph.edges[min_node]:
+            edge, _ = edge_info
+            weight = current_weight + graph.difficulties[(min_node, edge)]
             if edge not in visited or weight < visited[edge]:
                 visited[edge] = weight
                 path[edge] = min_node
 
     return visited, path
+
+
 
 class MapGeneration:
     def __init__(self, graph, start, goal):
@@ -66,6 +79,7 @@ class MapGeneration:
         self.current_location = start
         self.goal = goal
         self.game_over = False
+        self.breadcrumbs = [start]
 
     def play(self):
         print(f"Go from {self.current_location} to {self.goal}.")
@@ -79,45 +93,51 @@ class MapGeneration:
     def display_options(self):
         _, path = dijkstra(self.graph, self.current_location)
         print(f"\nYou are currently at {self.current_location}.")
-        print("Possible destinations and their encounter risks from here:")
-        for destination in self.graph.edges[self.current_location]:
-            probability = self.graph.distances[(self.current_location, destination)]
-            risk_level = self.probability_to_risk_level(probability)
-            print(f"  {destination}: {risk_level}")
+        
+        if self.current_location in self.graph.edges and self.graph.edges[self.current_location]:
+            print("Forward paths and their encounter difficulties:")
+            for destination, interaction_type in self.graph.edges[self.current_location]:
+                difficulty = self.graph.difficulties[(self.current_location, destination)]
+                risk_level = self.difficulty_to_risk_level(difficulty)
+                print(f"  {destination} ({interaction_type}): {risk_level}")
 
-        if self.goal in path:
-            print(f"\nDebugging: Easiest path to {self.goal} is through {path[self.goal]}.\n")
+        if len(self.breadcrumbs) > 1:
+            print("\nBacktrack to:")
+            print(f"  {self.breadcrumbs[-2]} (Previous location)")
         else:
-            print("\nNo direct path to goal. Explore the graph!\n")
+            print("\nNo paths leading from this location.")
 
-    def probability_to_risk_level(self, probability):
-        # Convert probability to a qualitative risk level
-        if probability < 0.4:
-            return "Low risk"
-        elif probability < 0.7:
-            return "Medium risk"
+    def difficulty_to_risk_level(self, difficulty):
+        if difficulty < 0.4:
+            return "Low difficulty"
+        elif difficulty < 0.7:
+            return "Medium difficulty"
         else:
-            return "High risk"
+            return "High difficulty"
 
     def move_player(self, new_location):
-        if new_location in self.graph.nodes and new_location in self.graph.edges[self.current_location]:
+        if new_location in [edge[0] for edge in self.graph.edges.get(self.current_location, [])]:
+            self.breadcrumbs.append(new_location)  
             self.current_location = new_location
             print(f"\nYou have moved to {new_location}.\n")
+        elif new_location == self.breadcrumbs[-2] if len(self.breadcrumbs) > 1 else None:
+            self.breadcrumbs.pop()
+            self.current_location = new_location
+            print(f"\nYou have moved back to {new_location}.\n")
         else:
             print("\nInvalid move. Please try again.\n")
+
+
 
     def check_win_condition(self):
         if self.current_location == self.goal:
             print(f"Congratulations! You've reached {self.goal} and won the game!")
             self.game_over = True
 
-node_probabilities = [("A", 0.7), ("B", 0.4), ("C", 0.9), ("D", 0.5)]
-# Edges are defined without weights, as weights will be calculated
-edges = [("A", "B"), ("B", "C"), ("A", "C"), ("C", "D")]
 
+node_difficulties = [("A", 0.7), ("B", 0.4), ("C", 0.9), ("D", 0.5), ("E", 0.8), ("F", 0.6)]
 graph = Graph()
-graph.generate_graph(node_probabilities, edges)
+graph.generate_tree(node_difficulties)
 
-# Initializing and starting the game
 game = MapGeneration(graph, "A", "D")
 game.play()
