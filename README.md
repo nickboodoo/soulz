@@ -5,15 +5,12 @@ In this game, you will embark on a journey through a mythical city where you wil
 See if you can beat the game on your first try by encountering the final boss and killing him!
 
 
+
 ## HOW TO RUN THE GAME
 1. Download the latest release
 2. Unzip release folder
 3. Run Soulz.exe
 
-
-## KNOWN BUGS
-1. Healing does not take an action during combat
-2. Tavern does not cost money
 
 
 ## RECENT PATCH NOTES
@@ -24,7 +21,12 @@ Version 1.8 Release Notes:
 4. Polished almost all game mechanics including win/lose conditions. 
 
 
-## PLANNED FEATURES
+
+### PLANNED FEATURES
 1. Use a graph/Dijkstra's algorithm for game progress
 2. Alter gameplay loop to add longevitiy to each run
 3. Incorporate a learning model for the final boss
+
+### KNOWN BUGS
+1. Healing does not take an action during combat
+2. Tavern does not cost money
