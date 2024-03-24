@@ -3,15 +3,33 @@ class Graph:
         self.nodes = set()
         self.edges = {}
         self.distances = {}
+        self.node_probabilities = {}
 
-    def add_node(self, value):
+    def add_node(self, value, probability=None):
         self.nodes.add(value)
+        if probability is not None:
+            # Assign a probability score to each node
+            self.node_probabilities[value] = probability
 
-    def add_edge(self, from_node, to_node, distance):
+    def add_edge(self, from_node, to_node):
+        if from_node in self.node_probabilities and to_node in self.node_probabilities:
+            # Calculate edge weight as the average of the nodes' probabilities
+            distance = (self.node_probabilities[from_node] + self.node_probabilities[to_node]) / 2
+        else:
+            # Default distance if probabilities are not defined
+            distance = 1
+        
         self.edges.setdefault(from_node, []).append(to_node)
         self.edges.setdefault(to_node, []).append(from_node)  # Assuming undirected graph
         self.distances[(from_node, to_node)] = distance
-        self.distances[(to_node, from_node)] = distance  # Assuming undirected graph
+        self.distances[(to_node, from_node)] = distance
+
+    def generate_graph(self, node_list, edge_list):
+        # Nodes are now passed with their probability scores
+        for node, probability in node_list:
+            self.add_node(node, probability)
+        for from_node, to_node in edge_list:
+            self.add_edge(from_node, to_node)
 
 def dijkstra(graph, initial):
     visited = {initial: 0}
@@ -61,15 +79,25 @@ class MapGeneration:
     def display_options(self):
         _, path = dijkstra(self.graph, self.current_location)
         print(f"\nYou are currently at {self.current_location}.")
-        print("Possible destinations and their distances from here:")
+        print("Possible destinations and their encounter risks from here:")
         for destination in self.graph.edges[self.current_location]:
-            distance = self.graph.distances[(self.current_location, destination)]
-            print(f"  {destination}: {distance} distance unit(s)")
+            probability = self.graph.distances[(self.current_location, destination)]
+            risk_level = self.probability_to_risk_level(probability)
+            print(f"  {destination}: {risk_level}")
 
         if self.goal in path:
-            print(f"\nDebugging: Shortest path to {self.goal} is through {path[self.goal]}.\n")
+            print(f"\nDebugging: Easiest path to {self.goal} is through {path[self.goal]}.\n")
         else:
             print("\nNo direct path to goal. Explore the graph!\n")
+
+    def probability_to_risk_level(self, probability):
+        # Convert probability to a qualitative risk level
+        if probability < 0.4:
+            return "Low risk"
+        elif probability < 0.7:
+            return "Medium risk"
+        else:
+            return "High risk"
 
     def move_player(self, new_location):
         if new_location in self.graph.nodes and new_location in self.graph.edges[self.current_location]:
@@ -83,16 +111,12 @@ class MapGeneration:
             print(f"Congratulations! You've reached {self.goal} and won the game!")
             self.game_over = True
 
-# Setting up the game graph
+node_probabilities = [("A", 0.7), ("B", 0.4), ("C", 0.9), ("D", 0.5)]
+# Edges are defined without weights, as weights will be calculated
+edges = [("A", "B"), ("B", "C"), ("A", "C"), ("C", "D")]
+
 graph = Graph()
-graph.add_node("A")
-graph.add_node("B")
-graph.add_node("C")
-graph.add_node("D")
-graph.add_edge("A", "B", 1)
-graph.add_edge("B", "C", 2)
-graph.add_edge("A", "C", 4)
-graph.add_edge("C", "D", 1)
+graph.generate_graph(node_probabilities, edges)
 
 # Initializing and starting the game
 game = MapGeneration(graph, "A", "D")
