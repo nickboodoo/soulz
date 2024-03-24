@@ -6,6 +6,17 @@ Version 1.5 Release Notes:
 2. Created new test directories where I unit test my code. 
 
 
+SOULZ 2.0:
+
+I will be focusing on converting my game loop by:
+    removing the random encounter chance nonsense
+        replacing this with a graph
+        players will traverse through the graph
+        encounters will be a function of weights (values)
+            use dijkstra's algorithm to determine weights (values)
+
+
+
 TODO:
 
 -work on character stats
