@@ -9,6 +9,8 @@ Now I can assess the difficulty vs the dijkstra score  SO THAT I can make the sh
 I want this map to remain a tree THEREFORE it will not loop. In order to have gameplay longevity,
     I will allow backtracking through previously explored nodes. When the player chooses to backtrack, I will 
     make sure that the new battles they encounter will be way harder than the previous version of the same node. 
+
+Change GOAL from arbitrary to last node because of wasted node opportunities resulting from maximum jump distance = 2
         
 
 HOW DOES THIS AFFECT MAIN PROGRAM??

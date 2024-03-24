@@ -21,25 +21,39 @@ class Graph:
             difficulty = (self.node_difficulties.get(from_node, 1) + self.node_difficulties.get(to_node, 1)) / 2
             self.difficulties[(from_node, to_node)] = difficulty
 
+    # CHECK FOR CIRCULAR PATHS (EXPEN$IVE)
+    def direct_path_exists(self, node_a, node_b):
+        return node_b in [edge[0] for edge in self.edges.get(node_a, [])] or \
+               node_a in [edge[0] for edge in self.edges.get(node_b, [])]
 
-    def generate_tree(self, node_difficulties):
+
+    # NEEDS TO BE REWORKED
+    def generate_graph(self, node_difficulties):
         if not node_difficulties:
             return
         
         self.add_node(node_difficulties[0][0], node_difficulties[0][1])
-        parents = [node_difficulties[0][0]]
-
         for node, difficulty in node_difficulties[1:]:
             self.add_node(node, difficulty)
-            parent_node = random.choice(parents)
 
-            self.add_edge(parent_node, node, "normal", "normal")
-            
-            if len(self.edges[parent_node]) >= 2:
-                parents.remove(parent_node)
-                
+        # Initial parent-child connections
+        for i in range(1, len(node_difficulties)):
+            parent_index = random.randint(0, i-1)
+            parent_node = node_difficulties[parent_index][0]
+            child_node = node_difficulties[i][0]
+            if not self.direct_path_exists(parent_node, child_node):
+                self.add_edge(parent_node, child_node, "normal", "normal")
 
-            parents.append(node)
+        # Additional random connections to make it a graph, while checking for direct circular paths
+        extra_edges = len(node_difficulties) // 2  # Adjust the number of extra connections as needed
+        while extra_edges > 0:
+            # Convert self.nodes to a list for random.sample
+            node_a, node_b = random.sample(list(self.nodes), 2)
+            if not self.direct_path_exists(node_a, node_b):
+                self.add_edge(node_a, node_b, "normal", "normal")
+                extra_edges -= 1
+
+
 
 def dijkstra(graph, initial):
     visited = {initial: 0}
@@ -137,7 +151,7 @@ class MapGeneration:
 
 node_difficulties = [("A", 0.7), ("B", 0.4), ("C", 0.9), ("D", 0.5), ("E", 0.8), ("F", 0.6)]
 graph = Graph()
-graph.generate_tree(node_difficulties)
+graph.generate_graph(node_difficulties)
 
 game = MapGeneration(graph, "A", "D")
 game.play()
