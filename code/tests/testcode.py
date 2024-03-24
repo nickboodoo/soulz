@@ -27,7 +27,7 @@ class Graph:
                node_a in [edge[0] for edge in self.edges.get(node_b, [])]
 
 
-    # NEEDS TO BE REWORKED
+    # REWORKED GRAPH GENERATION (from tree generation logic)
     def generate_graph(self, node_difficulties):
         if not node_difficulties:
             return
@@ -36,7 +36,6 @@ class Graph:
         for node, difficulty in node_difficulties[1:]:
             self.add_node(node, difficulty)
 
-        # Initial parent-child connections
         for i in range(1, len(node_difficulties)):
             parent_index = random.randint(0, i-1)
             parent_node = node_difficulties[parent_index][0]
@@ -44,16 +43,13 @@ class Graph:
             if not self.direct_path_exists(parent_node, child_node):
                 self.add_edge(parent_node, child_node, "normal", "normal")
 
-        # Additional random connections to make it a graph, while checking for direct circular paths
-        extra_edges = len(node_difficulties) // 2  # Adjust the number of extra connections as needed
+        # TREE -> GRAPH
+        extra_edges = len(node_difficulties) // 2
         while extra_edges > 0:
-            # Convert self.nodes to a list for random.sample
             node_a, node_b = random.sample(list(self.nodes), 2)
             if not self.direct_path_exists(node_a, node_b):
                 self.add_edge(node_a, node_b, "normal", "normal")
                 extra_edges -= 1
-
-
 
 def dijkstra(graph, initial):
     visited = {initial: 0}
@@ -84,8 +80,6 @@ def dijkstra(graph, initial):
                 path[edge] = min_node
 
     return visited, path
-
-
 
 class MapGeneration:
     def __init__(self, graph, start, goal):
