@@ -15,3 +15,30 @@ I will be focusing on converting my game loop by:
         players will traverse through the graph
         encounters will be a function of weights (values)
             use dijkstra's algorithm to determine weights (values)
+<<<<<<< HEAD
+=======
+
+BUGS:
+
+clear screen after user uses item (sucessful or not)
+
+clear screen on final boss
+
+
+
+
+TODO:
+
+in live code
+    change amount of health potions you can buy
+    change explore and fast travel menuing so that it is faster to type
+
+change ability to use ancient runestone
+use sleep function for different print lines
+show how many zinders you have in inventory
+
+add repurcussion for evading the final boss
+
+
+in testcode, write algorithm to generate graph so that i dont need hardcode
+>>>>>>> soulz-v2.0
