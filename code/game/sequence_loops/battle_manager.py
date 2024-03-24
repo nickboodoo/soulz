@@ -79,7 +79,7 @@ class BattleManager:
         self.handle_loot(loot)
 
     def player_defeat(self):
-        print("You lose!")
+        input("You lose!")
         exit()
 
     def generate_loot(self):
