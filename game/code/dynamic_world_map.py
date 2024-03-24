@@ -14,20 +14,16 @@ class DynamicWorldMap:
 
         self.edges[value] = []
 
-
     def add_edge(self, from_node, to_node, interaction_forward="normal", interaction_backward="normal"):
         if from_node in self.nodes and to_node in self.nodes:
             self.edges.setdefault(from_node, []).append((to_node, interaction_forward))
             difficulty = (self.node_difficulties.get(from_node, 1) + self.node_difficulties.get(to_node, 1)) / 2
             self.difficulties[(from_node, to_node)] = difficulty
 
-    # CHECK FOR CIRCULAR PATHS (EXPEN$IVE)
     def direct_path_exists(self, node_a, node_b):
         return node_b in [edge[0] for edge in self.edges.get(node_a, [])] or \
                node_a in [edge[0] for edge in self.edges.get(node_b, [])]
 
-
-    # REWORKED GRAPH GENERATION (from tree generation logic)
     def generate_graph(self, node_difficulties):
         if not node_difficulties:
             return
