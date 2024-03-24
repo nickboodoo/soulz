@@ -37,6 +37,7 @@ class GameplayManager:
         self.goal = goal
         self.game_over = False
         self.breadcrumbs = [start]
+        
 
     def initiate_gameplay_loop(self):
         print(f"Go from {self.current_location} to {self.goal}.")
