@@ -1,8 +1,7 @@
-
-
-
 import random
 
+"""A base class for all characters in the game (both the player and enemies), 
+containing common attributes like health, attack power, and basic actions like attack and defend."""
 
 class Character:
     def __init__(self, name, health, attack_power):

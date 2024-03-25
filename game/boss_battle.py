@@ -1,36 +1,33 @@
-
-
-
 from enemy import Enemy
-from utils import print_status
+from combat import Combat
+from utils import clear_screen, print_status
 
+"""A specialized battle class for significant, challenging encounters against a boss enemy. 
+It includes unique dialogues and battle mechanics."""
 
-class BossBattle:
+class BossBattle(Combat):
     def __init__(self, player):
-        self.player = player
-        self.soul_of_zinder = Enemy("Soul of Zinder", 100, 55)
+        super().__init__(player)
+        self.soul_of_zinder = Enemy("Soul of Zinder", 100, 55)  # Assuming Enemy class definition
 
     def battle_soul_of_zinder(self):
+        self.clear_screen()
         print(f"The {self.soul_of_zinder.name} appears!")
         input("Prepare yourself for a challenging battle!")
 
-        while self.player.is_alive() and self.soul_of_zinder.is_alive():
+        while self.check_alive(self.player) and self.check_alive(self.soul_of_zinder):
             print_status(self.player, self.soul_of_zinder)
             choice = input("Choose your action: [a]ttack, [u]se item, [f]lee: ").lower()
 
             if choice == "a":
-                player_damage = self.player.attack()
-                self.soul_of_zinder.defend(player_damage)
-                print(f"{self.player.name} attacks the {self.soul_of_zinder.name} for {player_damage} damage.")
-
-                if self.soul_of_zinder.is_alive():
-                    enemy_damage = self.soul_of_zinder.attack()
-                    self.player.defend(enemy_damage)
-                    print(f"The {self.soul_of_zinder.name} attacks back for {enemy_damage} damage.")
+                self.initiate_attack(self.player, self.soul_of_zinder)
+                if self.check_alive(self.soul_of_zinder):
+                    self.initiate_attack(self.soul_of_zinder, self.player)
 
             elif choice == "u":
                 self.player.check_inventory()
                 item_to_use = input("Enter the item you want to use (or [cancel] to go back): ").lower()
+                clear_screen()
 
                 if item_to_use == "cancel":
                     continue

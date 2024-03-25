@@ -1,10 +1,9 @@
-
-
-# PASS PLAYER INTO A CLASS WHEN YOU NEED TO USE A PLAYER OBJECT
-
 import random
 from character import Character
+from utils import clear_screen
 
+"""Inherits from the Character class, adding specific attributes and functionalities for the player,
+including inventory management, character stats like level and lifesteal, and the ability to use items."""
 
 class Player(Character):
     MAX_HEALTH = 100
@@ -16,7 +15,6 @@ class Player(Character):
         self.inventory = {}
         self.enemies_killed = 0
         self.zinders_collected = 0
-        self.ancient_runestones_collected = 0
         self.base_damage = 10
         self.level = 1
 
@@ -61,27 +59,34 @@ class Player(Character):
         for item, quantity in self.inventory.items():
             print(f"{item.capitalize()}: {quantity}")
 
+
+    def use_health_potion(self, item_name):
+        if self.health == self.MAX_HEALTH:
+            input("Your health is already full.")
+            return True  # Indicates that the item use was processed, even if it wasn't effective
+        heal_amount = 20
+        self.health = min(self.MAX_HEALTH, self.health + heal_amount)
+        self.inventory[item_name] -= 1
+        input(f"You used a health potion and gained {heal_amount} health.")
+        return True
+
+
     def use_item(self, item):
-        if item in self.inventory and self.inventory[item] > 0:
-
-            if item == "health potion":
-
-                if self.health == self.MAX_HEALTH:
-                    input("Your health is already full.")
-
-                else:
-                    heal_amount = 20
-                    self.health = min(self.MAX_HEALTH, self.health + heal_amount)
-                    self.inventory[item] -= 1
-                    input(f"You used a health potion and gained {heal_amount} health.")
-            if item == "Ancient Runestone":
-                input("You used an Ancient Runestone, I wonder what it does...")
-                self.inventory[item] -= 1
-            else:
-                input("You cannot use that item.")
-
-        else:
+        # Check if the item is not in the inventory or has no stock left
+        if item not in self.inventory or self.inventory[item] <= 0:
             input("You don't have that item or you've run out.")
+            clear_screen()
+            return
+        
+        # Handle specific item usage
+        if item == "health potion":
+            if self.use_health_potion(item):
+                clear_screen()
+                return
+
+        # If the item doesn't match any known item
+        input("You cannot use that item.")
+        clear_screen()
 
     def print_attack_info(lifesteal_percentage, base_damage):
         print(f"Current lifesteal: {lifesteal_percentage*100:.0f}% \nBase damage range: {base_damage} - {base_damage + 10}.")

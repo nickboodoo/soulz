@@ -1,11 +1,9 @@
-
-
-# INITIALIZES GAME SETUP BY GENERATING MAP AND CREATING GAME OBJECT FROM GAMEPLAYMANAGER
-
 from dynamic_world_map import DynamicWorldMap
+from utils import clear_screen
 from player import Player
 from gameplay_manager import GameplayManager
 
+"""Initializes game settings, including creating the game world and the player character."""
 
 class GameSetup:
     def __init__(self):
@@ -19,6 +17,7 @@ class GameSetup:
     def initialize_game_settings(self, start_node, end_node):
         self.node_difficulties = [("A", 0.7), ("B", 0.4), ("C", 0.9), ("D", 0.5), ("E", 0.8), ("F", 0.6)]
         player_name = input("Enter your name: ")
+        clear_screen()
         self.player = Player(player_name)
 
         # pass player object into gameloop (probably)

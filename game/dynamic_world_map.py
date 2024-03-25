@@ -1,9 +1,7 @@
-
-
-# CREATES A WORLD MAP
-
 import random
 
+"""Manages the game's world map, including nodes (places) and edges (paths between places),
+and the difficulties associated with traveling these paths."""
 
 class DynamicWorldMap:
     def __init__(self):

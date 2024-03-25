@@ -1,10 +1,8 @@
-
-
-# PASS ENEMY INTO A CLASS WHEN YOU NEED TO USE AN ENEMY OBJECT
-
 import random
 from character import Character
 
+"""Also inherits from the Character class, representing various enemies in the game.
+It includes a class method to create random enemy types."""
 
 class Enemy(Character):
     def __init__(self, name, health, attack_power):

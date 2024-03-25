@@ -5,6 +5,7 @@ from enemy import Enemy
 from utils import clear_screen, navigate_player_menu
 from utils import dijkstra
 
+"""Manages the gameplay loop, allowing the player to navigate through the world, encounter enemies, and progress towards a goal."""
 
 class GameplayManager:
     def __init__(self, graph, start, goal, player):
@@ -17,23 +18,35 @@ class GameplayManager:
         
 
     def initiate_gameplay_loop(self):
-        print(f"Objective: Go from {self.current_location} to {self.goal}.")
-
-        while self.player.is_alive():
+        while not self.game_over and self.player.is_alive():
             self.display_movement_options()
             print("Menu")
+            print("Journal")
+            print("Hint")
             print("Quit")
             choice = input("Where would you like to go? ")
+            clear_screen()
+
             if choice.lower() == "menu":
                 navigate_player_menu(self.player)
 
+            elif choice.lower() == "hint":
+                self.suggest_optimal_path()
+            
+            elif choice.lower() == "journal":
+                self.show_objective()
+
             elif choice.lower() == "quit":
                 print("Thanks for playing!")
-                break
+                self.game_over = True
 
             else:
                 self.move_player(choice.upper())
-                self.generate_encounter()
+
+                if self.current_location != self.goal:
+                    self.generate_encounter()
+                    clear_screen()
+
                 self.check_win_condition()
 
     def display_movement_options(self):
@@ -54,6 +67,24 @@ class GameplayManager:
             print(f"  {self.breadcrumbs[-2]} (Previous location)")
         else:
             print("\nNo paths leading from this location.")
+
+    def show_objective(self):
+        print(f"Objective: Go from {self.current_location} to {self.goal}.")
+
+    def suggest_optimal_path(self):
+        _, path = dijkstra(self.graph, self.current_location)
+        if self.goal in path:
+            # Construct the path from the current location to the goal
+            next_step = self.goal
+            path_to_goal = [next_step]
+            while next_step != self.current_location:
+                next_step = path[next_step]
+                path_to_goal.append(next_step)
+            path_to_goal.reverse()
+            
+            print(f"Suggested optimal path to goal: {' -> '.join(path_to_goal)}")
+        else:
+            print("You are lost, try exploring some more.")
 
     def difficulty_to_risk_level(self, difficulty):
         if difficulty < 0.4:
@@ -77,16 +108,18 @@ class GameplayManager:
 
     def check_win_condition(self):
         if self.player.is_alive() and self.current_location == self.goal:
-            print(f"Congratulations! You've reached {self.goal} and won the game!")
-            self.game_over = True
-            exit()
-        if not self.player.is_alive():
-            print("Game over.")
+            print(f"You have reached {self.goal}. A menacing presence awaits...")
+            boss_battle = BossBattle(self.player)
+            boss_battle.battle_soul_of_zinder()
+            if self.player.is_alive():
+                print("Congratulations! You've defeated the Soul of Zinder and won the game!")
+                self.game_over = True
+                exit()
+            else:
+                print("You have fallen in battle... The game is over.")
+                self.game_over = True
+                exit()
     
-    # RUN THIS LOOP WHEN THE PLAYER STARTS THE GAME OR FINISHES ENCOUNTER AT A NODE (i think)
-    
-
-    # OVERHAUL THIS CONCEPT
     def generate_encounter(self):
         encounter_chance = random.randint(1, 10)
 
@@ -99,7 +132,7 @@ class GameplayManager:
             found_items = random.randint(1, 3)
 
             for _ in range(found_items):
-                loot_pool = ["Ancient Runestone", "Gold", "Zinder"]
+                loot_pool = ["Gold", "Zinder"]
                 loot = random.choice(loot_pool)
 
                 if loot == "Gold":
@@ -115,7 +148,3 @@ class GameplayManager:
                 else:
                     self.player.add_to_inventory(loot)
                     input(f"You found {loot}!")
-
-            if "Ancient Runestone" in self.player.inventory and self.player.inventory["Ancient Runestone"] >= 4:
-                final_boss_battle = BossBattle(self.player)
-                final_boss_battle.battle_soul_of_zinder()

@@ -1,31 +1,31 @@
-
-
-# CALL THIS FUNCTION WHEN THE PLAYER GETS TO A NODE TO INSTANTIATE A BATTLE ENCOUNTER
-
 import math
 import random
+from combat import Combat
 from utils import clear_screen, print_dashes, print_status
 
+"""Manages combat encounters between the player and enemies.
+It handles the flow of battle, including making choices like attacking, using items, or fleeing."""
 
-class BattleManager:
+class BattleManager(Combat):
     def __init__(self, player):
-        self.player = player
+        super().__init__(player)
 
     def start_battle(self, enemy):
+        self.clear_screen()
         print_dashes(72)
         print(f"You've encountered a {enemy.name}!".center(72))
 
-        while self.player.is_alive() and enemy.is_alive():
+        while self.check_alive(self.player) and self.check_alive(enemy):
             print_dashes(72)
             print_status(self.player, enemy)
             print_dashes(72)
             choice = input("Choose your action: [a]ttack, [u]se item, [f]lee: ").lower()
-            clear_screen()
+            self.clear_screen()
 
             if choice == "a":
-                self.player_attack(enemy)
-                if enemy.is_alive():
-                    self.enemy_attack(enemy)
+                self.initiate_attack(self.player, enemy)
+                if self.check_alive(enemy):
+                    self.initiate_attack(enemy, self.player)
                 else:
                     print_dashes(72)
                     print_status(self.player, enemy)
@@ -59,6 +59,7 @@ class BattleManager:
     def player_use_item(self):
         self.player.check_inventory()
         item_to_use = input("Enter the item you want to use (or [cancel] to go back): ").lower()
+        clear_screen()
 
         if item_to_use != "cancel":
             self.player.use_item(item_to_use)
@@ -86,7 +87,7 @@ class BattleManager:
         exit()
 
     def generate_loot(self):
-        loot_pool = ["Ancient Runestone", "Gold", "Zinder"]
+        loot_pool = ["Gold", "Zinder"]
         return random.choice(loot_pool)
 
     def handle_loot(self, loot):
@@ -95,11 +96,6 @@ class BattleManager:
             self.player.stats["gold"] += gold_amount
             input(f"You found {gold_amount} gold!")
 
-        elif loot == "Ancient Runestone":
-            self.player.add_to_inventory("Ancient Runestone") 
-            input(f"You found an {loot}!")
-
-                    
         elif loot == "Zinder":  
             self.player.zinders_collected += 1
             input(f"You found {loot}! You now have {self.player.zinders_collected} Zinders.")
