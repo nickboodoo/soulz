@@ -21,9 +21,10 @@ class GameplayManager:
 
         while self.player.is_alive():
             self.display_movement_options()
+            print("Menu")
+            print("Quit")
             choice = input("Where would you like to go? ")
             if choice.lower() == "menu":
-                # REFACTOR THIS 
                 navigate_player_menu(self.player)
 
             elif choice.lower() == "quit":

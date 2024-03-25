@@ -1,7 +1,5 @@
 change node names from letter to names (maybe)
 
-show menu and quit as options in "where would you like to go"
-
 make a boss fight happen at d
 
 
