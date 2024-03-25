@@ -11,7 +11,7 @@ class BattleManager(Combat):
         super().__init__(player)
 
     def start_battle(self, enemy):
-        self.clear_screen()
+        clear_screen()
         print_dashes(72)
         print(f"You've encountered a {enemy.name}!".center(72))
 
@@ -20,7 +20,7 @@ class BattleManager(Combat):
             print_status(self.player, enemy)
             print_dashes(72)
             choice = input("Choose your action: [a]ttack, [u]se item, [f]lee: ").lower()
-            self.clear_screen()
+            clear_screen()
 
             if choice == "a":
                 self.initiate_attack(self.player, enemy)

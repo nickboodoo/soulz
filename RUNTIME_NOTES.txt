@@ -1,5 +1,2 @@
 change node names from letter to names (maybe)
 
-make a boss fight happen at d
-
-

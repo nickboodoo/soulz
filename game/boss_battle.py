@@ -11,7 +11,7 @@ class BossBattle(Combat):
         self.soul_of_zinder = Enemy("Soul of Zinder", 100, 55)  # Assuming Enemy class definition
 
     def battle_soul_of_zinder(self):
-        self.clear_screen()
+        clear_screen()
         print(f"The {self.soul_of_zinder.name} appears!")
         input("Prepare yourself for a challenging battle!")
 

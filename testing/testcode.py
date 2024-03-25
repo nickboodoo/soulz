@@ -21,7 +21,7 @@ class BattleManager(Combat):
         super().__init__(player)
 
     def start_battle(self, enemy):
-        self.clear_screen()
+        clear_screen()
         print_dashes(72)
         print(f"You've encountered a {enemy.name}!".center(72))
 
@@ -30,7 +30,7 @@ class BattleManager(Combat):
             print_status(self.player, enemy)
             print_dashes(72)
             choice = input("Choose your action: [a]ttack, [u]se item, [f]lee: ").lower()
-            self.clear_screen()
+            clear_screen()
 
             if choice == "a":
                 self.initiate_attack(self.player, enemy)
@@ -125,7 +125,7 @@ class BossBattle(Combat):
         self.soul_of_zinder = Enemy("Soul of Zinder", 100, 55)  # Assuming Enemy class definition
 
     def battle_soul_of_zinder(self):
-        self.clear_screen()
+        clear_screen()
         print(f"The {self.soul_of_zinder.name} appears!")
         input("Prepare yourself for a challenging battle!")
 

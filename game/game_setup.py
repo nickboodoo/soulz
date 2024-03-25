@@ -20,8 +20,6 @@ class GameSetup:
         clear_screen()
         self.player = Player(player_name)
 
-        # pass player object into gameloop (probably)
-
         self.start_node = start_node
         self.end_node = end_node
 
