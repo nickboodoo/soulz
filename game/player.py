@@ -1,6 +1,9 @@
-import random
 
-from code.characters.character import Character
+
+# PASS PLAYER INTO A CLASS WHEN YOU NEED TO USE A PLAYER OBJECT
+
+import random
+from character import Character
 
 
 class Player(Character):
@@ -13,6 +16,7 @@ class Player(Character):
         self.inventory = {}
         self.enemies_killed = 0
         self.zinders_collected = 0
+        self.ancient_runestones_collected = 0
         self.base_damage = 10
         self.level = 1
 
@@ -70,6 +74,9 @@ class Player(Character):
                     self.health = min(self.MAX_HEALTH, self.health + heal_amount)
                     self.inventory[item] -= 1
                     input(f"You used a health potion and gained {heal_amount} health.")
+            if item == "Ancient Runestone":
+                input("You used an Ancient Runestone, I wonder what it does...")
+                self.inventory[item] -= 1
             else:
                 input("You cannot use that item.")
 

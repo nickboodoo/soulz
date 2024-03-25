@@ -1,6 +1,9 @@
-import random
+
 
 # CREATES A WORLD MAP
+
+import random
+
 
 class DynamicWorldMap:
     def __init__(self):

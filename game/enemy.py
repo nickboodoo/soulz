@@ -1,6 +1,9 @@
-import random
 
-from code.characters.character import Character
+
+# PASS ENEMY INTO A CLASS WHEN YOU NEED TO USE AN ENEMY OBJECT
+
+import random
+from character import Character
 
 
 class Enemy(Character):
