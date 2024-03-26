@@ -1,0 +1,16 @@
+make a journal page
+
+make a quest page
+
+allow user to buy multiple items
+
+when player gets to a dead end, their backtracking options are not printed but
+	backtracked still works if you remember where you were
+
+player menu is displayed twice (from home)
+
+make bigger health potions
+
+make a shortcut for health potion so that you dont need to type out health potion
+
+after fleeing from boss, clear screen
