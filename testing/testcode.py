@@ -1,8 +1,6 @@
-import math
 import random
-
-"""Manages combat encounters between the player and enemies.
-It handles the flow of battle, including making choices like attacking, using items, or fleeing."""
+import math
+import os
 
 class Combat:
     def __init__(self, player):
@@ -15,6 +13,190 @@ class Combat:
 
     def check_alive(self, character):
         return character.is_alive()
+    
+class Character:
+    def __init__(self, name, health, attack_power):
+        self.name = name
+        self.health = health
+        self.attack_power = attack_power
+
+    def attack(self):
+        return random.randint(5, self.attack_power)
+
+    def defend(self, damage):
+        self.health -= damage
+
+    def is_alive(self):
+        return self.health > 0
+
+class Player(Character):
+    MAX_HEALTH = 100
+    MIN_HEALTH = 0
+
+    def __init__(self, name):
+        super().__init__(name, self.MAX_HEALTH, 10)
+        self.stats = {"gold": 100}
+        self.inventory = {}
+        self.enemies_killed = 0
+        self.zinders_collected = 0
+        self.base_damage = 10
+        self.level = 1
+
+    def level_up(self):
+        self.level += 1
+        self.base_damage += 5
+        input(f"Congratulations! You've reached level {self.level}. Your base damage has increased.")
+
+    def attack(self):
+        lifesteal_percentage = self.zinders_collected * 0.01
+        lifesteal_amount = int(self.base_damage * lifesteal_percentage)
+        self.health += lifesteal_amount
+        self.health = min(self.MAX_HEALTH, self.health)
+        return random.randint(self.base_damage, self.base_damage + 10)
+
+    def defend(self, damage):
+        self.health = max(self.MIN_HEALTH, self.health - damage)
+
+    def is_alive(self):
+        return self.health > self.MIN_HEALTH
+
+    def add_to_inventory(self, item, quantity=1):
+        if item in self.inventory:
+            self.inventory[item] += quantity
+
+        else:
+            self.inventory[item] = quantity
+
+    def remove_from_inventory(self, item, quantity=1):
+        if item in self.inventory:
+
+            if self.inventory[item] >= quantity:
+
+                self.inventory[item] -= quantity
+                return True
+            
+        return False
+
+    def check_inventory(self):
+        print("\nInventory:")
+
+        for item, quantity in self.inventory.items():
+            print(f"{item.capitalize()}: {quantity}")
+
+
+    def use_health_potion(self, item_name):
+        if self.health == self.MAX_HEALTH:
+            input("Your health is already full.")
+            return True  # Indicates that the item use was processed, even if it wasn't effective
+        heal_amount = 20
+        self.health = min(self.MAX_HEALTH, self.health + heal_amount)
+        self.inventory[item_name] -= 1
+        input(f"You used a health potion and gained {heal_amount} health.")
+        return True
+
+
+    def use_item(self, item):
+        # Check if the item is not in the inventory or has no stock left
+        if item not in self.inventory or self.inventory[item] <= 0:
+            input("You don't have that item or you've run out.")
+            clear_screen()
+            return
+        
+        # Handle specific item usage
+        if item == "health potion":
+            if self.use_health_potion(item):
+                clear_screen()
+                return
+
+        # If the item doesn't match any known item
+        input("You cannot use that item.")
+        clear_screen()
+
+    def print_attack_info(self):
+        lifesteal_percentage = self.zinders_collected * 0.01
+        base_damage = self.base_damage
+        print(f"Current lifesteal: {lifesteal_percentage*100:.0f}% \nBase damage range: {base_damage} - {base_damage + 10}.")
+
+
+    def view_character_stats(self):
+        lifesteal_percentage = self.zinders_collected * 0.01
+        print("\nCharacter Stats:")
+        print(f"Health: {self.health}/{self.MAX_HEALTH}")
+        print(f"Level: {self.level}")
+        print(f"Current lifesteal: {lifesteal_percentage*100:.0f}%")
+        print(f"Attack damage range: {self.base_damage} - {self.base_damage + 10}")
+
+
+class Enemy(Character):
+    def __init__(self, name, health, attack_power):
+        super().__init__(name, health, attack_power)
+
+    @classmethod
+    def create_random_enemy(cls):
+        enemy_types = [
+            ("Abyssal Revenant", 50, 25),
+            ("Crimson Shade", 60, 22),
+            ("Dreadbone Wraith", 35, 30),
+            ("Spectral Sentinel", 80, 15),
+            ("Netherghast Fiend", 40, 20),
+            ("Voidborne Behemoth", 100, 17),
+            ("Rimefrost Phantom", 65, 18),
+            ("Shadowveil Assassin", 45, 25),
+            ("Infernal Chimera", 90, 22),
+            ("Searing Phoenix", 70, 22),
+            ("Eldritch Gorgon", 85, 35),
+        ]
+        
+        name, health, attack_power = random.choice(enemy_types)
+        return cls(name, health, attack_power)
+
+class BossBattle(Combat):
+    def __init__(self, player):
+        super().__init__(player)
+        self.soul_of_zinder = Enemy("Soul of Zinder", 100, 55)  # Assuming Enemy class definition
+
+    def battle_soul_of_zinder(self):
+        clear_screen()
+        print(f"The {self.soul_of_zinder.name} appears!")
+        input("Prepare yourself for a challenging battle!")
+
+        while self.check_alive(self.player) and self.check_alive(self.soul_of_zinder):
+            print_status(self.player, self.soul_of_zinder)
+            choice = input("Choose your action: [a]ttack, [u]se item, [f]lee: ").lower()
+
+            if choice == "a":
+                self.initiate_attack(self.player, self.soul_of_zinder)
+                if self.check_alive(self.soul_of_zinder):
+                    self.initiate_attack(self.soul_of_zinder, self.player)
+
+            elif choice == "u":
+                self.player.check_inventory()
+                item_to_use = input("Enter the item you want to use (or [cancel] to go back): ").lower()
+                clear_screen()
+
+                if item_to_use == "cancel":
+                    continue
+                self.player.use_item(item_to_use)
+
+            elif choice == "f":
+                print("You fled from the battle!")
+                return
+            
+            else:
+                print("Invalid choice. Please try again.")
+
+        if self.player.is_alive():
+            print(f"Congratulations! You defeated the {self.soul_of_zinder.name}!")
+            input("Thank for playing. Click ENTER to exit.")
+            return True
+
+        elif not self.player.is_alive():
+            print("You lost the battle against the Soul of Zinder!")
+            return False
+
+        else:
+            # Player fled
+            return None
 
 class BattleManager(Combat):
     def __init__(self, player):
@@ -114,78 +296,6 @@ class BattleManager(Combat):
             self.player.add_to_inventory(loot)
             input(f"You found {loot}!")
 
-
-
-"""A specialized battle class for significant, challenging encounters against a boss enemy. 
-It includes unique dialogues and battle mechanics."""
-
-class BossBattle(Combat):
-    def __init__(self, player):
-        super().__init__(player)
-        self.soul_of_zinder = Enemy("Soul of Zinder", 100, 55)  # Assuming Enemy class definition
-
-    def battle_soul_of_zinder(self):
-        clear_screen()
-        print(f"The {self.soul_of_zinder.name} appears!")
-        input("Prepare yourself for a challenging battle!")
-
-        while self.check_alive(self.player) and self.check_alive(self.soul_of_zinder):
-            print_status(self.player, self.soul_of_zinder)
-            choice = input("Choose your action: [a]ttack, [u]se item, [f]lee: ").lower()
-
-            if choice == "a":
-                self.initiate_attack(self.player, self.soul_of_zinder)
-                if self.check_alive(self.soul_of_zinder):
-                    self.initiate_attack(self.soul_of_zinder, self.player)
-
-            elif choice == "u":
-                self.player.check_inventory()
-                item_to_use = input("Enter the item you want to use (or [cancel] to go back): ").lower()
-                clear_screen()
-
-                if item_to_use == "cancel":
-                    continue
-                self.player.use_item(item_to_use)
-
-            elif choice == "f":
-                print("You fled from the battle!")
-                return
-            
-            else:
-                print("Invalid choice. Please try again.")
-
-        if self.player.is_alive():
-            print(f"Congratulations! You defeated the {self.soul_of_zinder.name}!")
-            input("Thank for playing. Click ENTER to exit.")
-            quit()
-
-        else:
-            print("You lost the battle against the Soul of Zinder!")
-
-
-"""A base class for all characters in the game (both the player and enemies), 
-containing common attributes like health, attack power, and basic actions like attack and defend."""
-
-class Character:
-    def __init__(self, name, health, attack_power):
-        self.name = name
-        self.health = health
-        self.attack_power = attack_power
-
-    def attack(self):
-        return random.randint(5, self.attack_power)
-
-    def defend(self, damage):
-        self.health -= damage
-
-    def is_alive(self):
-        return self.health > 0
-
-
-
-"""Manages the game's world map, including nodes (places) and edges (paths between places),
-and the difficulties associated with traveling these paths."""
-
 class DynamicWorldMap:
     def __init__(self):
         self.nodes = set()
@@ -232,38 +342,6 @@ class DynamicWorldMap:
                 self.add_edge(node_a, node_b, "normal", "normal")
                 extra_edges -= 1
 
-
-"""Also inherits from the Character class, representing various enemies in the game.
-It includes a class method to create random enemy types."""
-
-class Enemy(Character):
-    def __init__(self, name, health, attack_power):
-        super().__init__(name, health, attack_power)
-
-    @classmethod
-    def create_random_enemy(cls):
-        enemy_types = [
-            ("Abyssal Revenant", 50, 25),
-            ("Crimson Shade", 60, 22),
-            ("Dreadbone Wraith", 35, 30),
-            ("Spectral Sentinel", 80, 15),
-            ("Netherghast Fiend", 40, 20),
-            ("Voidborne Behemoth", 100, 17),
-            ("Rimefrost Phantom", 65, 18),
-            ("Shadowveil Assassin", 45, 25),
-            ("Infernal Chimera", 90, 22),
-            ("Searing Phoenix", 70, 22),
-            ("Eldritch Gorgon", 85, 35),
-        ]
-        
-        name, health, attack_power = random.choice(enemy_types)
-        return cls(name, health, attack_power)
-    
-
-
-
-"""Initializes game settings, including creating the game world and the player character."""
-
 class GameSetup:
     def __init__(self):
         self.node_difficulties = []
@@ -279,8 +357,6 @@ class GameSetup:
         clear_screen()
         self.player = Player(player_name)
 
-        # pass player object into gameloop (probably)
-
         self.start_node = start_node
         self.end_node = end_node
 
@@ -295,16 +371,11 @@ class GameSetup:
         else:
             print("Game not set up. Call setup_game first.")
 
-
-import random
-
-
-"""Manages the gameplay loop, allowing the player to navigate through the world, encounter enemies, and progress towards a goal."""
-
 class GameplayManager:
     def __init__(self, graph, start, goal, player):
         self.graph = graph
         self.current_location = start
+        self.start_node = start  # Add this line to explicitly store the start node
         self.goal = goal
         self.player = player
         self.game_over = False
@@ -314,14 +385,15 @@ class GameplayManager:
     def initiate_gameplay_loop(self):
         while not self.game_over and self.player.is_alive():
             self.display_movement_options()
-            print("Menu")
-            print("Journal")
-            print("Hint")
-            print("Quit")
-            choice = input("Where would you like to go? ")
+            print("\nMain Menu:")
+            print("--> [Home]")
+            print("--> [Journal]")
+            print("--> [Hint]")
+            print("--> [Quit]")
+            choice = input("\nWhere would you like to go? Enter a path or a menu option: ")
             clear_screen()
 
-            if choice.lower() == "menu":
+            if choice.lower() == "home":
                 navigate_player_menu(self.player)
 
             elif choice.lower() == "hint":
@@ -335,32 +407,29 @@ class GameplayManager:
                 self.game_over = True
 
             else:
-                self.move_player(choice.upper())
-
-                if self.current_location != self.goal:
-                    self.generate_encounter()
-                    clear_screen()
+                # Attempt to move the player to the chosen location
+                if self.move_player(choice.upper()):
+                    # If the move was successful and not at the goal, generate an encounter
+                    if self.current_location != self.goal:
+                        self.generate_encounter()
+                        clear_screen()
+                # If the move_player returned False, it means the input was invalid, 
+                # and we do not need to execute any further actions for this iteration.
 
                 self.check_win_condition()
 
+
+
     def display_movement_options(self):
         _, path = dijkstra(self.graph, self.current_location)
-        print(f"\nYou are currently at {self.current_location}.")
+        print(f"\nYou are currently at {self.current_location}.\n")
         
         if self.current_location in self.graph.edges and self.graph.edges[self.current_location]:
-            print("Forward paths and their encounter difficulties:")
+            print("You can progress to these location(s):")
             for destination, interaction_type in self.graph.edges[self.current_location]:
                 difficulty = self.graph.difficulties[(self.current_location, destination)]
                 risk_level = self.difficulty_to_risk_level(difficulty)
                 print(f"  {destination} ({interaction_type}): {risk_level}")
-
-
-
-        if len(self.breadcrumbs) > 1:
-            print("\nBacktrack to:")
-            print(f"  {self.breadcrumbs[-2]} (Previous location)")
-        else:
-            print("\nNo paths leading from this location.")
 
     def show_objective(self):
         print(f"Objective: Go from {self.current_location} to {self.goal}.")
@@ -390,29 +459,43 @@ class GameplayManager:
 
     def move_player(self, new_location):
         if new_location in [edge[0] for edge in self.graph.edges.get(self.current_location, [])]:
-            self.breadcrumbs.append(new_location)  
+            self.breadcrumbs.append(new_location)
             self.current_location = new_location
             print(f"\nYou have moved to {new_location}.\n")
+            return True
         elif new_location == self.breadcrumbs[-2] if len(self.breadcrumbs) > 1 else None:
             self.breadcrumbs.pop()
             self.current_location = new_location
             print(f"\nYou have moved back to {new_location}.\n")
+            return True
         else:
             print("\nInvalid move. Please try again.\n")
+            return False
+
 
     def check_win_condition(self):
         if self.player.is_alive() and self.current_location == self.goal:
             print(f"You have reached {self.goal}. A menacing presence awaits...")
             boss_battle = BossBattle(self.player)
-            boss_battle.battle_soul_of_zinder()
-            if self.player.is_alive():
+            battle_outcome = boss_battle.battle_soul_of_zinder()
+
+            if battle_outcome is True:
+                # Victory: The player has defeated the boss.
                 print("Congratulations! You've defeated the Soul of Zinder and won the game!")
                 self.game_over = True
                 exit()
-            else:
+            elif battle_outcome is False:
+                # Defeat: The player was defeated by the boss.
                 print("You have fallen in battle... The game is over.")
                 self.game_over = True
                 exit()
+            elif battle_outcome is None:
+                # Fleeing: The player chose to flee the battle.
+                print("You fled from the final battle... The journey is not yet complete.")
+                # Reset the player's current location to the start node and clear breadcrumbs.
+                self.current_location = self.start_node
+                self.breadcrumbs = [self.start_node]
+                # The game continues, allowing the player to attempt the battle again.
     
     def generate_encounter(self):
         encounter_chance = random.randint(1, 10)
@@ -442,111 +525,6 @@ class GameplayManager:
                 else:
                     self.player.add_to_inventory(loot)
                     input(f"You found {loot}!")
-
-
-"""Inherits from the Character class, adding specific attributes and functionalities for the player,
-including inventory management, character stats like level and lifesteal, and the ability to use items."""
-
-class Player(Character):
-    MAX_HEALTH = 100
-    MIN_HEALTH = 0
-
-    def __init__(self, name):
-        super().__init__(name, self.MAX_HEALTH, 10)
-        self.stats = {"gold": 100}
-        self.inventory = {}
-        self.enemies_killed = 0
-        self.zinders_collected = 0
-        self.base_damage = 10
-        self.level = 1
-
-    def level_up(self):
-        self.level += 1
-        self.base_damage += 5
-        input(f"Congratulations! You've reached level {self.level}. Your base damage has increased.")
-
-    def attack(self):
-        lifesteal_percentage = self.zinders_collected * 0.01
-        lifesteal_amount = int(self.base_damage * lifesteal_percentage)
-        self.health += lifesteal_amount
-        self.health = min(self.MAX_HEALTH, self.health)
-        return random.randint(self.base_damage, self.base_damage + 10)
-
-    def defend(self, damage):
-        self.health = max(self.MIN_HEALTH, self.health - damage)
-
-    def is_alive(self):
-        return self.health > self.MIN_HEALTH
-
-    def add_to_inventory(self, item, quantity=1):
-        if item in self.inventory:
-            self.inventory[item] += quantity
-
-        else:
-            self.inventory[item] = quantity
-
-    def remove_from_inventory(self, item, quantity=1):
-        if item in self.inventory:
-
-            if self.inventory[item] >= quantity:
-
-                self.inventory[item] -= quantity
-                return True
-            
-        return False
-
-    def check_inventory(self):
-        print("\nInventory:")
-
-        for item, quantity in self.inventory.items():
-            print(f"{item.capitalize()}: {quantity}")
-
-
-    def use_health_potion(self, item_name):
-        if self.health == self.MAX_HEALTH:
-            input("Your health is already full.")
-            return True  # Indicates that the item use was processed, even if it wasn't effective
-        heal_amount = 20
-        self.health = min(self.MAX_HEALTH, self.health + heal_amount)
-        self.inventory[item_name] -= 1
-        input(f"You used a health potion and gained {heal_amount} health.")
-        return True
-
-
-    def use_item(self, item):
-        # Check if the item is not in the inventory or has no stock left
-        if item not in self.inventory or self.inventory[item] <= 0:
-            input("You don't have that item or you've run out.")
-            clear_screen()
-            return
-        
-        # Handle specific item usage
-        if item == "health potion":
-            if self.use_health_potion(item):
-                clear_screen()
-                return
-
-        # If the item doesn't match any known item
-        input("You cannot use that item.")
-        clear_screen()
-
-    def print_attack_info(lifesteal_percentage, base_damage):
-        print(f"Current lifesteal: {lifesteal_percentage*100:.0f}% \nBase damage range: {base_damage} - {base_damage + 10}.")
-
-    def view_character_stats(self):
-        lifesteal_percentage = self.zinders_collected * 0.01
-        print("\nCharacter Stats:")
-        print(f"Health: {self.health}/{self.MAX_HEALTH}")
-        print(f"Level: {self.level}")
-        print(f"Current lifesteal: {lifesteal_percentage*100:.0f}%")
-        print(f"Attack damage range: {self.base_damage} - {self.base_damage + 10}")
-
-    def level_up(self):
-        self.level += 1
-        self.base_damage += 5
-        input(f"Congratulations! You've reached level {self.level}. Your base damage has increased.")
-
-import os
 
 # CLEARS SCREEN
 
@@ -685,6 +663,8 @@ def dijkstra(graph, initial):
     return visited, path
 
 if __name__ == "__main__":
+
+    input("Welcome to Soulz!")
 
     setup = GameSetup()
     setup.initialize_game_settings("A", "D")
