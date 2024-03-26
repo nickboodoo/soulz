@@ -1,7 +1,7 @@
-from dynamic_world_map import DynamicWorldMap
-from utils import clear_screen
-from player import Player
-from gameplay_manager import GameplayManager
+from maps.dynamic_world_map import DynamicWorldMap
+from utility.utils import clear_screen
+from characters.player import Player
+from managers.gameplay_manager import GameplayManager
 
 """Initializes game settings, including creating the game world and the player character."""
 

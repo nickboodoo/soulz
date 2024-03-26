@@ -1,9 +1,9 @@
 import random
-from battle_manager import BattleManager
-from boss_battle import BossBattle
-from enemy import Enemy
-from utils import clear_screen, navigate_player_menu
-from utils import dijkstra
+from managers.battle_manager import BattleManager
+from combat.boss_battle import BossBattle
+from characters.enemy import Enemy
+from utility.utils import clear_screen, navigate_player_menu
+from utility.utils import dijkstra
 
 """Manages the gameplay loop, allowing the player to navigate through the world, encounter enemies, and progress towards a goal."""
 

@@ -1,7 +1,7 @@
 import math
 import random
-from combat import Combat
-from utils import clear_screen, print_dashes, print_status
+from combat.combat import Combat
+from utility.utils import clear_screen, print_dashes, print_status
 
 """Manages combat encounters between the player and enemies.
 It handles the flow of battle, including making choices like attacking, using items, or fleeing."""
