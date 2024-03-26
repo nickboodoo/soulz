@@ -20,14 +20,15 @@ class GameplayManager:
     def initiate_gameplay_loop(self):
         while not self.game_over and self.player.is_alive():
             self.display_movement_options()
-            print("Menu")
-            print("Journal")
-            print("Hint")
-            print("Quit")
-            choice = input("Where would you like to go? ")
+            print("\nMain Menu:")
+            print("--> [Home]")
+            print("--> [Journal]")
+            print("--> [Hint]")
+            print("--> [Quit]")
+            choice = input("\nWhere would you like to go? Enter a path or a menu option: ")
             clear_screen()
 
-            if choice.lower() == "menu":
+            if choice.lower() == "home":
                 navigate_player_menu(self.player)
 
             elif choice.lower() == "hint":
@@ -41,32 +42,29 @@ class GameplayManager:
                 self.game_over = True
 
             else:
-                self.move_player(choice.upper())
-
-                if self.current_location != self.goal:
-                    self.generate_encounter()
-                    clear_screen()
+                # Attempt to move the player to the chosen location
+                if self.move_player(choice.upper()):
+                    # If the move was successful and not at the goal, generate an encounter
+                    if self.current_location != self.goal:
+                        self.generate_encounter()
+                        clear_screen()
+                # If the move_player returned False, it means the input was invalid, 
+                # and we do not need to execute any further actions for this iteration.
 
                 self.check_win_condition()
 
+
+
     def display_movement_options(self):
         _, path = dijkstra(self.graph, self.current_location)
-        print(f"\nYou are currently at {self.current_location}.")
+        print(f"\nYou are currently at {self.current_location}.\n")
         
         if self.current_location in self.graph.edges and self.graph.edges[self.current_location]:
-            print("Forward paths and their encounter difficulties:")
+            print("You can progress to these location(s):")
             for destination, interaction_type in self.graph.edges[self.current_location]:
                 difficulty = self.graph.difficulties[(self.current_location, destination)]
                 risk_level = self.difficulty_to_risk_level(difficulty)
                 print(f"  {destination} ({interaction_type}): {risk_level}")
-
-
-
-        if len(self.breadcrumbs) > 1:
-            print("\nBacktrack to:")
-            print(f"  {self.breadcrumbs[-2]} (Previous location)")
-        else:
-            print("\nNo paths leading from this location.")
 
     def show_objective(self):
         print(f"Objective: Go from {self.current_location} to {self.goal}.")
@@ -96,15 +94,19 @@ class GameplayManager:
 
     def move_player(self, new_location):
         if new_location in [edge[0] for edge in self.graph.edges.get(self.current_location, [])]:
-            self.breadcrumbs.append(new_location)  
+            self.breadcrumbs.append(new_location)
             self.current_location = new_location
             print(f"\nYou have moved to {new_location}.\n")
+            return True
         elif new_location == self.breadcrumbs[-2] if len(self.breadcrumbs) > 1 else None:
             self.breadcrumbs.pop()
             self.current_location = new_location
             print(f"\nYou have moved back to {new_location}.\n")
+            return True
         else:
             print("\nInvalid move. Please try again.\n")
+            return False
+
 
     def check_win_condition(self):
         if self.player.is_alive() and self.current_location == self.goal:
