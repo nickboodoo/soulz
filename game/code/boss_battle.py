@@ -1,6 +1,6 @@
-from enemy import Enemy
-from combat import Combat
-from utils import clear_screen, print_status
+from code.enemy import Enemy
+from code.combat import Combat
+from code.utils import clear_screen, print_status
 
 """A specialized battle class for significant, challenging encounters against a boss enemy. 
 It includes unique dialogues and battle mechanics."""

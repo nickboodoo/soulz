@@ -1,6 +1,6 @@
 import random
-from character import Character
-from utils import clear_screen
+from code.character import Character
+from code.utils import clear_screen
 
 """Inherits from the Character class, adding specific attributes and functionalities for the player,
 including inventory management, character stats like level and lifesteal, and the ability to use items."""

@@ -1,5 +1,5 @@
 import random
-from character import Character
+from code.character import Character
 
 """Also inherits from the Character class, representing various enemies in the game.
 It includes a class method to create random enemy types."""
