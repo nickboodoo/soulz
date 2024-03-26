@@ -14,3 +14,5 @@ make bigger health potions
 make a shortcut for health potion so that you dont need to type out health potion
 
 after fleeing from boss, clear screen
+
+bossfight formatting needs to be fixed

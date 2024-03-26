@@ -29,3 +29,5 @@ Version 2.0 Release Notes:
 ### KNOWN BUGS
 1. Healing does not take an action during combat
 2. Tavern does not cost money
+3. When player gets to a dead end, their backtracking options are not printed but
+	backtracked still works if they remember where they were
