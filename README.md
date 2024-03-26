@@ -30,3 +30,4 @@ Version 1.8 Release Notes:
 ### KNOWN BUGS
 1. Healing does not take an action during combat
 2. Tavern does not cost money
+3. IF YOU FLEE FROM FINAL BOSS IT COUNTS AS A WIN

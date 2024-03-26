@@ -43,7 +43,12 @@ class BossBattle(Combat):
         if self.player.is_alive():
             print(f"Congratulations! You defeated the {self.soul_of_zinder.name}!")
             input("Thank for playing. Click ENTER to exit.")
-            quit()
+            return True
+
+        elif not self.player.is_alive():
+            print("You lost the battle against the Soul of Zinder!")
+            return False
 
         else:
-            print("You lost the battle against the Soul of Zinder!")
+            # Player fled
+            return None

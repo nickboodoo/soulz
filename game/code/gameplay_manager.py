@@ -11,6 +11,7 @@ class GameplayManager:
     def __init__(self, graph, start, goal, player):
         self.graph = graph
         self.current_location = start
+        self.start_node = start  # Add this line to explicitly store the start node
         self.goal = goal
         self.player = player
         self.game_over = False
@@ -110,17 +111,26 @@ class GameplayManager:
 
     def check_win_condition(self):
         if self.player.is_alive() and self.current_location == self.goal:
-            print(f"You have reached {self.goal}. A menacing presence awaits...")
             boss_battle = BossBattle(self.player)
-            boss_battle.battle_soul_of_zinder()
-            if self.player.is_alive():
+            battle_outcome = boss_battle.battle_soul_of_zinder()
+            
+            if battle_outcome is True:
+                # Victory logic
                 print("Congratulations! You've defeated the Soul of Zinder and won the game!")
                 self.game_over = True
                 exit()
-            else:
+            elif battle_outcome is False:
+                # Defeat logic
                 print("You have fallen in battle... The game is over.")
                 self.game_over = True
                 exit()
+            else:
+                # Fleeing logic
+                print("You fled from the final battle... The journey is not yet complete.")
+                self.current_location = self.start_node  # Reset player's location to the starting node
+                self.breadcrumbs = [self.start_node]  # Reset the breadcrumbs if needed
+                # Any additional reset logic here
+                # Do not end the game; allow the player to try again
     
     def generate_encounter(self):
         encounter_chance = random.randint(1, 10)
