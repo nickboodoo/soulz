@@ -1,0 +1,21 @@
+1. when player gets to a dead end, their backtracking options are not printed but
+	backtracked still works if you remember where you were
+
+2. player menu is displayed twice (from home)
+
+3. bossfight formatting needs to be fixed
+
+4. after fleeing from boss, clear screen
+
+5. make a shortcut for health potion so that you dont need to type out health potion
+
+6. allow user to buy multiple items
+
+7. make a journal page
+
+8. make a quest page
+
+9. make bigger health potions
+
+
+
