@@ -17,5 +17,7 @@
 
 9. make bigger health potions
 
+10. work on screen object concept
+
 
 

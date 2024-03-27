@@ -26,3 +26,4 @@ class Enemy(Character):
         
         name, health, attack_power = random.choice(enemy_types)
         return cls(name, health, attack_power)
+    

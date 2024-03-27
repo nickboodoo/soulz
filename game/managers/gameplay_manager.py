@@ -22,10 +22,11 @@ class GameplayManager:
         while not self.game_over and self.player.is_alive():
             self.display_movement_options()
             print("\nMain Menu:")
-            print("--> [Home]")
-            print("--> [Journal]")
-            print("--> [Hint]")
-            print("--> [Quit]")
+            print("--> [Home]         View the Player Menu")
+            print("--> [Back]         Go back to the last visited location")
+            print("--> [Journal]      See your current objective")
+            print("--> [Hint]         View the optimal path to beating the game")
+            print("--> [Quit]         Close the game")
             choice = input("\nWhere would you like to go? Enter a path or a menu option: ")
             clear_screen()
 
@@ -37,6 +38,13 @@ class GameplayManager:
             
             elif choice.lower() == "journal":
                 self.show_objective()
+
+            elif choice.lower() == "back":
+                if len(self.breadcrumbs) > 1:
+                    self.move_player(self.breadcrumbs[-2])
+                else:
+                    print("You're at the starting location; there's nowhere to go back to.")
+
 
             elif choice.lower() == "quit":
                 print("Thanks for playing!")
@@ -57,15 +65,26 @@ class GameplayManager:
 
 
     def display_movement_options(self):
-        _, path = dijkstra(self.graph, self.current_location)
+        # Get the current possible moves from the current location
+        possible_moves = self.graph.edges.get(self.current_location, [])
+        
         print(f"\nYou are currently at {self.current_location}.\n")
         
-        if self.current_location in self.graph.edges and self.graph.edges[self.current_location]:
+        # Check if there are forward moves available
+        if possible_moves:
             print("You can progress to these location(s):")
-            for destination, interaction_type in self.graph.edges[self.current_location]:
+            for destination, interaction_type in possible_moves:
                 difficulty = self.graph.difficulties[(self.current_location, destination)]
                 risk_level = self.difficulty_to_risk_level(difficulty)
                 print(f"  {destination} ({interaction_type}): {risk_level}")
+        else:
+            # If no forward moves, provide an option to move back to the last node, if available
+            if len(self.breadcrumbs) > 1:
+                last_node = self.breadcrumbs[-2]  # The last node the player was in
+                print(f"You have reached a dead end. You can go back to {last_node}.")
+            else:
+                print("This is the starting node. There are no previous nodes to go back to.")
+
 
     def show_objective(self):
         print(f"Objective: Go from {self.current_location} to {self.goal}.")
