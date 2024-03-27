@@ -20,7 +20,7 @@ class GameSetup:
         self.start_node = start_node
         self.end_node = end_node
 
-    def initialize_dev_settings(self):
+    def initialize_player(self):
         # Check for God Mode at the start
         god_mode_input = input("Welcome to Soulz! ")
         god_mode_enabled = god_mode_input.lower() == "tgm"
