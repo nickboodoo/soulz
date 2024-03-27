@@ -1,18 +1,10 @@
-3. bossfight formatting needs to be fixed
+1. work on screen object concept
 
-4. after fleeing from boss, clear screen
+2. make a journal page
 
-5. make a shortcut for health potion so that you dont need to type out health potion
+3. make a quest page
 
-6. allow user to buy multiple items
-
-7. make a journal page
-
-8. make a quest page
-
-9. make bigger health potions
-
-10. work on screen object concept
+4. make bigger health potions
 
 
 

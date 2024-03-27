@@ -62,33 +62,46 @@ class Player(Character):
             print(f"{item.capitalize()}: {quantity}")
 
 
-    def use_health_potion(self, item_name):
+    def use_health_potion(self, item_name, quantity=1):
         if self.health == self.MAX_HEALTH:
             input("Your health is already full.")
             return True  # Indicates that the item use was processed, even if it wasn't effective
-        heal_amount = 20
-        self.health = min(self.MAX_HEALTH, self.health + heal_amount)
-        self.inventory[item_name] -= 1
-        input(f"You used a health potion and gained {heal_amount} health.")
+        
+        heal_amount_per_potion = 20
+        total_heal_amount = heal_amount_per_potion * quantity
+        self.health += total_heal_amount
+        self.health = min(self.MAX_HEALTH, self.health)
+        
+        self.inventory[item_name] -= quantity
+        input(f"You used {quantity} health potion(s) and gained {total_heal_amount} health.")
         return True
 
 
+
     def use_item(self, item):
-        # Check if the item is not in the inventory or has no stock left
+        # Check if the item is in the inventory or has no stock left
         if item not in self.inventory or self.inventory[item] <= 0:
             input("You don't have that item or you've run out.")
             clear_screen()
             return
         
+        # Ask for quantity
+        try:
+            quantity = int(input(f"How many {item}s do you want to use? "))
+        except ValueError:
+            input("Invalid number. Please try again.")
+            return
+        
+        # Check if the player has enough of the item
+        if self.inventory[item] < quantity:
+            input(f"You don't have enough {item}s.")
+            clear_screen()
+            return
+        
         # Handle specific item usage
         if item == "health potion":
-            if self.use_health_potion(item):
-                clear_screen()
-                return
-
-        # If the item doesn't match any known item
-        input("You cannot use that item.")
-        clear_screen()
+            self.use_health_potion(item, quantity)
+            clear_screen()
 
     def print_attack_info(self, lifesteal_percentage, base_damage):
         print(f"Current lifesteal: {lifesteal_percentage*100:.0f}% \nBase damage range: {base_damage} - {base_damage + 10}.")

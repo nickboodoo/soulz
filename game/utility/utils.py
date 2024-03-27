@@ -58,38 +58,49 @@ def stay_at_tavern(player):
 
 def buy_items(player):
     store_items = {
-        "health potion": 20,
+        "health potion": 20,  # Cost per item
     }
     print("\nWelcome to the store!")
     print("Here are the items available for purchase:")
-    
+
     while True:
-        print("Your Gold:", player.stats["gold"])
-
+        print("\nYour Gold:", player.stats["gold"])
         for item, price in store_items.items():
-            print(f"{item.capitalize()} - {price} gold")
+            print(f"{item.capitalize()} - {price} gold each")
 
-        choice = input("Enter the item you want to buy (or [done] to exit): ").lower()
+        item_choice = input("\nEnter the item you want to buy (or [done] to exit): ").lower()
         clear_screen()
 
-        if choice == "done":
+        if item_choice == "done":
             break
 
-        elif choice in store_items:
-
-            if player.stats["gold"] >= store_items[choice]:
-                player.add_to_inventory(choice)
-                player.stats["gold"] -= store_items[choice]
-                input(f"You bought {choice}!")
+        elif item_choice in store_items:
+            try:
+                quantity = int(input(f"How many {item_choice}s would you like to buy? "))
+                if quantity <= 0:
+                    raise ValueError  # Handle non-positive integers
+            except ValueError:
+                print("Please enter a valid number.")
+                input("Press Enter to continue...")
                 clear_screen()
+                continue
 
+            total_cost = store_items[item_choice] * quantity
+            if player.stats["gold"] >= total_cost:
+                player.add_to_inventory(item_choice, quantity)
+                player.stats["gold"] -= total_cost
+                print(f"You bought {quantity} {item_choice}(s) for {total_cost} gold!")
+                input("Press Enter to continue...")
+                clear_screen()
             else:
-                input("You don't have enough gold to buy that.")
+                print("You don't have enough gold for that purchase.")
+                input("Press Enter to continue...")
                 clear_screen()
-
         else:
-            input("That item is not available in the store.")
+            print("That item is not available in the store.")
+            input("Press Enter to continue...")
             clear_screen()
+
 
 # PRINT PLAYER MENU
 
