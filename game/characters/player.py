@@ -9,7 +9,7 @@ class Player(Character):
     MAX_HEALTH = 100
     MIN_HEALTH = 0
 
-    def __init__(self, name):
+    def __init__(self, name, god_mode=False):  # Added god_mode parameter
         super().__init__(name, self.MAX_HEALTH, 10)
         self.stats = {"gold": 100}
         self.inventory = {}
@@ -17,6 +17,7 @@ class Player(Character):
         self.zinders_collected = 0
         self.base_damage = 10
         self.level = 1
+        self.god_mode = god_mode  # Added god_mode attribute
 
     def level_up(self):
         self.level += 1
@@ -31,7 +32,8 @@ class Player(Character):
         return random.randint(self.base_damage, self.base_damage + 10)
 
     def defend(self, damage):
-        self.health = max(self.MIN_HEALTH, self.health - damage)
+        if not self.god_mode:  # Check if god_mode is active
+            self.health = max(self.MIN_HEALTH, self.health - damage)
 
     def is_alive(self):
         return self.health > self.MIN_HEALTH

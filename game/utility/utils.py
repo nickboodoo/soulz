@@ -22,7 +22,6 @@ def print_status(player, enemy=None):
 # PRINT PLAYER MENU
 
 def navigate_player_menu(player):
-    print("PLAYER MENU")
     while True:
         print_player_menu()
         choice = input("Enter your choice: ").lower()

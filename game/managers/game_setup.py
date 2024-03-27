@@ -16,12 +16,19 @@ class GameSetup:
 
     def initialize_game_settings(self, start_node, end_node):
         self.node_difficulties = [("A", 0.7), ("B", 0.4), ("C", 0.9), ("D", 0.5), ("E", 0.8), ("F", 0.6)]
-        player_name = input("Enter your name: ")
-        clear_screen()
-        self.player = Player(player_name)
 
         self.start_node = start_node
         self.end_node = end_node
+
+    def initialize_dev_settings(self):
+        # Check for God Mode at the start
+        god_mode_input = input("Welcome to Soulz! ")
+        god_mode_enabled = god_mode_input.lower() == "tgm"
+
+        player_name = input("Enter your name: ")
+        self.player = Player(player_name, god_mode=god_mode_enabled)  # Use the god_mode parameter
+        
+        clear_screen()
 
     def setup_game(self):
         self.graph = DynamicWorldMap()
