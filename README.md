@@ -17,10 +17,12 @@
 
 
 ## RECENT PATCH NOTES
-Version 2.0 Release Notes:
-1. Game now includes a randomly generated map
-2. Updated screen and menu interfaces
-3. New gameplay loop
+Version 2.2 Release Notes:
+1. Created new developer tools for debugging
+2. Overhauled health potion usage - can now buy and use multiple
+3. Fixed minor bugs relating to boss fight
+4. Fixed backtracking bug
+5. Added a [Back] menu option that allows the player to backtrack to previous node
 
 
 
@@ -31,5 +33,4 @@ Version 2.0 Release Notes:
 ### KNOWN BUGS
 1. Healing does not take an action during combat
 2. Tavern does not cost money
-3. When player gets to a dead end, their backtracking options are not printed but
-	backtracking still works if they remember where they were
+
