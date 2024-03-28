@@ -2,9 +2,6 @@ import math
 import random
 import os
 
-"""Manages combat encounters between the player and enemies.
-It handles the flow of battle, including making choices like attacking, using items, or fleeing."""
-
 class Combat:
     def __init__(self, player):
         self.player = player
@@ -71,9 +68,6 @@ class BattleManager(Combat):
         else:
             self.player.add_to_inventory(loot)
             input(f"You found {loot}!")
-
-
-"""Manages the gameplay loop, allowing the player to navigate through the world, encounter enemies, and progress towards a goal."""
 
 class GameplayManager:
     def __init__(self, graph, start, goal, player):
@@ -205,12 +199,6 @@ class GameplayManager:
                     self.player.add_to_inventory(loot)
                     input(f"You found {loot}!")
 
-
-
-
-"""A base class for all characters in the game (both the player and enemies), 
-containing common attributes like health, attack power, and basic actions like attack and defend."""
-
 class Character:
     def __init__(self, name, health, attack_power):
         self.name = name
@@ -226,11 +214,6 @@ class Character:
     def is_alive(self):
         return self.health > 0
     
-
-"""Inherits from the Character class, adding specific attributes and functionalities for the player,
-including inventory management, character stats like level and lifesteal, and the ability to use items."""
-
-
 class Player(Character):
     MAX_HEALTH = 100
     MIN_HEALTH = 0
@@ -406,11 +389,6 @@ class Player(Character):
                 input("Press Enter to continue...")
                 clear_screen()
 
-
-
-"""Also inherits from the Character class, representing various enemies in the game.
-It includes a class method to create random enemy types."""
-
 class Enemy(Character):
     def __init__(self, name, health, attack_power):
         super().__init__(name, health, attack_power)
@@ -434,8 +412,6 @@ class Enemy(Character):
         name, health, attack_power = random.choice(enemy_types)
         return cls(name, health, attack_power)
     
-
-
 class Combat:
     def __init__(self, player):
         self.player = player
@@ -448,10 +424,6 @@ class Combat:
     def check_alive(self, character):
         return character.is_alive()
     
-
-"""A specialized battle class for significant, challenging encounters against a boss enemy. 
-It includes unique dialogues and battle mechanics."""
-
 class BossBattle(Combat):
     def __init__(self, player):
         super().__init__(player)
@@ -501,10 +473,6 @@ class BossBattle(Combat):
             # Player fled
             return None
 
-
-"""Manages the game's world map, including nodes (places) and edges (paths between places),
-and the difficulties associated with traveling these paths."""
-
 class DynamicWorldMap:
     def __init__(self):
         self.nodes = set()
@@ -551,8 +519,6 @@ class DynamicWorldMap:
                 self.add_edge(node_a, node_b, "normal", "normal")
                 extra_edges -= 1
 
-# CALCULATES SHORTEST PATH (GOAL)
-
 def dijkstra(graph, initial):
     visited = {initial: 0}
     path = {}
@@ -582,10 +548,6 @@ def dijkstra(graph, initial):
                 path[edge] = min_node
 
     return visited, path
-
-
-
-"""Initializes game settings, including creating the game world and the player character."""
 
 class GameSetup:
     def __init__(self):
@@ -622,11 +584,8 @@ class GameSetup:
         else:
             print("Game not set up. Call setup_game first.")
 
-
-
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
-
 
 def print_dashes(x):
     dash = '-'
@@ -710,7 +669,6 @@ class ScreenManager:
         print("[t]ravel to tavern")
         print("[l]eave city")
 
-
 class BattleScreen(Screen):
     def __init__(self, battle_manager, enemy):
         super().__init__(battle_manager.player)
@@ -750,9 +708,6 @@ class BattleScreen(Screen):
         if not self.battle_manager.player.is_alive():
             print("You lose!")
 
-
-
-
 class UseItemScreen(Screen):
     def display(self):
         # First, display the inventory to the player.
@@ -784,8 +739,6 @@ class UseItemScreen(Screen):
             print(f"Used {quantity} of {item_to_use}.")
         else:
             print(f"Could not use {item_to_use}.")
-
-
 
 class NavigationMenuScreen:
     def __init__(self, game_manager):
@@ -834,8 +787,6 @@ class NavigationMenuScreen:
 
                 self.game_manager.check_win_condition()
 
-
-
 class IntroScreen:
     def __init__(self, setup):
         self.setup = setup
@@ -843,9 +794,6 @@ class IntroScreen:
     def display_intro(self):
         self.setup.initialize_player()
         clear_screen()
-
-
-
 
 class InventoryScreen(Screen):
     def display(self):
@@ -877,10 +825,6 @@ class StayAtTavernScreen(Screen):
     def handle_input(self):
         input("Press Enter to continue...")
 
-
-
-
-
 class GameEngine:
     def __init__(self):
         self.setup = GameSetup()
@@ -904,11 +848,3 @@ class GameEngine:
 if __name__ == "__main__":
     game_engine = GameEngine()
     game_engine.run()
-
-
-
-
-
-
-
-
