@@ -1,4 +1,4 @@
-from managers.game_setup import GameSetup
+from game_setup import GameSetup
 
 
 if __name__ == "__main__":
