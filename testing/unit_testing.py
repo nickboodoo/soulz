@@ -13,11 +13,12 @@ class Combat:
 
     def check_alive(self, character):
         return character.is_alive()
-
+# 3 SCREENS
 class BattleManager(Combat):
     def __init__(self, player):
         super().__init__(player)
 
+    # MOVE THIS INTO ITS OWN SCREEN CLASS
     def player_attack(self, enemy):
         print_dashes(72)
         player_damage = self.player.attack()
@@ -35,6 +36,7 @@ class BattleManager(Combat):
         else:
             self.player_defeat()
 
+    # MOVE THIS INTO ITS OWN SCREEN CLASS
     def player_victory(self, enemy):
         print(f"You defeated the {enemy.name}!")
         self.player.enemies_killed += 1
@@ -55,6 +57,7 @@ class BattleManager(Combat):
         loot_pool = ["Gold", "Zinder"]
         return random.choice(loot_pool)
 
+    # MOVE THIS INTO ITS OWN SCREEN CLASS
     def handle_loot(self, loot):
         if loot == "Gold":
             gold_amount = random.randint(1, 100)
@@ -68,25 +71,23 @@ class BattleManager(Combat):
         else:
             self.player.add_to_inventory(loot)
             input(f"You found {loot}!")
-
+# 3 SCREENS
 class GameplayManager:
     def __init__(self, graph, start, goal, player):
         self.graph = graph
         self.current_location = start
-        self.start_node = start  # Add this line to explicitly store the start node
+        self.start_node = start
         self.goal = goal
         self.player = player
         self.game_over = False
         self.breadcrumbs = [start]
         
-
+    # MOVE THIS INTO ITS OWN SCREEN CLASS
     def display_movement_options(self):
-        # Get the current possible moves from the current location
         possible_moves = self.graph.edges.get(self.current_location, [])
         
         print(f"\nYou are currently at {self.current_location}.\n")
         
-        # Check if there are forward moves available
         if possible_moves:
             print("You can progress to these location(s):")
             for destination, interaction_type in possible_moves:
@@ -94,21 +95,20 @@ class GameplayManager:
                 risk_level = self.difficulty_to_risk_level(difficulty)
                 print(f"  {destination} ({interaction_type}): {risk_level}")
         else:
-            # If no forward moves, provide an option to move back to the last node, if available
             if len(self.breadcrumbs) > 1:
-                last_node = self.breadcrumbs[-2]  # The last node the player was in
+                last_node = self.breadcrumbs[-2]
                 print(f"You have reached a dead end. You can go back to {last_node}.")
             else:
                 print("This is the starting node. There are no previous nodes to go back to.")
 
-
+    # MOVE THIS INTO ITS OWN SCREEN CLASS
     def show_objective(self):
         print(f"Objective: Go from {self.current_location} to {self.goal}.")
 
+    # MOVE THIS INTO ITS OWN SCREEN CLASS
     def suggest_optimal_path(self):
         _, path = dijkstra(self.graph, self.current_location)
         if self.goal in path:
-            # Construct the path from the current location to the goal
             next_step = self.goal
             path_to_goal = [next_step]
             while next_step != self.current_location:
@@ -142,7 +142,6 @@ class GameplayManager:
         else:
             print("\nInvalid move. Please try again.\n")
             return False
-
 
     def check_win_condition(self):
         if self.player.is_alive() and self.current_location == self.goal:
@@ -198,7 +197,7 @@ class GameplayManager:
                 else:
                     self.player.add_to_inventory(loot)
                     input(f"You found {loot}!")
-
+# 9 SCREENS
 class Character:
     def __init__(self, name, health, attack_power):
         self.name = name
@@ -218,7 +217,7 @@ class Player(Character):
     MAX_HEALTH = 100
     MIN_HEALTH = 0
 
-    def __init__(self, name, god_mode=False):  # Added god_mode parameter
+    def __init__(self, name, god_mode=False):
         super().__init__(name, self.MAX_HEALTH, 10)
         self.stats = {"gold": 100}
         self.inventory = {}
@@ -226,8 +225,9 @@ class Player(Character):
         self.zinders_collected = 0
         self.base_damage = 10
         self.level = 1
-        self.god_mode = god_mode  # Added god_mode attribute
+        self.god_mode = god_mode
 
+    # MOVE THIS INTO ITS OWN SCREEN CLASS
     def level_up(self):
         self.level += 1
         self.base_damage += 5
@@ -241,8 +241,8 @@ class Player(Character):
         return random.randint(self.base_damage, self.base_damage + 10)
 
     def defend(self, damage):
-        if not self.god_mode:  # Only subtract health if god mode is not enabled
-            super().defend(damage)  # Call the parent class's defend method
+        if not self.god_mode:
+            super().defend(damage)
 
     def is_alive(self):
         return self.health > self.MIN_HEALTH
@@ -258,7 +258,6 @@ class Player(Character):
         if item in self.inventory:
 
             if self.inventory[item] >= quantity:
-
                 self.inventory[item] -= quantity
                 return True
             
@@ -270,11 +269,12 @@ class Player(Character):
         for item, quantity in self.inventory.items():
             print(f"{item.capitalize()}: {quantity}")
 
-
+    # MOVE THIS INTO ITS OWN SCREEN CLASS
+    # DO I EVEN NEED THIS CONCEPT IF I HAVE A USE ITEM METHOD
     def use_health_potion(self, item_name, quantity=1):
         if self.health == self.MAX_HEALTH:
             input("Your health is already full.")
-            return True  # Indicates that the item use was processed, even if it wasn't effective
+            return True
         
         heal_amount_per_potion = 20
         total_heal_amount = heal_amount_per_potion * quantity
@@ -285,34 +285,33 @@ class Player(Character):
         input(f"You used {quantity} health potion(s) and gained {total_heal_amount} health.")
         return True
 
+    # MOVE THIS INTO ITS OWN SCREEN CLASS
     def use_item(self, item):
-        # Check if the item is in the inventory or has no stock left
         if item not in self.inventory or self.inventory[item] <= 0:
             input("You don't have that item or you've run out.")
             clear_screen()
             return
         
-        # Ask for quantity
         try:
             quantity = int(input(f"How many {item}s do you want to use? "))
         except ValueError:
             input("Invalid number. Please try again.")
             return
         
-        # Check if the player has enough of the item
         if self.inventory[item] < quantity:
             input(f"You don't have enough {item}s.")
             clear_screen()
             return
         
-        # Handle specific item usage
         if item == "health potion":
             self.use_health_potion(item, quantity)
             clear_screen()
 
+    # MOVE THIS INTO ITS OWN SCREEN CLASS
     def print_attack_info(self, lifesteal_percentage, base_damage):
         print(f"Current lifesteal: {lifesteal_percentage*100:.0f}% \nBase damage range: {base_damage} - {base_damage + 10}.")
 
+    # MOVE THIS INTO ITS OWN SCREEN CLASS
     def view_character_stats(self):
         lifesteal_percentage = self.zinders_collected * 0.01
         print("\nCharacter Stats:")
@@ -321,13 +320,13 @@ class Player(Character):
         print(f"Current lifesteal: {lifesteal_percentage*100:.0f}%")
         print(f"Attack damage range: {self.base_damage} - {self.base_damage + 10}")
     
-
+    # MOVE THIS INTO ITS OWN SCREEN CLASS
     def print_status(self, enemy=None):
         print(f"{self.name} - HP: {'█' * int(self.health / 5)} ({self.health}/{self.MAX_HEALTH})\n".rjust(72))
         if enemy:
             print(f"{enemy.name} - HP: {'█' * int(enemy.health / 5)} ({enemy.health}/100)\n".rjust(72))
 
-
+    # MOVE THIS INTO ITS OWN SCREEN CLASS
     def print_player_menu(self):
         print("\nPLAYER MENU")
         print("What would you like to do?")
@@ -338,12 +337,14 @@ class Player(Character):
         print("[t]ravel to tavern")
         print("[l]eave city")
 
+    # MOVE THIS INTO ITS OWN SCREEN CLASS
     def stay_at_tavern(self):
         print("You decide to stay at the tavern for a rest.")
         self.health = self.MAX_HEALTH
         input("Your health has been fully restored.")
         clear_screen()
 
+    # MOVE THIS INTO ITS OWN SCREEN CLASS
     def buy_items(self):
         store_items = {
             "health potion": 20,  # Cost per item
@@ -423,12 +424,13 @@ class Combat:
 
     def check_alive(self, character):
         return character.is_alive()
-    
+# 1 SCREEN
 class BossBattle(Combat):
     def __init__(self, player):
         super().__init__(player)
         self.soul_of_zinder = Enemy("Soul of Zinder", 100, 55)  # Assuming Enemy class definition
 
+    # MOVE THIS INTO ITS OWN SCREEN CLASS
     def battle_soul_of_zinder(self):
         clear_screen()
         print(f"The {self.soul_of_zinder.name} appears!")
@@ -470,7 +472,6 @@ class BossBattle(Combat):
             return False
 
         else:
-            # Player fled
             return None
 
 class DynamicWorldMap:
