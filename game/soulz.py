@@ -9,4 +9,3 @@ if __name__ == "__main__":
     setup.setup_game()
     setup.initiate_gameplay_loop()
 
-    
