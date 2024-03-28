@@ -295,17 +295,7 @@ class Player(Character):
     # MOVE THIS INTO ITS OWN SCREEN CLASS
     def print_attack_info(self, lifesteal_percentage, base_damage):
         print(f"Current lifesteal: {lifesteal_percentage*100:.0f}% \nBase damage range: {base_damage} - {base_damage + 10}.")
-
-    # MOVE THIS INTO ITS OWN SCREEN CLASS
-    def view_character_stats(self):
-        lifesteal_percentage = self.zinders_collected * 0.01
-        print("\nCharacter Stats:")
-        print(f"Health: {self.health}/{self.MAX_HEALTH}")
-        print(f"Level: {self.level}")
-        print(f"Current lifesteal: {lifesteal_percentage*100:.0f}%")
-        print(f"Attack damage range: {self.base_damage} - {self.base_damage + 10}")
     
-    # MOVE THIS INTO ITS OWN SCREEN CLASS
     def print_status(self, enemy=None):
         print(f"{self.name} - HP: {'█' * int(self.health / 5)} ({self.health}/{self.MAX_HEALTH})\n".rjust(72))
         if enemy:
@@ -710,10 +700,20 @@ class InventoryScreen(Screen):
 
 class CharacterStatsScreen(Screen):
     def display(self):
-        self.player.view_character_stats()
+        lifesteal_percentage = self.player.zinders_collected * 0.01
+        print("\nCharacter Stats:")
+        print(f"Health: {self.player.health}/{self.player.MAX_HEALTH}")
+        print(f"Level: {self.player.level}")
+        print(f"Base Damage: {self.player.base_damage}")
+        print(f"Zinders Collected: {self.player.zinders_collected}")
+        print(f"Current Lifesteal: {lifesteal_percentage*100:.0f}%")
+        print(f"Attack Damage Range: {self.player.base_damage} - {self.player.base_damage + 10}")
+        print(f"Gold: {self.player.stats['gold']}")
+        self.handle_input()
 
     def handle_input(self):
-        input("Press Enter to continue...")
+        input("\nPress Enter to go back...")
+        clear_screen()
 
 class BuyItemsScreen(Screen):
     def display(self):
