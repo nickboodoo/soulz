@@ -21,41 +21,6 @@ class BattleManager(Combat):
     def __init__(self, player):
         super().__init__(player)
 
-    def start_battle(self, enemy):
-        clear_screen()
-        print_dashes(72)
-        print(f"You've encountered a {enemy.name}!".center(72))
-
-        while self.check_alive(self.player) and self.check_alive(enemy):
-            print_dashes(72)
-            self.player.print_status(enemy)
-            print_dashes(72)
-            choice = input("Choose your action: [a]ttack, [u]se item, [f]lee: ").lower()
-            clear_screen()
-
-            if choice == "a":
-                self.initiate_attack(self.player, enemy)
-                if self.check_alive(enemy):
-                    self.initiate_attack(enemy, self.player)
-                else:
-                    print_dashes(72)
-                    self.player.print_status(enemy)
-                    print_dashes(72)
-            
-            elif choice == "u":
-                self.player_use_item()
-
-            elif choice == "f":
-                clear_screen()
-
-                print("You fled from the battle!")
-                return
-            
-            else:
-                print("Invalid choice. Please try again.")
-
-        self.handle_battle_outcome(enemy)
-
     def player_attack(self, enemy):
         print_dashes(72)
         player_damage = self.player.attack()
@@ -66,14 +31,6 @@ class BattleManager(Combat):
         enemy_damage = enemy.attack()
         self.player.defend(enemy_damage)
         print(f"The {enemy.name} attacks back for {enemy_damage} damage.".center(72))
-
-    # def player_use_item(self):
-    #     self.player.check_inventory()
-    #     item_to_use = input("Enter the item you want to use (or [cancel] to go back): ").lower()
-    #     clear_screen()
-
-    #     if item_to_use != "cancel":
-    #         self.player.use_item(item_to_use)
 
     def handle_battle_outcome(self, enemy):
         if self.player.is_alive():
@@ -708,6 +665,21 @@ class ScreenManager:
         if key in self.screens:
             self.screens[key].display()
             self.screens[key].handle_input()
+    
+    def navigate(self):
+        while True:
+            print("\nAvailable Screens:")
+            for key in self.screens:
+                print(f"- {key}")
+
+            choice = input("Enter the screen you want to navigate to, or type 'exit' to return: ").lower()
+
+            if choice == 'exit':
+                break
+            elif choice in self.screens:
+                self.navigate_to(choice)
+            else:
+                print("Invalid choice. Please try again.")
 
     def navigate_player(self):
         self.exit_screen_navigation = False  # Reset the flag each time navigation starts
@@ -737,6 +709,7 @@ class ScreenManager:
         print("[s]how character stats")
         print("[t]ravel to tavern")
         print("[l]eave city")
+
 
 class BattleScreen(Screen):
     def __init__(self, battle_manager, enemy):
@@ -782,21 +755,36 @@ class BattleScreen(Screen):
 
 class UseItemScreen(Screen):
     def display(self):
-        # Display the inventory first
+        # First, display the inventory to the player.
         self.player.check_inventory()
         print("Enter the name of the item you want to use, or type [cancel] to go back.")
 
     def handle_input(self):
         item_to_use = input("Choose an item to use: ").lower()
-        clear_screen()
         
         # If the player decides not to use an item
         if item_to_use == "cancel":
             print("You chose not to use any item.")
             return
 
+        # Check if the item is in the inventory or has no stock left
+        if item_to_use not in self.player.inventory or self.player.inventory[item_to_use] <= 0:
+            print("You don't have that item or you've run out.")
+            return
+
+        # Ask for quantity (this part can be adjusted based on how you want to handle quantities)
+        try:
+            quantity = int(input(f"How many {item_to_use}s do you want to use? "))
+        except ValueError:
+            print("Invalid number. Please try again.")
+            return
+
         # Use the item
-        self.player.use_item(item_to_use)
+        if self.player.use_item(item_to_use, quantity):
+            print(f"Used {quantity} of {item_to_use}.")
+        else:
+            print(f"Could not use {item_to_use}.")
+
 
 
 class NavigationMenuScreen:
@@ -816,8 +804,10 @@ class NavigationMenuScreen:
             clear_screen()
 
             if choice.lower() == "home":
-                exit_navigation = self.game_manager.screen_manager.navigate()
-                if exit_navigation:  # If exiting navigation, return to prevent extra loop iterations
+                # Instead of calling navigate(), directly call navigate_player()
+                # which uses print_player_menu for displaying options
+                exit_navigation = self.game_manager.screen_manager.navigate_player()
+                if exit_navigation:  # Check if the navigation requested an exit to possibly end the game or return to a higher level menu
                     return
 
             elif choice.lower() == "hint":
@@ -843,6 +833,7 @@ class NavigationMenuScreen:
                         clear_screen()
 
                 self.game_manager.check_win_condition()
+
 
 
 class IntroScreen:
