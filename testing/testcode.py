@@ -142,7 +142,7 @@ class GameplayManager:
             clear_screen()
 
             if choice.lower() == "home":
-                navigate_player_menu(self.player)
+                self.player.navigate_player_menu()
 
             elif choice.lower() == "hint":
                 self.suggest_optimal_path()
