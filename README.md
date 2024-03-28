@@ -31,6 +31,5 @@ Version 2.2 Release Notes:
 2. Incorporate a learning model for the final boss
 
 ### KNOWN BUGS
-1. Healing does not take an action during combat
-2. Tavern does not cost money
+1. Tavern does not cost money
 

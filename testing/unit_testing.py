@@ -150,30 +150,25 @@ class GameplayManager:
             battle_outcome = boss_battle.battle_soul_of_zinder()
 
             if battle_outcome is True:
-                # Victory: The player has defeated the boss.
                 print("Congratulations! You've defeated the Soul of Zinder and won the game!")
                 self.game_over = True
                 exit()
             elif battle_outcome is False:
-                # Defeat: The player was defeated by the boss.
                 print("You have fallen in battle... The game is over.")
                 self.game_over = True
                 exit()
             elif battle_outcome is None:
-                # Fleeing: The player chose to flee the battle.
                 print("You fled from the final battle... The journey is not yet complete.")
-                # Reset the player's current location to the start node and clear breadcrumbs.
                 self.current_location = self.start_node
                 self.breadcrumbs = [self.start_node]
-                # The game continues, allowing the player to attempt the battle again.
     
     def generate_encounter(self):
         encounter_chance = random.randint(1, 10)
 
         if encounter_chance <= 7:
             enemy = Enemy.create_random_enemy()
-            battle_manager = BattleManager(self.player)  # Create a BattleManager instance
-            battle_screen = BattleScreen(battle_manager, enemy)  # Pass it to BattleScreen
+            battle_manager = BattleManager(self.player)
+            battle_screen = BattleScreen(battle_manager, enemy)
             self.screen_manager.add_screen('battle', battle_screen)
             self.screen_manager.navigate_to('battle')
 
@@ -270,42 +265,31 @@ class Player(Character):
             print(f"{item.capitalize()}: {quantity}")
 
     # MOVE THIS INTO ITS OWN SCREEN CLASS
-    # DO I EVEN NEED THIS CONCEPT IF I HAVE A USE ITEM METHOD
-    def use_health_potion(self, item_name, quantity=1):
-        if self.health == self.MAX_HEALTH:
-            input("Your health is already full.")
-            return True
-        
-        heal_amount_per_potion = 20
-        total_heal_amount = heal_amount_per_potion * quantity
-        self.health += total_heal_amount
-        self.health = min(self.MAX_HEALTH, self.health)
-        
-        self.inventory[item_name] -= quantity
-        input(f"You used {quantity} health potion(s) and gained {total_heal_amount} health.")
-        return True
-
-    # MOVE THIS INTO ITS OWN SCREEN CLASS
-    def use_item(self, item):
-        if item not in self.inventory or self.inventory[item] <= 0:
+    def use_item(self, item_name, quantity=1):
+        if item_name not in self.inventory or self.inventory[item_name] <= 0:
             input("You don't have that item or you've run out.")
-            clear_screen()
-            return
-        
-        try:
-            quantity = int(input(f"How many {item}s do you want to use? "))
-        except ValueError:
-            input("Invalid number. Please try again.")
-            return
-        
-        if self.inventory[item] < quantity:
-            input(f"You don't have enough {item}s.")
-            clear_screen()
-            return
-        
-        if item == "health potion":
-            self.use_health_potion(item, quantity)
-            clear_screen()
+            return False
+
+        if self.inventory[item_name] < quantity:
+            input(f"You don't have enough {item_name}(s).")
+            return False
+
+        if item_name == "health potion":
+            if self.health == self.MAX_HEALTH:
+                input("Your health is already full.")
+                return False
+
+            heal_amount_per_potion = 20
+            total_heal_amount = heal_amount_per_potion * quantity
+            self.health += total_heal_amount
+            self.health = min(self.MAX_HEALTH, self.health)
+            self.inventory[item_name] -= quantity
+            input(f"You used {quantity} {item_name}(s) and gained {total_heal_amount} health.")
+            return True
+
+        else:
+            input(f"The {item_name} cannot be used this way.")
+            return False
 
     # MOVE THIS INTO ITS OWN SCREEN CLASS
     def print_attack_info(self, lifesteal_percentage, base_damage):
@@ -678,8 +662,11 @@ class BattleScreen(Screen):
                 if self.enemy.is_alive():
                     self.battle_manager.initiate_attack(self.enemy, self.battle_manager.player)
             elif choice == "u":
-                # Implement using item logic here or in the battle manager
-                pass
+                item_screen = UseItemScreen(self.player)
+                item_screen.display()
+                item_screen.handle_input()
+                if self.enemy.is_alive():
+                    self.battle_manager.initiate_attack(self.enemy, self.battle_manager.player)
             elif choice == "f":
                 print("You fled from the battle!")
                 break
@@ -694,26 +681,23 @@ class BattleScreen(Screen):
         if not self.battle_manager.player.is_alive():
             print("You lose!")
 
+
 class UseItemScreen(Screen):
     def display(self):
-        # First, display the inventory to the player.
         self.player.check_inventory()
         print("Enter the name of the item you want to use, or type [cancel] to go back.")
 
     def handle_input(self):
         item_to_use = input("Choose an item to use: ").lower()
         
-        # If the player decides not to use an item
         if item_to_use == "cancel":
             print("You chose not to use any item.")
             return
 
-        # Check if the item is in the inventory or has no stock left
         if item_to_use not in self.player.inventory or self.player.inventory[item_to_use] <= 0:
             print("You don't have that item or you've run out.")
             return
 
-        # Ask for quantity (this part can be adjusted based on how you want to handle quantities)
         try:
             quantity = int(input(f"How many {item_to_use}s do you want to use? "))
         except ValueError:
