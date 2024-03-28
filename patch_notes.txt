@@ -1,0 +1,6 @@
+HUGE PATCH
+
+1. Enemies now attack during heal turn
+2. reworked item usage
+3. created screen states
+4. 

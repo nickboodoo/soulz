@@ -258,6 +258,7 @@ class Player(Character):
             
         return False
 
+    # MOVE THIS INTO ITS OWN SCREEN CLASS
     def check_inventory(self):
         print("\nInventory:")
 
@@ -309,17 +310,6 @@ class Player(Character):
         print(f"{self.name} - HP: {'█' * int(self.health / 5)} ({self.health}/{self.MAX_HEALTH})\n".rjust(72))
         if enemy:
             print(f"{enemy.name} - HP: {'█' * int(enemy.health / 5)} ({enemy.health}/100)\n".rjust(72))
-
-    # MOVE THIS INTO ITS OWN SCREEN CLASS
-    def print_player_menu(self):
-        print("\nPLAYER MENU")
-        print("What would you like to do?")
-        print("[b]uy items")
-        print("[c]heck inventory")
-        print("[u]se item from inventory")
-        print("[s]how character stats")
-        print("[t]ravel to tavern")
-        print("[l]eave city")
 
     # MOVE THIS INTO ITS OWN SCREEN CLASS
     def stay_at_tavern(self):
@@ -793,6 +783,7 @@ class StayAtTavernScreen(Screen):
     def handle_input(self):
         input("Press Enter to continue...")
 
+# 1 Screen
 class GameEngine:
     def __init__(self):
         self.setup = GameSetup()
@@ -810,6 +801,7 @@ class GameEngine:
             navigation_menu = NavigationMenuScreen(self.setup.game_manager)
             navigation_menu.display()
 
+        # MOVE THIS INTO ITS OWN SCREEN CLASS
         print("Game Over. Thanks for playing!")
 
 if __name__ == "__main__":
