@@ -1,7 +1,7 @@
 import math
 import random
 from combat import Combat
-from utils import clear_screen, print_dashes, print_status
+from utils import clear_screen, print_dashes
 
 """Manages combat encounters between the player and enemies.
 It handles the flow of battle, including making choices like attacking, using items, or fleeing."""
@@ -17,7 +17,7 @@ class BattleManager(Combat):
 
         while self.check_alive(self.player) and self.check_alive(enemy):
             print_dashes(72)
-            print_status(self.player, enemy)
+            self.player.print_status(enemy)
             print_dashes(72)
             choice = input("Choose your action: [a]ttack, [u]se item, [f]lee: ").lower()
             clear_screen()
@@ -28,7 +28,7 @@ class BattleManager(Combat):
                     self.initiate_attack(enemy, self.player)
                 else:
                     print_dashes(72)
-                    print_status(self.player, enemy)
+                    self.player.print_status(enemy)
                     print_dashes(72)
             
             elif choice == "u":

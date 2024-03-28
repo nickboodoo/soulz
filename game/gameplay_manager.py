@@ -2,8 +2,8 @@ import random
 from battle_manager import BattleManager
 from combat import BossBattle
 from character import Enemy
-from utils import clear_screen, navigate_player_menu
-from utils import dijkstra
+from utils import clear_screen
+from dynamic_world_map import dijkstra
 
 """Manages the gameplay loop, allowing the player to navigate through the world, encounter enemies, and progress towards a goal."""
 
@@ -31,7 +31,7 @@ class GameplayManager:
             clear_screen()
 
             if choice.lower() == "home":
-                navigate_player_menu(self.player)
+                self.player.navigate_player_menu(self.player)
 
             elif choice.lower() == "hint":
                 self.suggest_optimal_path()
@@ -180,3 +180,4 @@ class GameplayManager:
                 else:
                     self.player.add_to_inventory(loot)
                     input(f"You found {loot}!")
+

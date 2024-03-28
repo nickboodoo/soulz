@@ -1,5 +1,5 @@
 from character import Enemy
-from utils import clear_screen, print_status
+from utils import clear_screen
 
 
 class Combat:
@@ -29,7 +29,7 @@ class BossBattle(Combat):
         input("Prepare yourself for a challenging battle!")
 
         while self.check_alive(self.player) and self.check_alive(self.soul_of_zinder):
-            print_status(self.player, self.soul_of_zinder)
+            self.player.print_status(self.soul_of_zinder)
             choice = input("Choose your action: [a]ttack, [u]se item, [f]lee: ").lower()
             clear_screen()
 
