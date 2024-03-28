@@ -13,12 +13,11 @@ class Combat:
 
     def check_alive(self, character):
         return character.is_alive()
-# 3 SCREENS
+# 2 SCREENS
 class BattleManager(Combat):
     def __init__(self, player):
         super().__init__(player)
 
-    # MOVE THIS INTO ITS OWN SCREEN CLASS
     def player_attack(self, enemy):
         print_dashes(72)
         player_damage = self.player.attack()
@@ -36,41 +35,8 @@ class BattleManager(Combat):
         else:
             self.player_defeat()
 
-    # MOVE THIS INTO ITS OWN SCREEN CLASS
-    def player_victory(self, enemy):
-        print(f"You defeated the {enemy.name}!")
-        self.player.enemies_killed += 1
 
-        required_kills = math.ceil(math.log(self.player.level + 1, 2) * 3)
-        if self.player.enemies_killed >= required_kills:
-            self.player.level_up()
-            self.player.enemies_killed = 0
 
-        loot = self.generate_loot()
-        self.handle_loot(loot)
-
-    def player_defeat(self):
-        input("You lose!")
-        exit()
-
-    def generate_loot(self):
-        loot_pool = ["Gold", "Zinder"]
-        return random.choice(loot_pool)
-
-    # MOVE THIS INTO ITS OWN SCREEN CLASS
-    def handle_loot(self, loot):
-        if loot == "Gold":
-            gold_amount = random.randint(1, 100)
-            self.player.stats["gold"] += gold_amount
-            input(f"You found {gold_amount} gold!")
-
-        elif loot == "Zinder":  
-            self.player.zinders_collected += 1
-            input(f"You found {loot}! You now have {self.player.zinders_collected} Zinders.")
-
-        else:
-            self.player.add_to_inventory(loot)
-            input(f"You found {loot}!")
 # 3 SCREENS
 class GameplayManager:
     def __init__(self, graph, start, goal, player):
@@ -548,6 +514,65 @@ class PlayerMenuScreen:
         print("[t]ravel to tavern")
         print("[l]eave city")
 
+class MovementOptionsScreen(Screen):
+    def __init__(self, game_manager):
+        self.game_manager = game_manager
+
+    def display(self):
+        # Implement the logic from `display_movement_options` here
+        pass
+
+class ObjectiveScreen(Screen):
+    def __init__(self, game_manager):
+        self.game_manager = game_manager
+
+    def display(self):
+        # Implement the logic from `show_objective` here
+        pass
+
+class OptimalPathScreen(Screen):
+    def __init__(self, game_manager):
+        self.game_manager = game_manager
+
+    def display(self):
+        # Implement the logic from `suggest_optimal_path` here
+        pass
+
+class VictoryScreen(Screen):
+    def __init__(self, player, enemy):
+        super().__init__(player)
+        self.enemy = enemy
+
+    def display(self):
+        print(f"You defeated the {self.enemy.name}!")
+        self.player.enemies_killed += 1
+
+        required_kills = math.ceil(math.log(self.player.level + 1, 2) * 3)
+        if self.player.enemies_killed >= required_kills:
+            self.player.level_up()
+            self.player.enemies_killed = 0
+
+        loot = self.generate_loot()
+        self.handle_loot(loot)
+
+    def generate_loot(self):
+        loot_pool = ["Gold", "Zinder"]
+        return random.choice(loot_pool)
+
+    def handle_loot(self, loot):
+        if loot == "Gold":
+            gold_amount = random.randint(1, 100)
+            self.player.stats["gold"] += gold_amount
+            input(f"You found {gold_amount} gold!")
+
+        elif loot == "Zinder":
+            self.player.zinders_collected += 1
+            input(f"You found {loot}! You now have {self.player.zinders_collected} Zinders.")
+
+        else:
+            self.player.add_to_inventory(loot)
+            input(f"You found {loot}!")
+
 class BattleScreen(Screen):
     def __init__(self, battle_manager, enemy):
         super().__init__(battle_manager.player)
@@ -583,8 +608,8 @@ class BattleScreen(Screen):
                 print("Invalid choice. Please try again.")
 
             if not self.enemy.is_alive():
-                print(f"You defeated the {self.enemy.name}!")
-                self.battle_manager.handle_battle_outcome(self.enemy)
+                victory_screen = VictoryScreen(self.battle_manager.player, self.enemy)
+                victory_screen.display()
                 break
 
         if not self.battle_manager.player.is_alive():
