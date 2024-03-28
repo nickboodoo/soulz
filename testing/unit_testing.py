@@ -207,7 +207,7 @@ class Character:
 
     def is_alive(self):
         return self.health > 0
-# 9 SCREENS    
+# 2 SCREENS    
 class Player(Character):
     MAX_HEALTH = 100
     MIN_HEALTH = 0
