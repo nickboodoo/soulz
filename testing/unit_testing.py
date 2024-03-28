@@ -221,9 +221,11 @@ class GameplayManager:
         encounter_chance = random.randint(1, 10)
 
         if encounter_chance <= 7:
-            enemy_battle = BattleManager(self.player)
             enemy = Enemy.create_random_enemy()
-            enemy_battle.start_battle(enemy)
+            battle_manager = BattleManager(self.player)  # Create a BattleManager instance
+            battle_screen = BattleScreen(battle_manager, enemy)  # Pass it to BattleScreen
+            self.screen_manager.add_screen('battle', battle_screen)
+            self.screen_manager.navigate_to('battle')
 
         else:
             found_items = random.randint(1, 3)
@@ -674,7 +676,9 @@ def print_dashes(x):
     border = dash * x
     print(border)
 
-# ========================================================================================================
+#========================================================================================================#
+#                                             SCREEN STUFF                                               #
+#========================================================================================================#
 
 class Screen:
     def __init__(self, player):
@@ -697,7 +701,15 @@ class ScreenManager:
             't': StayAtTavernScreen(player),
         }
 
-    def navigate(self):
+    def add_screen(self, key, screen):
+        self.screens[key] = screen
+
+    def navigate_to(self, key):
+        if key in self.screens:
+            self.screens[key].display()
+            self.screens[key].handle_input()
+
+    def navigate_player(self):
         self.exit_screen_navigation = False  # Reset the flag each time navigation starts
         while True:
             self.print_player_menu()
@@ -725,6 +737,47 @@ class ScreenManager:
         print("[s]how character stats")
         print("[t]ravel to tavern")
         print("[l]eave city")
+
+class BattleScreen(Screen):
+    def __init__(self, battle_manager, enemy):
+        super().__init__(battle_manager.player)
+        self.battle_manager = battle_manager
+        self.enemy = enemy
+
+    def display(self):
+        clear_screen()
+        print_dashes(72)
+        print(f"You've encountered a {self.enemy.name}!".center(72))
+
+    def handle_input(self):
+        while self.battle_manager.player.is_alive() and self.enemy.is_alive():
+            self.battle_manager.player.print_status(self.enemy)
+            print_dashes(72)
+            choice = input("Choose your action: [a]ttack, [u]se item, [f]lee: ").lower()
+            clear_screen()
+
+            if choice == "a":
+                self.battle_manager.initiate_attack(self.battle_manager.player, self.enemy)
+                if self.enemy.is_alive():
+                    self.battle_manager.initiate_attack(self.enemy, self.battle_manager.player)
+            elif choice == "u":
+                # Implement using item logic here or in the battle manager
+                pass
+            elif choice == "f":
+                print("You fled from the battle!")
+                break
+            else:
+                print("Invalid choice. Please try again.")
+
+            if not self.enemy.is_alive():
+                print(f"You defeated the {self.enemy.name}!")
+                self.battle_manager.handle_battle_outcome(self.enemy)
+                break
+
+        if not self.battle_manager.player.is_alive():
+            print("You lose!")
+
+
 
 
 class UseItemScreen(Screen):
