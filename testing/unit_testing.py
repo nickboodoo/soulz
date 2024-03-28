@@ -311,59 +311,6 @@ class Player(Character):
         if enemy:
             print(f"{enemy.name} - HP: {'█' * int(enemy.health / 5)} ({enemy.health}/100)\n".rjust(72))
 
-    # MOVE THIS INTO ITS OWN SCREEN CLASS
-    def stay_at_tavern(self):
-        print("You decide to stay at the tavern for a rest.")
-        self.health = self.MAX_HEALTH
-        input("Your health has been fully restored.")
-        clear_screen()
-
-    # MOVE THIS INTO ITS OWN SCREEN CLASS
-    def buy_items(self):
-        store_items = {
-            "health potion": 20,  # Cost per item
-        }
-        print("\nWelcome to the store!")
-        print("Here are the items available for purchase:")
-
-        while True:
-            print("\nYour Gold:", self.stats["gold"])
-            for item, price in store_items.items():
-                print(f"{item.capitalize()} - {price} gold each")
-
-            item_choice = input("\nEnter the item you want to buy (or [done] to exit): ").lower()
-            clear_screen()
-
-            if item_choice == "done":
-                break
-
-            elif item_choice in store_items:
-                try:
-                    quantity = int(input(f"How many {item_choice}s would you like to buy? "))
-                    if quantity <= 0:
-                        raise ValueError  # Handle non-positive integers
-                except ValueError:
-                    print("Please enter a valid number.")
-                    input("Press Enter to continue...")
-                    clear_screen()
-                    continue
-
-                total_cost = store_items[item_choice] * quantity
-                if self.stats["gold"] >= total_cost:
-                    self.add_to_inventory(item_choice, quantity)
-                    self.stats["gold"] -= total_cost
-                    print(f"You bought {quantity} {item_choice}(s) for {total_cost} gold!")
-                    input("Press Enter to continue...")
-                    clear_screen()
-                else:
-                    print("You don't have enough gold for that purchase.")
-                    input("Press Enter to continue...")
-                    clear_screen()
-            else:
-                print("That item is not available in the store.")
-                input("Press Enter to continue...")
-                clear_screen()
-
 class Enemy(Character):
     def __init__(self, name, health, attack_power):
         super().__init__(name, health, attack_power)
@@ -671,7 +618,6 @@ class BattleScreen(Screen):
         if not self.battle_manager.player.is_alive():
             print("You lose!")
 
-
 class UseItemScreen(Screen):
     def display(self):
         self.player.check_inventory()
@@ -771,18 +717,49 @@ class CharacterStatsScreen(Screen):
 
 class BuyItemsScreen(Screen):
     def display(self):
-        self.player.buy_items()
+        print("\nWelcome to the store!")
+        print("Here are the items available for purchase:")
+        store_items = {
+            "health potion": 20,
+        }
+        while True:
+            print("\nYour Gold:", self.player.stats["gold"])
+            for item, price in store_items.items():
+                print(f"{item.capitalize()} - {price} gold each")
 
-    def handle_input(self):
-        pass
+            item_choice = input("\nEnter the item you want to buy (or [done] to exit): ").lower()
+            clear_screen()
+
+            if item_choice == "done":
+                break
+
+            elif item_choice in store_items:
+                try:
+                    quantity = int(input(f"How many {item_choice}s would you like to buy? "))
+                    if quantity <= 0:
+                        raise ValueError
+                except ValueError:
+                    print("Please enter a valid number.")
+                    continue
+
+                total_cost = store_items[item_choice] * quantity
+                if self.player.stats["gold"] >= total_cost:
+                    self.player.add_to_inventory(item_choice, quantity)
+                    self.player.stats["gold"] -= total_cost
+                    print(f"You bought {quantity} {item_choice}(s) for {total_cost} gold!")
+                else:
+                    print("You don't have enough gold for that purchase.")
+            else:
+                print("That item is not available in the store.")
 
 class StayAtTavernScreen(Screen):
     def display(self):
-        self.player.stay_at_tavern()
+        print("You decide to stay at the tavern for a rest.")
 
-    def handle_input(self):
-        input("Press Enter to continue...")
+        self.player.health = self.player.MAX_HEALTH
 
+        input("Your health has been fully restored.")
+        clear_screen()
 # 1 Screen
 class GameEngine:
     def __init__(self):
