@@ -265,34 +265,6 @@ class Player(Character):
         for item, quantity in self.inventory.items():
             print(f"{item.capitalize()}: {quantity}")
 
-    # MOVE THIS INTO ITS OWN SCREEN CLASS
-    def use_item(self, item_name, quantity=1):
-        if item_name not in self.inventory or self.inventory[item_name] <= 0:
-            input("You don't have that item or you've run out.")
-            return False
-
-        if self.inventory[item_name] < quantity:
-            input(f"You don't have enough {item_name}(s).")
-            return False
-
-        if item_name == "health potion":
-            if self.health == self.MAX_HEALTH:
-                input("Your health is already full.")
-                return False
-
-            heal_amount_per_potion = 20
-            total_heal_amount = heal_amount_per_potion * quantity
-            self.health += total_heal_amount
-            self.health = min(self.MAX_HEALTH, self.health)
-            self.inventory[item_name] -= quantity
-            input(f"You used {quantity} {item_name}(s) and gained {total_heal_amount} health.")
-            return True
-
-        else:
-            input(f"The {item_name} cannot be used this way.")
-            return False
-
-    # MOVE THIS INTO ITS OWN SCREEN CLASS
     def print_attack_info(self, lifesteal_percentage, base_damage):
         print(f"Current lifesteal: {lifesteal_percentage*100:.0f}% \nBase damage range: {base_damage} - {base_damage + 10}.")
     
@@ -341,7 +313,6 @@ class BossBattle(Combat):
         super().__init__(player)
         self.soul_of_zinder = Enemy("Soul of Zinder", 100, 55)
 
-    # MOVE THIS INTO ITS OWN SCREEN CLASS
     def battle_soul_of_zinder(self):
         clear_screen()
         print(f"The {self.soul_of_zinder.name} appears!")
@@ -358,32 +329,43 @@ class BossBattle(Combat):
                     self.initiate_attack(self.soul_of_zinder, self.player)
 
             elif choice == "u":
-                self.player.check_inventory()
+                print("Your Inventory:")
+                for item, quantity in self.player.inventory.items():
+                    print(f"{item}: {quantity}")
                 item_to_use = input("Enter the item you want to use (or [cancel] to go back): ").lower()
-                clear_screen()
-
+                
                 if item_to_use == "cancel":
-                    continue
-                self.player.use_item(item_to_use)
+                    continue  # Allows the player to re-choose action
+                
+                if item_to_use in self.player.inventory and self.player.inventory[item_to_use] > 0:
+                    quantity_to_use = int(input(f"How many {item_to_use}(s) do you want to use? "))
+                    if item_to_use == "health potion" and quantity_to_use > 0:
+                        heal_amount_per_potion = 20
+                        total_heal_amount = heal_amount_per_potion * quantity_to_use
+                        self.player.health += total_heal_amount
+                        self.player.health = min(self.player.health, self.player.MAX_HEALTH)
+                        self.player.inventory[item_to_use] -= quantity_to_use
+                        if self.player.inventory[item_to_use] <= 0:
+                            del self.player.inventory[item_to_use]
+                        print(f"You used {quantity_to_use} {item_to_use}(s) and gained {total_heal_amount} health.")
+                    else:
+                        print(f"The {item_to_use} cannot be used this way or invalid quantity.")
+                else:
+                    print("Invalid item or out of stock.")
 
             elif choice == "f":
                 print("You fled from the battle!")
-                return
-            
+                return None
+
             else:
                 print("Invalid choice. Please try again.")
 
         if self.player.is_alive():
             print(f"Congratulations! You defeated the {self.soul_of_zinder.name}!")
-            input("Thank for playing. Click ENTER to exit.")
             return True
-
-        elif not self.player.is_alive():
+        else:
             print("You lost the battle against the Soul of Zinder!")
             return False
-
-        else:
-            return None
 
 class DynamicWorldMap:
     def __init__(self):
@@ -609,32 +591,49 @@ class BattleScreen(Screen):
             print("You lose!")
 
 class UseItemScreen(Screen):
+    def __init__(self, player):
+        super().__init__(player)
+
     def display(self):
         self.player.check_inventory()
         print("Enter the name of the item you want to use, or type [cancel] to go back.")
 
     def handle_input(self):
-        item_to_use = input("Choose an item to use: ").lower()
+        item_name = input("Choose an item to use: ").lower()
         
-        if item_to_use == "cancel":
+        if item_name == "cancel":
             print("You chose not to use any item.")
             return
 
-        if item_to_use not in self.player.inventory or self.player.inventory[item_to_use] <= 0:
+        if item_name not in self.player.inventory or self.player.inventory[item_name] <= 0:
             print("You don't have that item or you've run out.")
             return
 
         try:
-            quantity = int(input(f"How many {item_to_use}s do you want to use? "))
-        except ValueError:
-            print("Invalid number. Please try again.")
+            quantity = int(input(f"How many {item_name}s do you want to use? "))
+            if quantity <= 0:
+                raise ValueError("Invalid quantity.")
+        except ValueError as e:
+            print(f"Invalid input: {e}")
             return
 
-        # Use the item
-        if self.player.use_item(item_to_use, quantity):
-            print(f"Used {quantity} of {item_to_use}.")
+        self.use_item(item_name, quantity)
+
+    def use_item(self, item_name, quantity):
+        if item_name == "health potion":
+            if self.player.health == self.player.MAX_HEALTH:
+                print("Your health is already full.")
+                return
+            heal_amount_per_potion = 20
+            total_heal_amount = heal_amount_per_potion * quantity
+            self.player.health += total_heal_amount
+            self.player.health = min(self.player.health, self.player.MAX_HEALTH)
+            self.player.inventory[item_name] -= quantity
+            if self.player.inventory[item_name] <= 0:
+                del self.player.inventory[item_name]
+            print(f"You used {quantity} {item_name}(s) and gained {total_heal_amount} health.")
         else:
-            print(f"Could not use {item_to_use}.")
+            print(f"The {item_name} cannot be used this way.")
 
 class NavigationMenuScreen:
     def __init__(self, game_manager):
