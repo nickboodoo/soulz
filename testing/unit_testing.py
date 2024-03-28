@@ -197,7 +197,7 @@ class GameplayManager:
                 else:
                     self.player.add_to_inventory(loot)
                     input(f"You found {loot}!")
-# 9 SCREENS
+
 class Character:
     def __init__(self, name, health, attack_power):
         self.name = name
@@ -212,7 +212,7 @@ class Character:
 
     def is_alive(self):
         return self.health > 0
-    
+# 9 SCREENS    
 class Player(Character):
     MAX_HEALTH = 100
     MIN_HEALTH = 0
@@ -428,7 +428,7 @@ class Combat:
 class BossBattle(Combat):
     def __init__(self, player):
         super().__init__(player)
-        self.soul_of_zinder = Enemy("Soul of Zinder", 100, 55)  # Assuming Enemy class definition
+        self.soul_of_zinder = Enemy("Soul of Zinder", 100, 55)
 
     # MOVE THIS INTO ITS OWN SCREEN CLASS
     def battle_soul_of_zinder(self):
@@ -607,13 +607,13 @@ class Screen:
     def handle_input(self):
         pass
 
-class ScreenManager:
+class PlayerMenuScreen:
     def __init__(self, player):
         self.player = player
         self.screens = {
             'b': BuyItemsScreen(player),
             'c': InventoryScreen(player),
-            'u': UseItemScreen(player),  # Update this line to use UseItemScreen
+            'u': UseItemScreen(player),
             's': CharacterStatsScreen(player),
             't': StayAtTavernScreen(player),
         }
@@ -625,24 +625,9 @@ class ScreenManager:
         if key in self.screens:
             self.screens[key].display()
             self.screens[key].handle_input()
-    
-    def navigate(self):
-        while True:
-            print("\nAvailable Screens:")
-            for key in self.screens:
-                print(f"- {key}")
-
-            choice = input("Enter the screen you want to navigate to, or type 'exit' to return: ").lower()
-
-            if choice == 'exit':
-                break
-            elif choice in self.screens:
-                self.navigate_to(choice)
-            else:
-                print("Invalid choice. Please try again.")
 
     def navigate_player(self):
-        self.exit_screen_navigation = False  # Reset the flag each time navigation starts
+        self.exit_screen_navigation = False
         while True:
             self.print_player_menu()
             choice = input("Enter your choice: ").lower()
@@ -652,7 +637,7 @@ class ScreenManager:
                 self.screens[choice].display()
                 self.screens[choice].handle_input()
             elif choice == "l":
-                self.exit_screen_navigation = True  # Set the flag when leaving
+                self.exit_screen_navigation = True
                 break
             else:
                 print("Invalid choice. Please try again.")
@@ -758,10 +743,8 @@ class NavigationMenuScreen:
             clear_screen()
 
             if choice.lower() == "home":
-                # Instead of calling navigate(), directly call navigate_player()
-                # which uses print_player_menu for displaying options
                 exit_navigation = self.game_manager.screen_manager.navigate_player()
-                if exit_navigation:  # Check if the navigation requested an exit to possibly end the game or return to a higher level menu
+                if exit_navigation:
                     return
 
             elif choice.lower() == "hint":
@@ -803,7 +786,7 @@ class InventoryScreen(Screen):
     def handle_input(self):
         item_to_use = input("Enter the item you want to use from your inventory: ").lower()
         self.player.use_item(item_to_use)
-        input("Press Enter to continue...")  # Assuming clear_screen() is called elsewhere
+        input("Press Enter to continue...")
 
 class CharacterStatsScreen(Screen):
     def display(self):
@@ -817,7 +800,7 @@ class BuyItemsScreen(Screen):
         self.player.buy_items()
 
     def handle_input(self):
-        pass  # Buy items logic is handled within the display method
+        pass
 
 class StayAtTavernScreen(Screen):
     def display(self):
@@ -837,8 +820,7 @@ class GameEngine:
         intro_screen.display_intro()
         self.setup.setup_game()
         
-        # Initialize ScreenManager and assign it to GamePlayManager for access from NavigationMenuScreen
-        self.setup.game_manager.screen_manager = ScreenManager(self.setup.player)
+        self.setup.game_manager.screen_manager = PlayerMenuScreen(self.setup.player)
 
         while not self.setup.game_manager.game_over:
             navigation_menu = NavigationMenuScreen(self.setup.game_manager)
