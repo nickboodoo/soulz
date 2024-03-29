@@ -44,6 +44,7 @@ class GameplayManager:
         self.player = player
         self.game_over = False
         self.breadcrumbs = [start]
+        self.final_enemy = Enemy("Gwyn, Lord of Sunlight", 150, 50)
 
     def display_movement_options(self):
         possible_moves = self.graph.edges.get(self.current_location, [])
@@ -105,9 +106,32 @@ class GameplayManager:
 
     def check_win_condition(self):
         if self.player.is_alive() and self.current_location == self.goal:
-            print(f"You have reached {self.goal}. Congratulations, you've completed your journey!")
+            # Initiating final battle with battle screen instead of directly in GameplayManager
+            self.initiate_final_battle()
+        
+    def initiate_final_battle(self):
+        # Create a BattleManager instance for the final battle
+        final_battle_manager = BattleManager(self.player)
+        
+        # Then pass this BattleManager instance along with the final enemy to the BattleScreen
+        final_battle_screen = BattleScreen(final_battle_manager, self.final_enemy)
+        final_battle_screen.display()
+        
+        # Use the modified or existing handle_input method for final battle interaction
+        # This might require adjusting handle_input to accommodate final battle logic
+        final_battle_screen.handle_input()
+
+        # Check outcomes after the battle screen interaction finishes
+        if not self.player.is_alive():
+            print("You have fallen in the final battle... The game is over.")
             self.game_over = True
-            exit()
+        elif not self.final_enemy.is_alive():
+            print("Congratulations! You've defeated the Guardian of the Goal and won the game!")
+            self.game_over = True
+        else:
+            # Handle fleeing scenario
+            self.current_location = self.start_node
+            print("Fled back to the start. The journey continues...")
     
     def generate_encounter(self):
         encounter_chance = random.randint(1, 10)
