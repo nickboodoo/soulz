@@ -33,7 +33,7 @@ class BattleManager(Combat):
             self.player_victory(enemy)
         else:
             self.player_defeat()
-# 3 SCREENS
+
 class GameplayManager:
     def __init__(self, graph, start, goal, player):
         self.graph = graph
@@ -70,22 +70,16 @@ class GameplayManager:
 
     def check_win_condition(self):
         if self.player.is_alive() and self.current_location == self.goal:
-            # Initiating final battle with battle screen instead of directly in GameplayManager
             self.initiate_final_battle()
         
     def initiate_final_battle(self):
-        # Create a BattleManager instance for the final battle
         final_battle_manager = BattleManager(self.player)
         
-        # Then pass this BattleManager instance along with the final enemy to the BattleScreen
         final_battle_screen = BattleScreen(final_battle_manager, self.final_enemy)
         final_battle_screen.display()
         
-        # Use the modified or existing handle_input method for final battle interaction
-        # This might require adjusting handle_input to accommodate final battle logic
         final_battle_screen.handle_input()
 
-        # Check outcomes after the battle screen interaction finishes
         if not self.player.is_alive():
             print("You have fallen in the final battle... The game is over.")
             self.game_over = True
@@ -93,7 +87,6 @@ class GameplayManager:
             print("Congratulations! You've defeated the Guardian of the Goal and won the game!")
             self.game_over = True
         else:
-            # Handle fleeing scenario
             self.current_location = self.start_node
             print("Fled back to the start. The journey continues...")
     
@@ -140,7 +133,7 @@ class Character:
 
     def is_alive(self):
         return self.health > 0
-# 2 SCREENS    
+    
 class Player(Character):
     MAX_HEALTH = 100
     MIN_HEALTH = 0
@@ -190,15 +183,9 @@ class Player(Character):
             
         return False
 
-    # MOVE THIS INTO ITS OWN SCREEN CLASS
-    def check_inventory(self):
-        print("\nInventory:")
-
-        for item, quantity in self.inventory.items():
-            print(f"{item.capitalize()}: {quantity}")
-
-    def print_attack_info(self, lifesteal_percentage, base_damage):
-        print(f"Current lifesteal: {lifesteal_percentage*100:.0f}% \nBase damage range: {base_damage} - {base_damage + 10}.")
+    def return_attack_info(self):
+        lifesteal_percentage = self.zinders_collected * 0.01
+        return lifesteal_percentage, self.base_damage, self.base_damage + 10
     
     def print_status(self, enemy=None):
         print(f"{self.name} - HP: {'█' * int(self.health / 5)} ({self.health}/{self.MAX_HEALTH})\n".rjust(72))
@@ -239,7 +226,7 @@ class Combat:
 
     def check_alive(self, character):
         return character.is_alive()
-# 1 SCREEN
+
 class DynamicWorldMap:
     def __init__(self):
         self.nodes = set()
@@ -364,7 +351,7 @@ def print_dashes(x):
 #========================================================================================================#
 
 class Screen:
-    def __init__(self, player):
+    def __init__(self, player=None):
         self.player = player
 
     def display(self):
@@ -679,7 +666,7 @@ class NavigationMenuScreen:
 
                 self.game_manager.check_win_condition()
 
-class IntroScreen:
+class IntroScreen(Screen):
     def __init__(self, setup):
         self.setup = setup
 
@@ -687,9 +674,21 @@ class IntroScreen:
         self.setup.initialize_player()
         clear_screen()
 
+class OutroScreen(Screen):
+    def display(self):
+        print("Game Over. Thanks for playing!")
+        input("Press Enter to exit...")
+
 class InventoryScreen(Screen):
     def display(self):
-        self.player.check_inventory()
+        print("\nInventory:")
+
+        if not self.player.inventory:
+            print("Your inventory is empty.")
+        else:
+            for item, quantity in self.player.inventory.items():
+                print(f"{item.capitalize()}: {quantity}")
+        self.handle_input()
 
     def handle_input(self):
         item_to_use = input("Enter the item you want to use from your inventory: ").lower()
@@ -698,14 +697,14 @@ class InventoryScreen(Screen):
 
 class CharacterStatsScreen(Screen):
     def display(self):
-        lifesteal_percentage = self.player.zinders_collected * 0.01
+        lifesteal_percentage, min_damage, max_damage = self.player.return_attack_info()
         print("\nCharacter Stats:")
         print(f"Health: {self.player.health}/{self.player.MAX_HEALTH}")
         print(f"Level: {self.player.level}")
         print(f"Base Damage: {self.player.base_damage}")
         print(f"Zinders Collected: {self.player.zinders_collected}")
         print(f"Current Lifesteal: {lifesteal_percentage*100:.0f}%")
-        print(f"Attack Damage Range: {self.player.base_damage} - {self.player.base_damage + 10}")
+        print(f"Attack Damage Range: {min_damage} - {max_damage}")
         print(f"Gold: {self.player.stats['gold']}")
         self.handle_input()
 
@@ -758,7 +757,7 @@ class StayAtTavernScreen(Screen):
 
         input("Your health has been fully restored.")
         clear_screen()
-# 1 Screen
+
 class GameEngine:
     def __init__(self):
         self.setup = GameSetup()
@@ -776,8 +775,8 @@ class GameEngine:
             navigation_menu = NavigationMenuScreen(self.setup.game_manager)
             navigation_menu.display()
 
-        # MOVE THIS INTO ITS OWN SCREEN CLASS
-        print("Game Over. Thanks for playing!")
+        outro_screen = OutroScreen(self.setup.player)
+        outro_screen.display()
 
 if __name__ == "__main__":
     game_engine = GameEngine()
