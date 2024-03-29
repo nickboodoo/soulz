@@ -155,11 +155,10 @@ class Player(Character):
         self.level = 1
         self.god_mode = god_mode
 
-    # MOVE THIS INTO ITS OWN SCREEN CLASS
-    def level_up(self):
-        self.level += 1
-        self.base_damage += 5
-        input(f"Congratulations! You've reached level {self.level}. Your base damage has increased.")
+    def level_up(self, screen_manager):
+        level_up_screen = LevelUpScreen(self)
+        screen_manager.add_screen('level_up', level_up_screen)
+        screen_manager.navigate_to('level_up')
 
     def attack(self):
         lifesteal_percentage = self.zinders_collected * 0.01
@@ -422,6 +421,17 @@ class PlayerMenuScreen:
         print("[t]ravel to tavern")
         print("[l]eave city")
 
+class LevelUpScreen(Screen):
+    def __init__(self, player):
+        super().__init__(player)
+
+    def display(self):
+        self.player.level += 1
+        self.player.base_damage += 5
+        print(f"\nCongratulations! You've reached level {self.player.level}.")
+        print(f"Your base damage has increased to {self.player.base_damage}.\n")
+        input("Press Enter to continue...")
+
 class MovementOptionsScreen(Screen):
     def __init__(self, game_manager):
         super().__init__(game_manager.player)
@@ -504,7 +514,7 @@ class VictoryScreen(Screen):
 
         required_kills = math.ceil(math.log(self.player.level + 1, 2) * 3)
         if self.player.enemies_killed >= required_kills:
-            self.player.level_up()
+            self.player.level_up(self.game_manager.screen_manager)
             self.player.enemies_killed = 0
 
         loot = self.generate_loot()
