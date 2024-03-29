@@ -466,7 +466,6 @@ class MovementOptionsScreen(Screen):
         else:
             print("\nInvalid move. Please try again.\n")
 
-
 class ObjectiveScreen(Screen):
     def __init__(self, game_manager):
         super().__init__(game_manager.player)
@@ -493,7 +492,6 @@ class OptimalPathScreen(Screen):
             print(f"Suggested optimal path to goal: {' -> '.join(path_to_goal)}")
         else:
             print("You are lost, try exploring some more.")
-
 
 class VictoryScreen(Screen):
     def __init__(self, player, enemy):
