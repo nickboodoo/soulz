@@ -1,15 +1,2 @@
-1. work on screen object concept
 
-2. make a journal page
-
-3. make a quest page
-
-4. make bigger health potions
-
-Long-Term Solution
-
-Consider developing a more flexible screen management system that allows you to navigate 
-    between different screens (such as inventory screens, battle screens, and dialog screens) 
-    dynamically based on player input. This could involve a stack or queue to manage screen transitions, 
-    ensuring that you can seamlessly move between using an item and returning to the battle without losing state.
 

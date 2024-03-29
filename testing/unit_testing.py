@@ -2,6 +2,10 @@ import math
 import random
 import os
 
+#=====================================================================================================================================#
+#                                                            LOGIC CLASSES                                                            #
+#=====================================================================================================================================#
+
 class Combat:
     def __init__(self, player):
         self.player = player
@@ -273,36 +277,6 @@ class DynamicWorldMap:
                 self.add_edge(node_a, node_b, "normal", "normal")
                 extra_edges -= 1
 
-def dijkstra(graph, initial):
-    visited = {initial: 0}
-    path = {}
-
-    nodes = set(graph.nodes)
-
-    while nodes:
-        min_node = None
-        for node in nodes:
-            if node in visited:
-                if min_node is None:
-                    min_node = node
-                elif visited[node] < visited[min_node]:
-                    min_node = node
-
-        if min_node is None:
-            break
-
-        nodes.remove(min_node)
-        current_weight = visited[min_node]
-
-        for edge_info in graph.edges[min_node]:
-            edge, _ = edge_info
-            weight = current_weight + graph.difficulties[(min_node, edge)]
-            if edge not in visited or weight < visited[edge]:
-                visited[edge] = weight
-                path[edge] = min_node
-
-    return visited, path
-
 class GameSetup:
     def __init__(self):
         self.node_difficulties = []
@@ -336,7 +310,41 @@ class GameSetup:
         if self.game:
             self.game.initiate_gameplay_loop()
         else:
-            print("Game not set up. Call setup_game first.")
+            return {"status": "error", "message": "Game not set up. Call setup_game first."}
+
+#=====================================================================================================================================#
+#                                                          HELPER  FUNCTIONS                                                          #
+#=====================================================================================================================================#
+
+def dijkstra(graph, initial):
+    visited = {initial: 0}
+    path = {}
+
+    nodes = set(graph.nodes)
+
+    while nodes:
+        min_node = None
+        for node in nodes:
+            if node in visited:
+                if min_node is None:
+                    min_node = node
+                elif visited[node] < visited[min_node]:
+                    min_node = node
+
+        if min_node is None:
+            break
+
+        nodes.remove(min_node)
+        current_weight = visited[min_node]
+
+        for edge_info in graph.edges[min_node]:
+            edge, _ = edge_info
+            weight = current_weight + graph.difficulties[(min_node, edge)]
+            if edge not in visited or weight < visited[edge]:
+                visited[edge] = weight
+                path[edge] = min_node
+
+    return visited, path
 
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -346,9 +354,9 @@ def print_dashes(x):
     border = dash * x
     print(border)
 
-#========================================================================================================#
-#                                             SCREEN STUFF                                               #
-#========================================================================================================#
+#=====================================================================================================================================#
+#                                                            SCREEN STATES                                                            #
+#=====================================================================================================================================#
 
 class Screen:
     def __init__(self, player=None):
@@ -777,6 +785,10 @@ class GameEngine:
 
         outro_screen = OutroScreen(self.setup.player)
         outro_screen.display()
+
+#=====================================================================================================================================#
+#                                                          MODULE NAME CHECK                                                          #
+#=====================================================================================================================================#
 
 if __name__ == "__main__":
     game_engine = GameEngine()
