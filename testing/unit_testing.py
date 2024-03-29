@@ -438,12 +438,34 @@ class MovementOptionsScreen(Screen):
                 difficulty = self.game_manager.graph.difficulties[(self.game_manager.current_location, destination)]
                 risk_level = self.game_manager.difficulty_to_risk_level(difficulty)
                 print(f"  {destination} ({interaction_type}): {risk_level}")
-        else:
+        
+        if len(self.game_manager.breadcrumbs) > 1:
+            last_visited_node = self.game_manager.breadcrumbs[-2]
+            print(f"Your last visited node was {last_visited_node}.")
+
+    def handle_input(self):
+        choice = input("\nChoose your next location (or type 'Back' to return): ").capitalize()
+
+        if choice == 'Back':
             if len(self.game_manager.breadcrumbs) > 1:
-                last_node = self.game_manager.breadcrumbs[-2]
-                print(f"You have reached a dead end. You can go back to {last_node}.")
+                # Move back to the previous location
+                self.game_manager.breadcrumbs.pop()  # Remove current location from breadcrumbs
+                back_location = self.game_manager.breadcrumbs[-1]  # Get last location
+                self.game_manager.current_location = back_location  # Update current location
+                print(f"\nYou have moved back to {back_location}.\n")
             else:
-                print("This is the starting node. There are no previous nodes to go back to.")
+                print("\nYou are at the start location. There's nowhere to go back.\n")
+        else:
+            self.move_player(choice)
+
+    def move_player(self, new_location):
+        if new_location in [edge[0] for edge in self.game_manager.graph.edges.get(self.game_manager.current_location, [])]:
+            self.game_manager.breadcrumbs.append(new_location)
+            self.game_manager.current_location = new_location
+            print(f"\nYou have moved to {new_location}.\n")
+        else:
+            print("\nInvalid move. Please try again.\n")
+
 
 class ObjectiveScreen(Screen):
     def __init__(self, game_manager):
