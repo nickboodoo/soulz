@@ -34,9 +34,6 @@ class BattleManager(Combat):
             self.player_victory(enemy)
         else:
             self.player_defeat()
-
-
-
 # 3 SCREENS
 class GameplayManager:
     def __init__(self, graph, start, goal, player):
@@ -47,8 +44,7 @@ class GameplayManager:
         self.player = player
         self.game_over = False
         self.breadcrumbs = [start]
-        
-    # MOVE THIS INTO ITS OWN SCREEN CLASS
+
     def display_movement_options(self):
         possible_moves = self.graph.edges.get(self.current_location, [])
         
@@ -67,11 +63,9 @@ class GameplayManager:
             else:
                 print("This is the starting node. There are no previous nodes to go back to.")
 
-    # MOVE THIS INTO ITS OWN SCREEN CLASS
     def show_objective(self):
         print(f"Objective: Go from {self.current_location} to {self.goal}.")
 
-    # MOVE THIS INTO ITS OWN SCREEN CLASS
     def suggest_optimal_path(self):
         _, path = dijkstra(self.graph, self.current_location)
         if self.goal in path:
@@ -111,22 +105,9 @@ class GameplayManager:
 
     def check_win_condition(self):
         if self.player.is_alive() and self.current_location == self.goal:
-            print(f"You have reached {self.goal}. A menacing presence awaits...")
-            boss_battle = BossBattle(self.player)
-            battle_outcome = boss_battle.battle_soul_of_zinder()
-
-            if battle_outcome is True:
-                print("Congratulations! You've defeated the Soul of Zinder and won the game!")
-                self.game_over = True
-                exit()
-            elif battle_outcome is False:
-                print("You have fallen in battle... The game is over.")
-                self.game_over = True
-                exit()
-            elif battle_outcome is None:
-                print("You fled from the final battle... The journey is not yet complete.")
-                self.current_location = self.start_node
-                self.breadcrumbs = [self.start_node]
+            print(f"You have reached {self.goal}. Congratulations, you've completed your journey!")
+            self.game_over = True
+            exit()
     
     def generate_encounter(self):
         encounter_chance = random.randint(1, 10)
@@ -137,7 +118,6 @@ class GameplayManager:
             battle_screen = BattleScreen(battle_manager, enemy)
             self.screen_manager.add_screen('battle', battle_screen)
             self.screen_manager.navigate_to('battle')
-
         else:
             found_items = random.randint(1, 3)
 
@@ -149,7 +129,6 @@ class GameplayManager:
                     gold_amount = random.randint(1, 100)
                     self.player.stats["gold"] += gold_amount
                     input(f"You found {gold_amount} gold!")
-
 
                 elif loot == "Zinder":
                     self.player.zinders_collected += 1
@@ -274,65 +253,6 @@ class Combat:
     def check_alive(self, character):
         return character.is_alive()
 # 1 SCREEN
-class BossBattle(Combat):
-    def __init__(self, player):
-        super().__init__(player)
-        self.soul_of_zinder = Enemy("Soul of Zinder", 100, 55)
-
-    def battle_soul_of_zinder(self):
-        clear_screen()
-        print(f"The {self.soul_of_zinder.name} appears!")
-        input("Prepare yourself for a challenging battle!")
-
-        while self.check_alive(self.player) and self.check_alive(self.soul_of_zinder):
-            self.player.print_status(self.soul_of_zinder)
-            choice = input("Choose your action: [a]ttack, [u]se item, [f]lee: ").lower()
-            clear_screen()
-
-            if choice == "a":
-                self.initiate_attack(self.player, self.soul_of_zinder)
-                if self.check_alive(self.soul_of_zinder):
-                    self.initiate_attack(self.soul_of_zinder, self.player)
-
-            elif choice == "u":
-                print("Your Inventory:")
-                for item, quantity in self.player.inventory.items():
-                    print(f"{item}: {quantity}")
-                item_to_use = input("Enter the item you want to use (or [cancel] to go back): ").lower()
-                
-                if item_to_use == "cancel":
-                    continue  # Allows the player to re-choose action
-                
-                if item_to_use in self.player.inventory and self.player.inventory[item_to_use] > 0:
-                    quantity_to_use = int(input(f"How many {item_to_use}(s) do you want to use? "))
-                    if item_to_use == "health potion" and quantity_to_use > 0:
-                        heal_amount_per_potion = 20
-                        total_heal_amount = heal_amount_per_potion * quantity_to_use
-                        self.player.health += total_heal_amount
-                        self.player.health = min(self.player.health, self.player.MAX_HEALTH)
-                        self.player.inventory[item_to_use] -= quantity_to_use
-                        if self.player.inventory[item_to_use] <= 0:
-                            del self.player.inventory[item_to_use]
-                        print(f"You used {quantity_to_use} {item_to_use}(s) and gained {total_heal_amount} health.")
-                    else:
-                        print(f"The {item_to_use} cannot be used this way or invalid quantity.")
-                else:
-                    print("Invalid item or out of stock.")
-
-            elif choice == "f":
-                print("You fled from the battle!")
-                return None
-
-            else:
-                print("Invalid choice. Please try again.")
-
-        if self.player.is_alive():
-            print(f"Congratulations! You defeated the {self.soul_of_zinder.name}!")
-            return True
-        else:
-            print("You lost the battle against the Soul of Zinder!")
-            return False
-
 class DynamicWorldMap:
     def __init__(self):
         self.nodes = set()
