@@ -13,13 +13,12 @@ class Combat:
 
     def check_alive(self, character):
         return character.is_alive()
-# 2 SCREENS
+
 class BattleManager(Combat):
     def __init__(self, player):
         super().__init__(player)
 
     def player_attack(self, enemy):
-        print_dashes(72)
         player_damage = self.player.attack()
         enemy.defend(player_damage)
         print(f"{self.player.name} attacks the {enemy.name} for {player_damage} damage.".center(72))
@@ -45,41 +44,6 @@ class GameplayManager:
         self.game_over = False
         self.breadcrumbs = [start]
         self.final_enemy = Enemy("Gwyn, Lord of Sunlight", 150, 50)
-
-    def display_movement_options(self):
-        possible_moves = self.graph.edges.get(self.current_location, [])
-        
-        print(f"\nYou are currently at {self.current_location}.\n")
-        
-        if possible_moves:
-            print("You can progress to these location(s):")
-            for destination, interaction_type in possible_moves:
-                difficulty = self.graph.difficulties[(self.current_location, destination)]
-                risk_level = self.difficulty_to_risk_level(difficulty)
-                print(f"  {destination} ({interaction_type}): {risk_level}")
-        else:
-            if len(self.breadcrumbs) > 1:
-                last_node = self.breadcrumbs[-2]
-                print(f"You have reached a dead end. You can go back to {last_node}.")
-            else:
-                print("This is the starting node. There are no previous nodes to go back to.")
-
-    def show_objective(self):
-        print(f"Objective: Go from {self.current_location} to {self.goal}.")
-
-    def suggest_optimal_path(self):
-        _, path = dijkstra(self.graph, self.current_location)
-        if self.goal in path:
-            next_step = self.goal
-            path_to_goal = [next_step]
-            while next_step != self.current_location:
-                next_step = path[next_step]
-                path_to_goal.append(next_step)
-            path_to_goal.reverse()
-            
-            print(f"Suggested optimal path to goal: {' -> '.join(path_to_goal)}")
-        else:
-            print("You are lost, try exploring some more.")
 
     def difficulty_to_risk_level(self, difficulty):
         if difficulty < 0.4:
@@ -460,27 +424,54 @@ class PlayerMenuScreen:
 
 class MovementOptionsScreen(Screen):
     def __init__(self, game_manager):
+        super().__init__(game_manager.player)
         self.game_manager = game_manager
 
     def display(self):
-        # Implement the logic from `display_movement_options` here
-        pass
+        possible_moves = self.game_manager.graph.edges.get(self.game_manager.current_location, [])
+        
+        print(f"\nYou are currently at {self.game_manager.current_location}.\n")
+        
+        if possible_moves:
+            print("You can progress to these location(s):")
+            for destination, interaction_type in possible_moves:
+                difficulty = self.game_manager.graph.difficulties[(self.game_manager.current_location, destination)]
+                risk_level = self.game_manager.difficulty_to_risk_level(difficulty)
+                print(f"  {destination} ({interaction_type}): {risk_level}")
+        else:
+            if len(self.game_manager.breadcrumbs) > 1:
+                last_node = self.game_manager.breadcrumbs[-2]
+                print(f"You have reached a dead end. You can go back to {last_node}.")
+            else:
+                print("This is the starting node. There are no previous nodes to go back to.")
 
 class ObjectiveScreen(Screen):
     def __init__(self, game_manager):
+        super().__init__(game_manager.player)
         self.game_manager = game_manager
 
     def display(self):
-        # Implement the logic from `show_objective` here
-        pass
+        print(f"Objective: Go from {self.game_manager.current_location} to {self.game_manager.goal}.")
 
 class OptimalPathScreen(Screen):
     def __init__(self, game_manager):
+        super().__init__(game_manager.player)
         self.game_manager = game_manager
 
     def display(self):
-        # Implement the logic from `suggest_optimal_path` here
-        pass
+        _, path = dijkstra(self.game_manager.graph, self.game_manager.current_location)
+        if self.game_manager.goal in path:
+            next_step = self.game_manager.goal
+            path_to_goal = [next_step]
+            while next_step != self.game_manager.current_location:
+                next_step = path[next_step]
+                path_to_goal.append(next_step)
+            path_to_goal.reverse()
+            
+            print(f"Suggested optimal path to goal: {' -> '.join(path_to_goal)}")
+        else:
+            print("You are lost, try exploring some more.")
+
 
 class VictoryScreen(Screen):
     def __init__(self, player, enemy):
@@ -610,26 +601,35 @@ class NavigationMenuScreen:
 
     def display(self):
         while not self.game_manager.game_over and self.game_manager.player.is_alive():
-            self.game_manager.display_movement_options()
+            # Commented out because display_movement_options no longer exists in GameplayManager
+            # self.game_manager.display_movement_options()
             print("\nMain Menu:")
+            print("--> [Move]         Show movement options and move")
             print("--> [Home]         View the Player Menu")
             print("--> [Back]         Go back to the last visited location")
             print("--> [Journal]      See your current objective")
             print("--> [Hint]         View the optimal path to beating the game")
             print("--> [Quit]         Close the game")
-            choice = input("\nWhere would you like to go? Enter a path or a menu option: ")
+            choice = input("\nWhere would you like to go? Enter a path or a menu option: ").lower()
             clear_screen()
 
-            if choice.lower() == "home":
+            if choice == "move":
+                # Here we instantiate and display MovementOptionsScreen
+                movement_options_screen = MovementOptionsScreen(self.game_manager)
+                movement_options_screen.display()
+
+            elif choice.lower() == "home":
                 exit_navigation = self.game_manager.screen_manager.navigate_player()
                 if exit_navigation:
                     return
 
             elif choice.lower() == "hint":
-                self.game_manager.suggest_optimal_path()
+                optimal_path_screen = OptimalPathScreen(self.game_manager)
+                optimal_path_screen.display()
             
             elif choice.lower() == "journal":
-                self.game_manager.show_objective()
+                objective_screen = ObjectiveScreen(self.game_manager)
+                objective_screen.display()
 
             elif choice.lower() == "back":
                 if len(self.game_manager.breadcrumbs) > 1:
