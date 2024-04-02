@@ -6,15 +6,11 @@
 
 ### This repository holds the gateway to an epic saga where every decision impacts your survival. With code that brings to life complex enemy AI, a robust character progression system, and an engaging narrative framework, Soulz offers an immersive experience that's as rewarding as it is challenging. Whether you're delving into dungeons or battling the bosses that lurk within, Soulz promises an adventure that will test your mettle and strategy, inviting you to become the hero you were meant to be.
 
-
-
 ## HOW TO RUN THE GAME
 1. Download the latest release
 2. Unzip release folder
 3. Navigate to soulz\game\dist
 3. Run Soulz.exe
-
-
 
 ## RECENT PATCH NOTES
 Version 2.2 Release Notes:
@@ -24,8 +20,6 @@ Version 2.2 Release Notes:
 4. Fixed backtracking bug
 5. Added a [Back] menu option that allows the player to backtrack to previous node
 
-
-
 ### PLANNED FEATURES
 1. Update game mechanics (ongoing)
 2. Incorporate a learning model for the final boss
@@ -33,3 +27,10 @@ Version 2.2 Release Notes:
 ### KNOWN BUGS
 1. Tavern does not cost money
 
+## Contributing
+
+Contributions are welcome! Please reach out to me before you attempt to submit pull requests or open issues for bugs, feature requests, or documentation improvements. Thank you!!
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE.md file for details.
