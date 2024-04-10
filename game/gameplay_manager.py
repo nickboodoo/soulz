@@ -11,66 +11,53 @@ class GameplayManager:
     def __init__(self, graph, start, goal, player):
         self.graph = graph
         self.current_location = start
-        self.start_node = start  # Add this line to explicitly store the start node
+        self.start_node = start
         self.goal = goal
         self.player = player
         self.game_over = False
         self.breadcrumbs = [start]
         
-
     def initiate_gameplay_loop(self):
         while not self.game_over and self.player.is_alive():
             self.display_movement_options()
+
+            # MOVE THIS TO DISPLAY UTILITY CLASS
             print("\nMain Menu:")
             print("--> [Home]         View the Player Menu")
             print("--> [Back]         Go back to the last visited location")
             print("--> [Journal]      See your current objective")
             print("--> [Hint]         View the optimal path to beating the game")
             print("--> [Quit]         Close the game")
+
             choice = input("\nWhere would you like to go? Enter a path or a menu option: ")
             clear_screen()
-
             if choice.lower() == "home":
                 self.player.navigate_player_menu()
-
             elif choice.lower() == "hint":
                 self.suggest_optimal_path()
-            
             elif choice.lower() == "journal":
                 self.show_objective()
-
             elif choice.lower() == "back":
                 if len(self.breadcrumbs) > 1:
                     self.move_player(self.breadcrumbs[-2])
                 else:
                     print("You're at the starting location; there's nowhere to go back to.")
-
-
             elif choice.lower() == "quit":
                 print("Thanks for playing!")
                 self.game_over = True
-
             else:
-                # Attempt to move the player to the chosen location
                 if self.move_player(choice.upper()):
-                    # If the move was successful and not at the goal, generate an encounter
                     if self.current_location != self.goal:
                         self.generate_encounter()
                         clear_screen()
-                # If the move_player returned False, it means the input was invalid, 
-                # and we do not need to execute any further actions for this iteration.
 
                 self.check_win_condition()
 
-
-
     def display_movement_options(self):
-        # Get the current possible moves from the current location
         possible_moves = self.graph.edges.get(self.current_location, [])
         
         print(f"\nYou are currently at {self.current_location}.\n")
         
-        # Check if there are forward moves available
         if possible_moves:
             print("You can progress to these location(s):")
             for destination, interaction_type in possible_moves:
@@ -78,9 +65,8 @@ class GameplayManager:
                 risk_level = self.difficulty_to_risk_level(difficulty)
                 print(f"  {destination} ({interaction_type}): {risk_level}")
         else:
-            # If no forward moves, provide an option to move back to the last node, if available
             if len(self.breadcrumbs) > 1:
-                last_node = self.breadcrumbs[-2]  # The last node the player was in
+                last_node = self.breadcrumbs[-2]
                 print(f"You have reached a dead end. You can go back to {last_node}.")
             else:
                 print("This is the starting node. There are no previous nodes to go back to.")
@@ -92,7 +78,6 @@ class GameplayManager:
     def suggest_optimal_path(self):
         _, path = dijkstra(self.graph, self.current_location)
         if self.goal in path:
-            # Construct the path from the current location to the goal
             next_step = self.goal
             path_to_goal = [next_step]
             while next_step != self.current_location:
