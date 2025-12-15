@@ -1,21 +1,36 @@
 class Node:
     def __init__(self, data):
         self.data = data
+        self.prev = None
         self.next = None
         
 # FIXME: convert to doubly linked list next
 class LinkedList:
     def __init__(self):
         self.head = None
+        self.tail = None
+
+    
     
     def prepend(self, data):
         new_node = Node(data)
-        new_node.next = self.head
-        self.head = new_node
+        
+        # else:
+        #     new_node.next = self.head
+        #     self.head.prev = new_node
+        #     self.head = new_node
     
     # FIXME: create a function to append node objects to the list
     def append(self, data):
-        pass
+        new_node = Node(data)
+
+        if self.tail is None:
+            self.head = self.tail = new_node
+        
+        else:
+            new_node.prev = self.tail
+            self.tail.next = new_node
+            self.tail = new_node
 
     def display(self):
         current = self.head
